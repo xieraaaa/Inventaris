@@ -40,8 +40,7 @@ class MerekController extends Controller
         $merekId = $request->id;
 
         $request->validate([
-            'nama_merek' => 'required',
-            'code_merek' => 'required'
+            'merek' => 'required',
         ]);
 
         $merek = merek::updateOrCreate(
@@ -49,8 +48,7 @@ class MerekController extends Controller
                 'id' => $merekId
             ],
             [
-                'nama_merek' => $request->nama_merek,
-                'code_merek' => $request->code_merek
+                'merek' => $request->merek,
             ]
         );
 

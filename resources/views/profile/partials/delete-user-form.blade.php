@@ -1,6 +1,6 @@
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="h5 font-medium text-gray-900">
             {{ __('Delete Account') }}
         </h2>
 
@@ -9,17 +9,17 @@
         </p>
     </header>
 
-    <x-danger-button
+    <button type="button" class="btn btn-danger"
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
+    >{{ __('Delete Account') }}</button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900">
+            <h2 class="h5 font-medium text-gray-900">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
 
@@ -28,28 +28,29 @@
             </p>
 
             <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+                <x-input-label for="password" value="{{ __('Password') }}" class="form-label" />
 
                 <x-text-input
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-3/4"
+                    class="form-control mt-1"
                     placeholder="{{ __('Password') }}"
                 />
 
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2 invalid-feedback" />
             </div>
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+            <div class="mt-6 d-flex justify-content-end">
+                <x-secondary-button x-on:click="$dispatch('close')" class="btn btn-secondary">
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3">
+                <x-danger-button class="btn btn-danger ms-3">
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </div>
         </form>
     </x-modal>
 </section>
+
