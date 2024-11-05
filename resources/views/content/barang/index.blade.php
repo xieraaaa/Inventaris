@@ -1,39 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="page-wrapper">
-    <div class="container-fluid">
-        <div class="row page-titles">
-            <div class="col-md-5 align-self-center">
-                <h4 class="text-themecolor">Barang</h4>
-            </div>
-            <div class="col-md-7 align-self-center text-end">
-                <div class="d-flex justify-content-end align-items-center">
-                    <ol class="breadcrumb justify-content-end">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Barang</li>
-                    </ol>
-
-                </div>
-            </div>
-        </div>
-        <div class="card p-3 rounded">
-            <div class="row mt-2">
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
-                    </div>
-                </div>
-            </div>
-            @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-            @endif
-            <div class="card-body">
-                <table class="table table-striped table-bordered yajra-datatable" id="barang">
-                </table>
-
     <div class="page-wrapper">
         <div class="container-fluid">
             <div class="row page-titles">
@@ -49,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
+            <div class="card p-3 rounded">
                 <div class="row mt-2">
                     <div class="col-md-12">
                         <div class="mb-3">
