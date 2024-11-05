@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('store-kategori', [kategoriController::class, 'store']);
     Route::post('edit-kategori', [kategoriController::class, 'edit']);
     Route::post('delete-kategori', [kategoriController::class, 'destroy']);
+    Route::post('/kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
 
     Route::get('barang', [BarangController::class, 'index'])->name('barang');
     Route::post('store-barang', [BarangController::class, 'store']);
