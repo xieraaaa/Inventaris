@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 use Datatables;
 
-class kategoriController extends Controller
+class KategoriController extends Controller
 {
     /**
      * Display a listing of the resource.

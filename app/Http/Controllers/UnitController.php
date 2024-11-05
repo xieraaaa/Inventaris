@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UnitImport;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+
+use Datatables;
 
 class UnitController extends Controller
 {
@@ -54,7 +59,7 @@ class UnitController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\merek  $merek
+     * @param  \App\unit  $unit
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request)
@@ -67,7 +72,7 @@ class UnitController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\merek  $merek
+     * @param  \App\unit  $unit
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -84,6 +89,36 @@ class UnitController extends Controller
                 "status" => "success",
                 "msg" => "Product Deleted Successfully"
             ], 201);
+        }
+    }
+
+    public function import(Request $request)
+    {
+        // Validasi file yang diunggah
+        $request->validate([
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ]);
+    
+        $file = $request->file('file');
+    
+        // Membuat nama file unik
+        $nama_file = $file->hashName();
+    
+        // Menyimpan sementara file ke storage
+        $path = $file->storeAs('public/excel/', $nama_file);
+    
+        // Import data dari file excel
+        $import = Excel::import(new UnitImport(), storage_path('app/public/excel/' . $nama_file));
+    
+        // Menghapus file dari server setelah import
+        Storage::delete($path);
+    
+        if ($import) {
+            // Redirect jika berhasil
+            return redirect()->route('unit')->with(['success' => 'Data Berhasil Diimport!']);
+        } else {
+            // Redirect jika gagal
+            return redirect()->route('unit')->with(['error' => 'Data Gagal Diimport!']);
         }
     }
 }

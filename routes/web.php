@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('store-unit', [UnitController::class, 'store']);
     Route::post('edit-unit', [UnitController::class, 'edit']);
     Route::post('delete-unit', [UnitController::class, 'destroy']);
+    Route::post('/unit/import', [UnitController::class, 'import'])->name('unit.import');
 
     Route::get('kategori', [kategoriController::class, 'index'])->name('kategori');
     Route::post('store-kategori', [kategoriController::class, 'store']);
