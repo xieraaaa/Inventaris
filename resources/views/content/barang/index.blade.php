@@ -5,13 +5,13 @@
     <div class="container-fluid">
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h4 class="text-themecolor">barang</h4>
+                <h4 class="text-themecolor">Barang</h4>
             </div>
             <div class="col-md-7 align-self-center text-end">
                 <div class="d-flex justify-content-end align-items-center">
                     <ol class="breadcrumb justify-content-end">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">barang</li>
+                        <li class="breadcrumb-item active">Barang</li>
                     </ol>
 
                 </div>
@@ -21,7 +21,7 @@
             <div class="row mt-2">
                 <div class="col-md-12">
                     <div class="mb-3">
-                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create barang</a>
+                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
                     </div>
                 </div>
             </div>
@@ -35,13 +35,16 @@
                     <thead>
                         <tr>
                             <th width="10px">ID</th>
+                            <th width="10px">Kode Barang</th>
+                            <th width="80px">Nama Barang</th>
+                            <th width="10px">ID</th>
                             <th width="20px">kode</th>
                             <th width="80px">nama</th>
                             <th width="80px">Kategori</th>
                             <th width="100px">Unit</th>
-                            <th width="60px">merek</th>
-                            <th width="190px">kondisi</th>
-                            <th width="80px">keterangan</th>
+                            <th width="60px">Merek</th>
+                            <th width="190px">Kondisi</th>
+                            <th width="80px">Keterangan</th>
                             <th width="100px">Action</th>
                         </tr>
                     </thead>
@@ -61,14 +64,14 @@
                             method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="id" id="id">
                             <div class="form-group">
-                                <label for="kode_barang" class="col-sm-8 mb-2 control-label">kode barang</label>
+                                <label for="kode_barang" class="col-sm-8 mb-2 control-label">Kode Barang</label>
                                 <div class="col-sm-12">
                                     <input type="number" class="form-control" id="kode_barang" name="kode_barang"
                                         placeholder="kode barang" maxlength="50" required="">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="nama_barang" class="col-sm-8 mb-2 control-label">nama barang</label>
+                                <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
                                 <div class="col-sm-12">
                                     <input type="text" class="form-control" id="nama_barang" name="nama_barang"
                                         placeholder="nama barang" maxlength="50" required="">
@@ -86,7 +89,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="id_unit" class="col-sm-8 mb-2 control-label">unit</label>
+                                <label for="id_unit" class="col-sm-8 mb-2 control-label">Unit</label>
                                 <div class="col-sm-12">
                                     <select class="form-control" id="id_unit" name="id_unit" required>
                                         <option value="">-- Select unit --</option>
@@ -97,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="id_merek" class="col-sm-8 mb-2 control-label">merek</label>
+                                <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
                                 <div class="col-sm-12">
                                     <select class="form-control" id="id_merek" name="id_merek" required>
                                         <option value="">-- Select merek --</option>
@@ -121,7 +124,7 @@
 
 
                             <div class="form-group">
-                                <label for="keterangan" class="col-sm-8 mb-2 control-label">keterangan</label>
+                                <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
                                 <div class="col-sm-12">
                                     <input type="text" class="form-control" id="keterangan" name="keterangan"
                                         placeholder="keterangan" maxlength="50" required="">
@@ -172,10 +175,18 @@
                         name: 'id',
                     },
                     {
+                        data : 'kode_barang',
+                        name : 'kode_barang',
+                        title: 'Kode Barang',
+                        width: '100px'
                         data: 'kode_barang',
                         name: 'kode_barang',
                     },
                     {
+                        data : 'nama_barang',
+                        name : 'nama_barang',
+                        title: 'Nama Barang',
+                        width: '80px'
                         data: 'nama_barang',
                         name: 'nama_barang',
                         
@@ -183,22 +194,32 @@
                     {
                         data: 'kategori',
                         name: 'kategori',
+                        title: 'Kategori',
+                        width: '80px'
                     },
                     {
                         data: 'unit',
                         name: 'unit',
+                        title: 'Unit',
+                        width: '100px'
                     },
                     {
                         data: 'merek',
                         name: 'merek',
+                        title: 'Merek',
+                        width: '60px'
                     },
                     {
                         data: 'kondisi_label',
                         name: 'kondisi_label',
+                        title: 'Kondisi',
+                        width: '60px'
                     },
                     {
                         data: 'keterangan',
                         name: 'keterangan',
+                        title: 'Keterangan',
+                        width: '80px'
                     },
 
                     {
