@@ -312,12 +312,11 @@
             <li class="nav-item dropdown u-pro">
                 <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href=""
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @if (auth()->user()->profile_photo)
-                        <img src="{{ asset('storage/profile_photos/' . auth()->user()->profile_photo) }}"
-                            alt="Profile Photo" class="profile-photo image-circle">
+                    @if(auth()->user()->profile_photo)
+                    <img src="{{ asset('storage/profile_pictures/' . auth()->user()->profile_photo) }}" alt="Profile Photo" class="profile-photo rounded-circle" width="30" height="30">
                     @else
-                        <img src="{{ asset('../assets/images/unknown.jpg') }}" alt="Default Profile Photo"
-                            class="profile-photo image-circle">
+                    <img src="{{ asset('assets/images/unknown.jpg') }}" alt="Default Profile Photo" class="profile-photo rounded-circle">
+                    
                     @endif <span class="hidden-md-down">{{ Auth::user()->name }} &nbsp;<i
                             class="fa fa-angle-down"></i></span>
                 </a>
