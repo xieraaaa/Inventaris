@@ -34,13 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::post('store-kategori', [kategoriController::class, 'store']);
     Route::post('edit-kategori', [kategoriController::class, 'edit']);
     Route::post('delete-kategori', [kategoriController::class, 'destroy']);
+
+    Route::get('barang', [BarangController::class, 'index'])->name('barang');
+    Route::post('store-barang', [BarangController::class, 'store']);
+    Route::post('edit-barang', [BarangController::class, 'edit']);
+    Route::post('delete-barang', [BarangController::class, 'destroy']);
 });
-
-
-
-Route::get('barang', [BarangController::class, 'index'])->name('barang');
-Route::post('store-barang', [BarangController::class, 'store']);
-Route::post('edit-barang', [BarangController::class, 'edit']);
-Route::post('delete-barang', [BarangController::class, 'destroy']);
 
 require __DIR__.'/auth.php';
