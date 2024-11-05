@@ -15,7 +15,6 @@
 
         <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-4 needs-validation" novalidate>
             @csrf
-            @method('patch')
 
             <div class="mb-3">
                 <x-input-label for="name" :value="__('Name')" class="form-label" />
