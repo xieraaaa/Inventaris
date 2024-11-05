@@ -24,7 +24,7 @@ class barangController extends Controller
         if (request()->ajax()) {
             //return datatables()->of(barang::select('*'))
             return datatables()->of(Barang::with(['kategori', 'unit', 'merek'])
-            ->select('id', 'kode_barang','nama_barang','id_kategori','id_unit','id_merek','kondisi','keterangan',))
+            ->select('id', 'kode_barang','nama_barang','id_kategori','id_unit','id_merek','jumlah','kondisi','keterangan',))
                 ->addColumn('kategori', function ($barang) {
                     return $barang->kategori ? $barang->kategori->kategori : '-';
                 })
@@ -71,6 +71,7 @@ class barangController extends Controller
             'id_kategori' => 'required',
             'id_unit' => 'required',
             'id_merek' => 'required',
+            'jumlah' => 'required',
             'kondisi' => 'required',
             'keterangan' => 'required',
             
@@ -86,6 +87,7 @@ class barangController extends Controller
                 'id_kategori' => $request->id_kategori,
                 'id_unit' => $request->id_unit,
                 'id_merek' => $request->id_merek,
+                'jumlah' => $request->jumlah,
                 'kondisi' => $request->kondisi,
                 'keterangan' => $request->keterangan,
                

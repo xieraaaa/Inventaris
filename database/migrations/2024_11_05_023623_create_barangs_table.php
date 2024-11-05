@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kategori');
             $table->unsignedBigInteger('id_unit');
             $table->unsignedBigInteger('id_merek');
+            $table->integer('jumlah');
             $table->boolean('kondisi');
             $table->string('keterangan',150);
             $table->timestamps();

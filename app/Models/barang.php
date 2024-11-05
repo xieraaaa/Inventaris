@@ -14,6 +14,7 @@ class barang extends Model
         'id_kategori',
         'id_unit',
         'id_merek',
+        'jumlah',
         'kondisi',
         'keterangan'
         

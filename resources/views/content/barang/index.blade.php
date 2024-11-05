@@ -40,6 +40,7 @@
                             <th width="80px">Kategori</th>
                             <th width="100px">Unit</th>
                             <th width="60px">merek</th>
+                            <th width="60px">jumlah</th>
                             <th width="190px">kondisi</th>
                             <th width="80px">keterangan</th>
                             <th width="100px">Action</th>
@@ -107,7 +108,13 @@
                                     </select>
                                 </div>
                             </div>
-
+                            <div class="form-group">
+                                <label for="jumlah" class="col-sm-8 mb-2 control-label">jumlah</label>
+                                <div class="col-sm-12">
+                                    <input type="number" class="form-control" id="jumlah" name="jumlah"
+                                        placeholder="jumlah stock" maxlength="50" required="">
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="kondisi" class="col-sm-8 mb-2 control-label">Kondisi</label>
                                 <div class="col-sm-12">
@@ -204,6 +211,12 @@
                         width: '60px'
                     },
                     {
+                        data: 'jumlah',
+                        name: 'jumlah',
+                        title: 'jumlah',
+                        width: '60px'
+                    },
+                    {
                         data: 'kondisi_label',
                         name: 'kondisi_label',
                         title: 'kondisi',
@@ -257,6 +270,7 @@
                     $('#id_kategori').val(res.id_kategori);
                     $('#id_unit').val(res.id_unit);
                     $('#id_merek').val(res.id_merek);
+                    $('#jumlah').val(res.jumlah);
                     $('#kondisi').val(res.kondisi);
                     $('#keterangan').val(res.keterangan);
                 }
