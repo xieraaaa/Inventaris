@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\MerekController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -22,5 +23,10 @@ Route::get('merek', [MerekController::class, 'index'])->name('merek');
 Route::post('store-merek', [MerekController::class, 'store']);
 Route::post('edit-merek', [MerekController::class, 'edit']);
 Route::post('delete-merek', [MerekController::class, 'destroy']);
+
+Route::get('kategori', [kategoriController::class, 'index'])->name('kategori');
+Route::post('store-kategori', [kategoriController::class, 'store']);
+Route::post('edit-kategori', [kategoriController::class, 'edit']);
+Route::post('delete-kategori', [kategoriController::class, 'destroy']);
 
 require __DIR__.'/auth.php';
