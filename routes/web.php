@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\MerekController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UnitController;
@@ -28,5 +29,10 @@ Route::get('unit', [UnitController::class, 'index'])->name('unit');
 Route::post('store-unit', [UnitController::class, 'store']);
 Route::post('edit-unit', [UnitController::class, 'edit']);
 Route::post('delete-unit', [UnitController::class, 'destroy']);
+
+Route::get('kategori', [kategoriController::class, 'index'])->name('kategori');
+Route::post('store-kategori', [kategoriController::class, 'store']);
+Route::post('edit-kategori', [kategoriController::class, 'edit']);
+Route::post('delete-kategori', [kategoriController::class, 'destroy']);
 
 require __DIR__.'/auth.php';
