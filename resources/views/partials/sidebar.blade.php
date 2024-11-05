@@ -27,7 +27,7 @@
                         </li>
                         
                         <li> <a class="waves-effect waves-dark" href="{{route('dashboard')}}"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
-                        <li> <a class="waves-effect waves-dark" href="#"><i class="fa-solid fa-barcode"></i></i><span class="hide-menu">Barang</span></a>
+                        <li> <a class="waves-effect waves-dark" href="{{route('barang')}}"><i class="fa-solid fa-barcode"></i></i><span class="hide-menu">Barang</span></a>
                         <li> <a class="waves-effect waves-dark" href="#"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
                         <li> <a class="waves-effect waves-dark" href="#"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
                         <li> <a class="waves-effect waves-dark" href="#"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>

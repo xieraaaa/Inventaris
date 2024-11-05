@@ -34,9 +34,9 @@
                 <table class="table table-striped table-bordered yajra-datatable" id="barang">
                     <thead>
                         <tr>
-                            <th width="10px">Id</th>
-                            <th width="10px">kode barang</th>
-                            <th width="80px">nama barang</th>
+                            <th width="10px">ID</th>
+                            <th width="20px">kode</th>
+                            <th width="80px">nama</th>
                             <th width="80px">Kategori</th>
                             <th width="100px">Unit</th>
                             <th width="60px">merek</th>
@@ -170,50 +170,35 @@
                 columns: [{
                         data: 'id',
                         name: 'id',
-                        title: 'Id',
-                        width: '10px'
                     },
                     {
                         data: 'kode_barang',
                         name: 'kode_barang',
-                        title: 'kode_barang',
-                        width: '100px'
                     },
                     {
                         data: 'nama_barang',
                         name: 'nama_barang',
-                        title: 'nama_barang',
-                        width: '80px'
+                        
                     },
                     {
                         data: 'kategori',
                         name: 'kategori',
-                        title: 'kategori',
-                        width: '80px'
                     },
                     {
                         data: 'unit',
                         name: 'unit',
-                        title: 'unit',
-                        width: '100px'
                     },
                     {
                         data: 'merek',
                         name: 'merek',
-                        title: 'merek',
-                        width: '60px'
                     },
                     {
                         data: 'kondisi_label',
                         name: 'kondisi_label',
-                        title: 'kondisi',
-                        width: '60px'
                     },
                     {
                         data: 'keterangan',
                         name: 'keterangan',
-                        title: 'keterangan',
-                        width: '80px'
                     },
 
                     {
