@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MerekController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,5 +23,10 @@ Route::get('merek', [MerekController::class, 'index'])->name('merek');
 Route::post('store-merek', [MerekController::class, 'store']);
 Route::post('edit-merek', [MerekController::class, 'edit']);
 Route::post('delete-merek', [MerekController::class, 'destroy']);
+
+Route::get('unit', [UnitController::class, 'index'])->name('unit');
+Route::post('store-unit', [UnitController::class, 'store']);
+Route::post('edit-unit', [UnitController::class, 'edit']);
+Route::post('delete-unit', [UnitController::class, 'destroy']);
 
 require __DIR__.'/auth.php';

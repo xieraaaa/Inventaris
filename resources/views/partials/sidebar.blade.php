@@ -37,7 +37,7 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="#">Kategori</a></li>
                                 <li><a href="{{route('merek')}}">Merek</a></li>
-                                <li><a href="#">Unit</a></li>
+                                <li><a href="{{ route('unit') }}">Unit</a></li>
                             </ul>
                         </li>
                 </nav>
