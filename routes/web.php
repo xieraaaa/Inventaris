@@ -24,16 +24,19 @@ Route::middleware('auth')->group(function () {
     Route::post('store-merek', [MerekController::class, 'store']);
     Route::post('edit-merek', [MerekController::class, 'edit']);
     Route::post('delete-merek', [MerekController::class, 'destroy']);
+    Route::post('/merek/import', [MerekController::class, 'import'])->name('merek.import');
 
     Route::get('unit', [UnitController::class, 'index'])->name('unit');
     Route::post('store-unit', [UnitController::class, 'store']);
     Route::post('edit-unit', [UnitController::class, 'edit']);
     Route::post('delete-unit', [UnitController::class, 'destroy']);
+    Route::post('/unit/import', [UnitController::class, 'import'])->name('unit.import');
 
     Route::get('kategori', [kategoriController::class, 'index'])->name('kategori');
     Route::post('store-kategori', [kategoriController::class, 'store']);
     Route::post('edit-kategori', [kategoriController::class, 'edit']);
     Route::post('delete-kategori', [kategoriController::class, 'destroy']);
+    Route::post('/kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
 
     Route::get('barang', [BarangController::class, 'index'])->name('barang');
     Route::post('store-barang', [BarangController::class, 'store']);

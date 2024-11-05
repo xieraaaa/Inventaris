@@ -1,6 +1,39 @@
 @extends('layouts.admin')
 
 @section('content')
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h4 class="text-themecolor">Barang</h4>
+            </div>
+            <div class="col-md-7 align-self-center text-end">
+                <div class="d-flex justify-content-end align-items-center">
+                    <ol class="breadcrumb justify-content-end">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Barang</li>
+                    </ol>
+
+                </div>
+            </div>
+        </div>
+        <div class="card p-3 rounded">
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
+                    </div>
+                </div>
+            </div>
+            @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
+            </div>
+            @endif
+            <div class="card-body">
+                <table class="table table-striped table-bordered yajra-datatable" id="barang">
+                </table>
+
     <div class="page-wrapper">
         <div class="container-fluid">
             <div class="row page-titles">
@@ -190,6 +223,7 @@
                     {
                         data: 'id',
                         name: 'id',
+                        title: 'ID',
                         title: 'ID'
                     },
                     {
@@ -197,11 +231,13 @@
                         name : 'kode_barang',
                         title: 'Kode Barang',
                        
+                       
                     },
                     {
                         data : 'nama_barang',
                         name : 'nama_barang',
                         title: 'Nama Barang',
+                       
                        
                         
                     },
@@ -209,16 +245,19 @@
                         data: 'kategori',
                         name: 'kategori',
                         title: 'Kategori',
+                        
                     },
                     {
                         data: 'unit',
                         name: 'unit',
                         title: 'Unit',
+                       
                     },
                     {
                         data: 'merek',
                         name: 'merek',
                         title: 'Merek',
+                       
                     },
                     {
                         data: 'jumlah',
@@ -229,17 +268,26 @@
                         data: 'kondisi_label',
                         name: 'kondisi_label',
                         title: 'Kondisi',
+                       
+                    },
+                    {
+                        data: 'jumlah',
+                        name: 'jumlah',
+                        title: 'Stok',
+                       
                     },
                     {
                         data: 'keterangan',
                         name: 'keterangan',
                         title: 'Keterangan',
+                        
                     },
 
                     {
                         data: 'action',
                         name: 'action',
                         title: 'Action',
+                       
                         orderable: false
                     }
 
