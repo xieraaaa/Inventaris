@@ -185,16 +185,14 @@
                         name : 'kode_barang',
                         title: 'Kode Barang',
                         width: '100px'
-                        data: 'kode_barang',
-                        name: 'kode_barang',
+                       
                     },
                     {
                         data : 'nama_barang',
                         name : 'nama_barang',
                         title: 'Nama Barang',
                         width: '80px'
-                        data: 'nama_barang',
-                        name: 'nama_barang',
+                       
                         
                     },
                     {
