@@ -1,10 +1,19 @@
+<?php
+
+use Illuminate\Support\Facades\Log;
+
+Log::info(get_class(auth()->user()));
+Log::info(auth()->user()->profile_photo);
+
+?>
+
 <div class="profile-summary text-center">
     <!-- Profile Picture -->
     @if(auth()->user()->profile_photo)
-    <img src="{{ asset('storage/profile_photos/' . auth()->user()->profile_photo) }}" alt="Profile Photo" class="profile-photo rounded-circle" width="200" height="200">
+    <img src="{{ asset('storage/profile_pictures/' . auth()->user()->profile_photo) }}" alt="Profile Photo" class="profile-photo rounded-circle" width="200" height="200">
     @else
-    <img src="{{ asset('../assets/images/unknown.jpg') }}" alt="Default Profile Photo" class="profile-photo rounded-circle" width="200" height="200">
-@endif
+    <img src="{{ asset('assets/images/unknown.jpg') }}" alt="Default Profile Photo" class="profile-photo rounded-circle" width="200" height="200">
+    @endif
 
     <!-- User Name -->
     <h4 class="mt-3">{{ Auth::user()->name }}</h4>
