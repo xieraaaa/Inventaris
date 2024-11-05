@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::post('store-merek', [MerekController::class, 'store']);
     Route::post('edit-merek', [MerekController::class, 'edit']);
     Route::post('delete-merek', [MerekController::class, 'destroy']);
+    Route::post('/merek/import', [MerekController::class, 'import'])->name('merek.import');
 
     Route::get('unit', [UnitController::class, 'index'])->name('unit');
     Route::post('store-unit', [UnitController::class, 'store']);

@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="container">
+        <div class="card p-3 rounded">
             <div class="row mt-2">
                 <div class="col-md-12">
                     <div class="mb-3">
@@ -32,22 +32,6 @@
             @endif
             <div class="card-body">
                 <table class="table table-striped table-bordered yajra-datatable" id="barang">
-                    <thead>
-                        <tr>
-                            <th width="10px">ID</th>
-                            <th width="10px">Kode Barang</th>
-                            <th width="80px">Nama Barang</th>
-                            <th width="10px">ID</th>
-                            <th width="20px">kode</th>
-                            <th width="80px">nama</th>
-                            <th width="80px">Kategori</th>
-                            <th width="100px">Unit</th>
-                            <th width="60px">Merek</th>
-                            <th width="190px">Kondisi</th>
-                            <th width="80px">Keterangan</th>
-                            <th width="100px">Action</th>
-                        </tr>
-                    </thead>
                 </table>
 
             </div>
@@ -179,19 +163,20 @@
                 columns: [{
                         data: 'id',
                         name: 'id',
+                        title: 'ID',
                     },
                     {
                         data : 'kode_barang',
                         name : 'kode_barang',
                         title: 'Kode Barang',
-                        width: '100px'
+                       
                        
                     },
                     {
                         data : 'nama_barang',
                         name : 'nama_barang',
                         title: 'Nama Barang',
-                        width: '80px'
+                       
                        
                         
                     },
@@ -199,38 +184,44 @@
                         data: 'kategori',
                         name: 'kategori',
                         title: 'Kategori',
-                        width: '80px'
+                        
                     },
                     {
                         data: 'unit',
                         name: 'unit',
                         title: 'Unit',
-                        width: '100px'
+                       
                     },
                     {
                         data: 'merek',
                         name: 'merek',
                         title: 'Merek',
-                        width: '60px'
+                       
                     },
                     {
                         data: 'kondisi_label',
                         name: 'kondisi_label',
                         title: 'Kondisi',
-                        width: '60px'
+                       
+                    },
+                    {
+                        data: 'jumlah',
+                        name: 'jumlah',
+                        title: 'Stok',
+                       
                     },
                     {
                         data: 'keterangan',
                         name: 'keterangan',
                         title: 'Keterangan',
-                        width: '80px'
+                        
                     },
 
                     {
                         data: 'action',
                         name: 'action',
                         title: 'Action',
-                        width: '100px',
+                       
                         orderable: false
                     }
 
