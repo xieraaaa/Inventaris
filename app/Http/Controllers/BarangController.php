@@ -157,7 +157,7 @@ class barangController extends Controller
         $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
     
         // Menghapus file dari server setelah import
-        // Storage::delete($path);
+        Storage::delete($path);
     
         if ($import) {
             // Redirect jika berhasil
