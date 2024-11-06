@@ -21,7 +21,6 @@
                 <div class="mb-3">
                     <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
                     <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Data</a>
-
                 </div>
             </div>
         </div>
@@ -160,60 +159,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal for viewing details -->
-<div class="modal fade" id="detail-modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Detail Data Barang</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="barcode">Barcode:</label>
-                    <div id="barcode"></div> <!-- Tempat untuk menampilkan gambar -->
-                </div>
-                <div class="form-group">
-                    <label for="kode_barang">Kode Barang:</label>
-                    <textarea class="form-control" id="detail_kode_barang" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_nama_barang">Nama Barang:</label>
-                    <textarea class="form-control" id="detail_nama_barang" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_kategori">Kategori:</label>
-                    <textarea class="form-control" id="detail_kategori" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_unit">Unit:</label>
-                    <textarea class="form-control" id="detail_unit" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_merek">Merek:</label>
-                    <textarea class="form-control" id="detail_merek" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_kondisi">Kondisi:</label>
-                    <textarea class="form-control" id="detail_kondisi" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_jumlah">Jumlah:</label>
-                    <textarea class="form-control" id="detail_jumlah" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_keterangan">Keterangan:</label>
-                    <textarea class="form-control" id="detail_keterangan" readonly></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')
@@ -235,12 +180,12 @@
                 url: "{{ url('barang') }}",
                 type: 'GET',
                 dataSrc: function(json) {
-                    console.log(json);
-                    return json.data || [];
+                    console.log(json); // Inspect JSON structure to confirm data mapping
+                    return json.data || []; // Ensure the data source path is correct
                 }
             },
             responsive: true,
-            autoWidth: true,
+            autoWidth: true, // Allow automatic column width adjustments
             columns: [{
                     data: null,
                     name: 'id',
@@ -248,86 +193,60 @@
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
+                        return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
                     }
                 },
                 {
                     data: 'kode_barang',
                     name: 'kode_barang',
-                    title: 'kode barang',
-
-
+                    title: 'Kode Barang',
                 },
                 {
                     data: 'nama_barang',
                     name: 'nama_barang',
-                    title: 'nama barang',
-
-
-
-
+                    title: 'Nama Barang',
                 },
                 {
                     data: 'kategori',
                     name: 'kategori',
-                    title: 'kategori',
-
-
+                    title: 'Kategori',
                 },
                 {
                     data: 'unit',
                     name: 'unit',
-                    title: 'unit',
-
+                    title: 'Unit',
                 },
                 {
                     data: 'merek',
                     name: 'merek',
-                    title: 'merek',
-
-
+                    title: 'Merek',
                 },
                 {
                     data: 'kondisi_label',
                     name: 'kondisi_label',
-                    title: 'kondisi label',
-
-
+                    title: 'Kondisi Label',
                 },
                 {
                     data: 'jumlah',
                     name: 'jumlah',
-                    title: 'jumlah',
-
-
+                    title: 'Jumlah',
                 },
                 {
                     data: 'keterangan',
                     name: 'keterangan',
-                    title: 'keterangan',
-
-
+                    title: 'Keterangan',
                 },
-                {
-                    data: 'barcode',
-                    name: 'barcode',
-                    title: 'barcode',
-                    visible: false, // Menyembunyikan kolom barcode
-                },
-
                 {
                     data: 'action',
                     name: 'action',
-                    title: 'action',
-                    className: 'action',
-
+                    title: 'Action',
 
                     orderable: false
                 }
 
             ],
             order: [
-                [0, 'desc']
+                [2, 'asc']
             ],
             scrollX: true
         });
@@ -337,16 +256,10 @@
         $('#barangForm').trigger("reset");
         $('#barangModal').html("Add barang");
         $('#barang-modal').modal('show');
-        
         $('#id').val('');
     }
 
-
     function editFunc(id) {
-
-        $('#barang-modal').on('shown.bs.modal', function() {
-        $('#barang').off('click');
-    });
         $.ajax({
             type: "POST",
             url: "{{ url('edit-barang') }}",
@@ -366,8 +279,6 @@
                 $('#jumlah').val(res.jumlah);
                 $('#kondisi').val(res.kondisi);
                 $('#keterangan').val(res.keterangan);
-
-                
             }
         });
     }
@@ -421,37 +332,6 @@
 
     function importData() {
         $('#import-modal').modal('show');
-        
     }
-
-    
-
-
-    $(document).on('click', '#barang tbody tr', function(event) {
-    // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
-    if ($(event.target).closest('td').hasClass('action')) {
-        return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
-    }
-
-    var data = $('#barang').DataTable().row(this).data();
-
-    if (data) {
-        // Isi detail modal dengan data yang sesuai
-        $('#barcode').html(data.barcode);
-        $('#detail_kode_barang').text(data.kode_barang);
-        $('#detail_nama_barang').text(data.nama_barang);
-        $('#detail_kategori').text(data.kategori);
-        $('#detail_unit').text(data.unit);
-        $('#detail_merek').text(data.merek);
-        $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
-        $('#detail_jumlah').text(data.jumlah);
-        $('#detail_keterangan').text(data.keterangan);
-
-        // Tampilkan modal detail
-        $('#detail-modal').modal('show');
-    }
-});
-
-
 </script>
 @endpush
