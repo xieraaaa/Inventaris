@@ -199,73 +199,54 @@
                 {
                     data: 'kode_barang',
                     name: 'kode_barang',
-                    title: 'kode barang',
-
-
+                    title: 'Kode Barang',
                 },
                 {
                     data: 'nama_barang',
                     name: 'nama_barang',
-                    title: 'nama barang',
-
-
-
-
+                    title: 'Nama Barang',
                 },
                 {
                     data: 'kategori',
                     name: 'kategori',
-                    title: 'kategori',
-
-
+                    title: 'Kategori',
                 },
                 {
                     data: 'unit',
                     name: 'unit',
-                    title: 'unit',
-
+                    title: 'Unit',
                 },
                 {
                     data: 'merek',
                     name: 'merek',
-                    title: 'merek',
-
-
+                    title: 'Merek',
                 },
                 {
                     data: 'kondisi_label',
                     name: 'kondisi_label',
-                    title: 'kondisi label',
-
-
+                    title: 'Kondisi Label',
                 },
                 {
                     data: 'jumlah',
                     name: 'jumlah',
-                    title: 'jumlah',
-
-
+                    title: 'Jumlah',
                 },
                 {
                     data: 'keterangan',
                     name: 'keterangan',
-                    title: 'keterangan',
-
-
+                    title: 'Keterangan',
                 },
-
                 {
                     data: 'action',
                     name: 'action',
-                    title: 'action',
-
+                    title: 'Action',
 
                     orderable: false
                 }
 
             ],
             order: [
-                [0, 'desc']
+                [2, 'asc']
             ],
             scrollX: true
         });
