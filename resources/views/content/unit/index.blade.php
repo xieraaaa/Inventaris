@@ -127,11 +127,16 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ url('unit') }}",
-                columns: [
-                    {
-                        data: 'id',
-                        name: 'id'
-                    },
+                columns: [{
+                    data: null,
+                    name: 'id',
+                    title: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
+                    }
+                },
                     {
                         data: 'unit',
                         name: 'unit'
