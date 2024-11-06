@@ -14,15 +14,8 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Imports\ExcelData;
 
-use Datatables;
-
 class barangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         if (request()->ajax()) {
@@ -40,9 +33,9 @@ class barangController extends Controller
                 })
                 ->addColumn('kondisi_label', function ($barang) {
                     
-                    return $barang->kondisi == 1 ? 'baik' : 'rusak';
+                    return $barang->kondisi == 1 ? 'Baik' : 'Rusak';
                 })
-                ->addColumn('action', 'content.barang.barang-action')
+                ->addColumn('action', 'content.barang.action.admin')
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);
@@ -53,9 +46,9 @@ class barangController extends Controller
         $units = Unit::all();
         $mereks = Merek::all();
         $barang = Barang::first();
-        $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'baik' : 'rusak') : 'N/A';
+        $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
     
-        return view('content.barang.index', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
+        return view('content.barang.admin', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
     }
 
     
@@ -94,7 +87,6 @@ class barangController extends Controller
                 'jumlah' => $request->jumlah,
                 'kondisi' => $request->kondisi,
                 'keterangan' => $request->keterangan,
-               
             ]
         );
 

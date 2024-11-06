@@ -16,23 +16,13 @@
         </div>
     </div>
     <div class="card p-3 rounded">
-        <div class="row mt-2">
-            <div class="col-md-12">
-                <div class="mb-3">
-                    <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
-                    <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Data</a>
-                </div>
-            </div>
-        </div>
         @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <p>{{ $message }}</p>
         </div>
         @endif
         <div class="card-body">
-            <table class="table table-striped table-bordered yajra-datatable" id="barang">
-
-            </table>
+            <table class="table table-striped table-bordered yajra-datatable" id="barang"></table>
         </div>
     </div>
 
@@ -122,8 +112,7 @@
                         </div>
 
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary" id="btn-save">Save Changes
-                            </button>
+                            <button type="submit" class="btn btn-primary" id="btn-save">Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -177,7 +166,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ url('barang') }}",
+                url: "{{ url('dashboard') }}",
                 type: 'GET',
                 dataSrc: function(json) {
                     console.log(json); // Inspect JSON structure to confirm data mapping
@@ -189,7 +178,7 @@
             columns: [{
                     data: null,
                     name: 'id',
-                    title: 'id',
+                    title: 'ID',
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row, meta) {
@@ -197,69 +186,40 @@
                     }
                 },
                 {
-                    data: 'kode_barang',
-                    name: 'kode_barang',
-                    title: 'kode barang',
-
-
-                },
-                {
                     data: 'nama_barang',
                     name: 'nama_barang',
-                    title: 'nama barang',
-
-
-
-
-                },
-                {
-                    data: 'kategori',
-                    name: 'kategori',
-                    title: 'kategori',
-
-
-                },
-                {
-                    data: 'unit',
-                    name: 'unit',
-                    title: 'unit',
-
+                    title: 'Nama Barang',
                 },
                 {
                     data: 'merek',
                     name: 'merek',
-                    title: 'merek',
-
-
+                    title: 'Merek',
+                    orderable: false
                 },
                 {
                     data: 'kondisi_label',
-                    name: 'kondisi_label',
-                    title: 'kondisi label',
-
-
+                    name: 'kondisi',
+                    title: 'Kondisi',
+                    orderable: false
                 },
                 {
                     data: 'jumlah',
                     name: 'jumlah',
-                    title: 'jumlah',
+                    title: 'Jumlah',
 
 
                 },
                 {
                     data: 'keterangan',
                     name: 'keterangan',
-                    title: 'keterangan',
-
-
+                    title: 'Keterangan',
+                    orderable: false
                 },
 
                 {
                     data: 'action',
                     name: 'action',
-                    title: 'action',
-
-
+                    title: 'Action',
                     orderable: false
                 }
 
