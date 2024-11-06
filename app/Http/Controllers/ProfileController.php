@@ -28,11 +28,13 @@ class ProfileController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        Storage::makeDirectory('!!!!! TES DIRE');
+        
         $user = $request->user();
         
         if (!is_null($user->profile_photo) && $request->hasFile('profile_photo'))
         {
-            Storage::disk('public')->delete('profile_pictures/' . $user->profile_photo);
+            Storage::delete('profile_pictures/' . $user->profile_photo);
         }
         
         $request->file('profile_photo')->store('profile_pictures', 'public');
