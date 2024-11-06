@@ -8,6 +8,8 @@ use App\Models\kategori;
 use App\Models\merek;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Milon\Barcode\DNS1D;
+
 
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -42,8 +44,14 @@ class barangController extends Controller
                     
                     return $barang->kondisi == 1 ? 'baik' : 'rusak';
                 })
+                ->addColumn('barcode', function ($barang) {
+                    return $barang->barcode;
+                })
+                ->addColumn('barcode', function ($barang) {
+                    return '<img src="' . asset('storage/barcodes/' . $barang->kode_barang . '.png') . '" alt="Barcode" style="max-width: 150px;" />';
+                })
                 ->addColumn('action', 'content.barang.barang-action')
-                ->rawColumns(['action'])
+                ->rawColumns(['action','barcode'])
                 ->addIndexColumn()
                 ->make(true);
         }
@@ -98,6 +106,17 @@ class barangController extends Controller
             ]
         );
 
+        $barcodeBase64 = (new DNS1D())->getBarcodePNG($barang->kode_barang, 'C39', 1.5, 50);
+
+        // Menyimpan base64 string sebagai file image
+        $barcodePath = 'barcodes/' . $barang->kode_barang . '.png';
+        Storage::disk('public')->put($barcodePath, base64_decode($barcodeBase64));
+
+        return response()->json([
+            'barang' => $barang,
+            'barcode_url' => asset('storage/' . $barcodePath)
+        ]);
+
         return Response()->json($barang);
     }
 
@@ -122,49 +141,61 @@ class barangController extends Controller
      */
     public function destroy(Request $request)
     {
-        $barang = barang::where('id', $request->id)->delete();
-
-
+        // Ambil data barang berdasarkan ID yang diberikan
+        $barang = barang::find($request->id);
+    
+        // Pastikan data barang ada sebelum menghapusnya
         if (!$barang) {
             return response()->json([
                 "status" => "failed",
-                "msg" => "Something went wrong!"
-            ], 210);
-        } else {
-            return response()->json([
-                "status" => "success",
-                "msg" => "barang Deleted Successfully"
-            ], 201);
+                "msg" => "Barang tidak ditemukan!"
+            ], 404);
         }
+    
+        // Hapus barcode jika ada
+        $barcodePath = 'barcodes/' . $barang->kode_barang . '.png'; // Path ke barcode
+        if (Storage::disk('public')->exists($barcodePath)) {
+            Storage::disk('public')->delete($barcodePath); // Menghapus barcode
+        }
+    
+        // Hapus barang
+        $barang->delete();
+    
+        return response()->json([
+            "status" => "success",
+            "msg" => "Barang berhasil dihapus"
+        ], 201);
     }
-
+    
     public function import(Request $request)
-    {
-        // Validasi file yang diunggah
-        $request->validate([
-            'data_excel' => 'required|mimes:csv,xls,xlsx'
-        ]);
-    
-        $file = $request->file('data_excel');
-    
-        // Membuat nama file unik
-        $nama_file = $file->hashName();
-    
-        // Menyimpan sementara file ke storage
-        $path = $file->storeAs('public/excel/', $nama_file);
-    
-        // Import data dari file excel
-        $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
-    
-        // Menghapus file dari server setelah import
+{
+    $request->validate([
+        'data_excel' => 'required|mimes:csv,xls,xlsx'
+    ]);
+
+    $file = $request->file('data_excel');
+    $nama_file = $file->hashName();
+    $path = $file->storeAs('public/excel/', $nama_file);
+
+    $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
+
+    if ($import) {
+        // Ambil semua data barang yang diimpor
+        $barangs = Barang::all();
+        $generator = new DNS1D();
+
+        foreach ($barangs as $barang) {
+            if ($barang->kode_barang) {
+                $barcodeBase64 = $generator->getBarcodePNG($barang->kode_barang, 'C39', 1.5, 50);
+                $barcodePath = 'barcodes/' . $barang->kode_barang . '.png';
+                Storage::disk('public')->put($barcodePath, base64_decode($barcodeBase64));
+            }
+        }
+
         Storage::delete($path);
-    
-        if ($import) {
-            // Redirect jika berhasil
-            return redirect()->route('barang')->with(['success' => 'Data Berhasil Diimport!']);
-        } else {
-            // Redirect jika gagal
-            return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
+        return redirect()->route('barang')->with(['success' => 'Data Berhasil Diimport dan Barcode Dihasilkan!']);
+    } else {
+        return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
         }
     }
 }

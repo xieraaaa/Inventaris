@@ -9,6 +9,7 @@ class barang extends Model
     protected $table = 'barang';
 
     protected $fillable = [
+        
         'kode_barang',
         'nama_barang',
         'id_kategori',

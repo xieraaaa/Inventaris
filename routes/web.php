@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('store-barang', [BarangController::class, 'store']);
     Route::post('edit-barang', [BarangController::class, 'edit']);
     Route::post('delete-barang', [BarangController::class, 'destroy']);
+    Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
     Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 });
 
