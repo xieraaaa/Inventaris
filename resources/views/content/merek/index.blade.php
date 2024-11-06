@@ -1,8 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="page-wrapper">
-        <div class="container-fluid">
+    <div class="container-fluid">
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
                 <h4 class="text-themecolor">Merek</h4>
@@ -14,7 +13,7 @@
                         <li class="breadcrumb-item">setting</li>
                         <li class="breadcrumb-item active">merek</li>
                     </ol>
-                   
+                    
                 </div>
             </div>
         </div>
@@ -51,37 +50,37 @@
                 </table>
             </div>
         </div>
-        <!-- Bootstrap merek model -->
-        <div class="modal fade" id="merek-modal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="merekModal"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <form action="javascript:void(0)" id="merekForm" name="merekForm" class="form-horizontal"
-                            method="POST" enctype="multipart/form-data">
-                            <input type="hidden" name="id" id="id">
-                            <div class="form-group">
-                                <label for="name" class="col-sm-2 control-label">Name</label>
-                                <div class="col-sm-12">
-                                    <input type="text" class="form-control" id="merek" name="merek"
-                                        placeholder="merek Name" maxlength="50" required="">
-                                </div>
-                            </div>
-                            
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-primary" id="btn-save">Save Changes
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer"></div>
+    </div>
+    <!-- Bootstrap merek model -->
+    <div class="modal fade" id="merek-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="merekModal"></h4>
                 </div>
+                <div class="modal-body">
+                    <form action="javascript:void(0)" id="merekForm" name="merekForm" class="form-horizontal"
+                        method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="id" id="id">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="merek" name="merek"
+                                    placeholder="merek Name" maxlength="50" required="">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="btn-save">Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
-        <!-- End bootstrap model -->
     </div>
+        <!-- End bootstrap model -->
 
     <!-- modal -->
 <div class="modal fade" id="import" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
