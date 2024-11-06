@@ -65,7 +65,11 @@
         <!-- End Topbar header -->
         <!-- ============================================================== -->
         @include('partials.sidebar')
+
+        <div class="page-wrapper">
             @yield('content')
+        </div>
+        
         @include('partials.rightbar')
 
     </div>
