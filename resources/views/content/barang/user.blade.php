@@ -2,15 +2,7 @@
 
 @push('styles')
 <link href="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet">
-<!-- Page plugins css -->
-<link href="{{ asset('../assets/node_modules/clockpicker/dist/jquery-clockpicker.min.css') }}" rel="stylesheet">
-<!-- Color picker plugins css -->
-<link href="{{ asset('../assets/node_modules/jquery-asColorPicker-master/dist/css/asColorPicker.css') }}" rel="stylesheet">
-<!-- Date picker plugins css -->
-<link href="{{ asset('../assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css" />
-<!-- Daterange picker plugins css -->
-<link href="{{ asset('../assets/node_modules/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet">
-<link href="{{ asset('../assets/node_modules/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
+
 <!-- Custom CSS -->
 <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
 @endpush
@@ -98,6 +90,12 @@
                                     <option value="1">Baik</option>
                                     <option value="0">Rusak</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" id="keterangan" name="keterangan" placeholder="keterangan" rows="4" maxlength="500" required=""></textarea>
                             </div>
                         </div>
 
