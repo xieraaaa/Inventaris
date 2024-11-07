@@ -65,7 +65,7 @@
         <!-- ============================================================== -->
         <!-- End Topbar header -->
         <!-- ============================================================== -->
-        @include('partials.sidebar')
+        <x-sidebar />
 
         <div class="page-wrapper">
             @yield('content')
@@ -94,9 +94,7 @@
     <!--Custom JavaScript -->
     <script src="{{ asset('dist/js/custom.min.js') }}"></script>   
 
-       
-        <script src="https://cdn.datatables.net/2.1.3/js/dataTables.min.js"></script>
-            
+    <script src="https://cdn.datatables.net/2.1.3/js/dataTables.min.js"></script>
 </body>
 
 </html>
