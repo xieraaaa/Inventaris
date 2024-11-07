@@ -41,7 +41,7 @@ class barangController extends Controller
                     return $barang->barcode;
                 })
                 ->addColumn('barcode', function ($barang) {
-                    return '<img src="' . asset('storage/barcodes/' . $barang->kode_barang . '.png') . '" alt="Barcode" style="max-width: 150px;" />';
+                    return '<img src=' . asset('storage/barcodes/' . $barang->kode_barang . '.png') . ' alt="Barcode" style="max-width: 150px;" />';
                 })
                 ->addColumn('action', 'content.barang.barang-action')
                 ->rawColumns(['action','barcode'])
@@ -162,33 +162,33 @@ class barangController extends Controller
     }
     
     public function import(Request $request)
-{
-    $request->validate([
-        'data_excel' => 'required|mimes:csv,xls,xlsx'
-    ]);
+    {
+        $request->validate([
+            'data_excel' => 'required|mimes:csv,xls,xlsx'
+        ]);
 
-    $file = $request->file('data_excel');
-    $nama_file = $file->hashName();
-    $path = $file->storeAs('public/excel/', $nama_file);
+        $file = $request->file('data_excel');
+        $nama_file = $file->hashName();
+        $path = $file->store('app/public/excel');
 
-    $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
+        $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
 
-    if ($import) {
-        // Ambil semua data barang yang diimpor
-        $barangs = Barang::all();
-        $generator = new DNS1D();
+        if ($import) {
+            // Ambil semua data barang yang diimpor
+            $barangs = Barang::all();
+            $generator = new DNS1D();
 
-        foreach ($barangs as $barang) {
-            if ($barang->kode_barang) {
-                $barcodeBase64 = $generator->getBarcodePNG($barang->kode_barang, 'C39', 1.5, 50);
-                $barcodePath = 'barcodes/' . $barang->kode_barang . '.png';
-                Storage::disk('public')->put($barcodePath, base64_decode($barcodeBase64));
+            foreach ($barangs as $barang) {
+                if ($barang->kode_barang) {
+                    $barcodeBase64 = $generator->getBarcodePNG($barang->kode_barang, 'C39', 1.5, 50);
+                    $barcodePath = 'barcodes/' . $barang->kode_barang . '.png';
+                    Storage::put($barcodePath, base64_decode($barcodeBase64));
+                }
             }
-        }
 
-        Storage::delete($path);
-        return redirect()->route('barang')->with(['success' => 'Data Berhasil Diimport dan Barcode Dihasilkan!']);
-    } else {
+            Storage::delete($path);
+            return redirect()->route('barang')->with(['success' => 'Data Berhasil Diimport dan Barcode Dihasilkan!']);
+        } else {
         return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
         }
     }

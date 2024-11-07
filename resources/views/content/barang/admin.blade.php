@@ -159,6 +159,60 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for viewing details -->
+<div class="modal fade" id="detail-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Detail Data Barang</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="barcode">Barcode:</label>
+                    <div id="barcode"></div> <!-- Tempat untuk menampilkan gambar -->
+                </div>
+                <div class="form-group">
+                    <label for="kode_barang">Kode Barang:</label>
+                    <textarea class="form-control" id="detail_kode_barang" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_nama_barang">Nama Barang:</label>
+                    <textarea class="form-control" id="detail_nama_barang" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_kategori">Kategori:</label>
+                    <textarea class="form-control" id="detail_kategori" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_unit">Unit:</label>
+                    <textarea class="form-control" id="detail_unit" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_merek">Merek:</label>
+                    <textarea class="form-control" id="detail_merek" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_kondisi">Kondisi:</label>
+                    <textarea class="form-control" id="detail_kondisi" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_jumlah">Jumlah:</label>
+                    <textarea class="form-control" id="detail_jumlah" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detail_keterangan">Keterangan:</label>
+                    <textarea class="form-control" id="detail_keterangan" readonly></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -333,5 +387,32 @@
     function importData() {
         $('#import-modal').modal('show');
     }
+
+    $(document).on('click', '#barang tbody tr', function(event) {
+        console.log('Clicked');
+        
+        // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
+        if ($(event.target).closest('td').hasClass('action')) {
+            return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
+        }
+
+        var data = $('#barang').DataTable().row(this).data();
+
+        if (data) {
+            // Isi detail modal dengan data yang sesuai
+            $('#barcode').html(data.barcode.replace('&gt;', '>').replace('&lt;', '<'));
+            $('#detail_kode_barang').text(data.kode_barang);
+            $('#detail_nama_barang').text(data.nama_barang);
+            $('#detail_kategori').text(data.kategori);
+            $('#detail_unit').text(data.unit);
+            $('#detail_merek').text(data.merek);
+            $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
+            $('#detail_jumlah').text(data.jumlah);
+            $('#detail_keterangan').text(data.keterangan);
+
+            // Tampilkan modal detail
+            $('#detail-modal').modal('show');
+        }
+    });
 </script>
 @endpush
