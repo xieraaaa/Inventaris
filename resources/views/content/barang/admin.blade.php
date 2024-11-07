@@ -294,7 +294,7 @@
                     data: 'action',
                     name: 'action',
                     title: 'Action',
-
+                     className: 'action',
                     orderable: false
                 }
 
