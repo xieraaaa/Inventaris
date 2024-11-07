@@ -192,4 +192,23 @@ class BarangController extends Controller
         return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
         }
     }
+
+    public function pinjam(Request $request)
+    {
+        $barangId = $request->id;
+
+        $request->validate([
+            'kode_barang' => 'required',
+            'nama_barang' => 'required',
+            'id_kategori' => 'required',
+            'id_unit' => 'required',
+            'id_merek' => 'required',
+            'jumlah' => 'required',
+            'kondisi' => 'required',
+            'keterangan' => 'required',
+            
+        ]);
+
+
+    }
 }

@@ -1,5 +1,19 @@
 @extends('layouts.admin')
 
+@push('styles')
+<link href="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet">
+<!-- Page plugins css -->
+<link href="{{ asset('../assets/node_modules/clockpicker/dist/jquery-clockpicker.min.css') }}" rel="stylesheet">
+<!-- Color picker plugins css -->
+<link href="{{ asset('../assets/node_modules/jquery-asColorPicker-master/dist/css/asColorPicker.css') }}" rel="stylesheet">
+<!-- Date picker plugins css -->
+<link href="{{ asset('../assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css" />
+<!-- Daterange picker plugins css -->
+<link href="{{ asset('../assets/node_modules/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet">
+<link href="{{ asset('../assets/node_modules/bootstrap-daterangepicker/daterangepicker.css') }}" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
+@endpush
 @section('content')
 <div class="container-fluid">
     <div class="row page-titles">
@@ -38,50 +52,36 @@
                         method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id">
                         <div class="form-group">
-                            <label for="kode_barang" class="col-sm-8 mb-2 control-label">Kode Barang</label>
-                            <div class="col-sm-12">
-                                <input type="number" class="form-control" id="kode_barang" name="kode_barang"
-                                    placeholder="kode barang" maxlength="50" required="">
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="nama_barang" name="nama_barang"
-                                    placeholder="nama barang" maxlength="50" required="">
+                                    placeholder="nama barang" maxlength="50" required="" disabled>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="id_kategori" class="col-sm-8 mb-2 control-label">Kategori</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="id_kategori" name="id_kategori" required>
-                                    <option value="">-- Select Kategori --</option>
-                                    @foreach ($kategoris as $kategori)
-                                    <option value="{{ $kategori->id }}">{{ $kategori->kategori }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="id_unit" class="col-sm-8 mb-2 control-label">Unit</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="id_unit" name="id_unit" required>
-                                    <option value="">-- Select unit --</option>
-                                    @foreach ($units as $unit)
-                                    <option value="{{ $unit->id }}">{{ $unit->unit }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
                             <div class="col-sm-12">
-                                <select class="form-control" id="id_merek" name="id_merek" required>
+                                <select class="form-control" id="id_merek" name="id_merek" required disabled>
                                     <option value="">-- Select merek --</option>
                                     @foreach ($mereks as $merek)
                                     <option value="{{ $merek->id }}">{{ $merek->merek }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="m-t-20 form-label">Dari</label>
+                                        <input type="text" class="form-control" placeholder="2017-06-04" id="mdate">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="m-t-20 form-label">sampai</label>
+                                        <input type="text" class="form-control" placeholder="2017-06-04" id="pdate">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -94,22 +94,13 @@
                         <div class="form-group">
                             <label for="kondisi" class="col-sm-8 mb-2 control-label">Kondisi</label>
                             <div class="col-sm-12">
-                                <select class="form-control" id="kondisi" name="kondisi" required>
-                                    <option value="">-- Select Kondisi --</option>
+                                <select class="form-control" id="kondisi" name="kondisi" required disabled>
                                     <option value="1">Baik</option>
                                     <option value="0">Rusak</option>
                                 </select>
                             </div>
                         </div>
 
-
-                        <div class="form-group">
-                            <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" id="keterangan" name="keterangan"
-                                    placeholder="keterangan" maxlength="50" required="">
-                            </div>
-                        </div>
 
                         <div class="col-sm-offset-2 col-sm-10">
                             <button type="submit" class="btn btn-primary" id="btn-save">Save Changes</button>
@@ -153,6 +144,7 @@
 @push('scripts')
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -231,14 +223,8 @@
         });
     });
 
-    function add() {
-        $('#barangForm').trigger("reset");
-        $('#barangModal').html("Add barang");
-        $('#barang-modal').modal('show');
-        $('#id').val('');
-    }
 
-    function editFunc(id) {
+    function PinjamFunc(id) {
         $.ajax({
             type: "POST",
             url: "{{ url('edit-barang') }}",
@@ -247,46 +233,16 @@
             },
             dataType: 'json',
             success: function(res) {
-                $('#barangModal').html("Edit barang");
+                $('#barangModal').html("Pinjam Barang");
                 $('#barang-modal').modal('show');
-                $('#id').val(res.id);
-                $('#kode_barang').val(res.kode_barang);
                 $('#nama_barang').val(res.nama_barang);
-                $('#id_kategori').val(res.id_kategori);
-                $('#id_unit').val(res.id_unit);
                 $('#id_merek').val(res.id_merek);
-                $('#jumlah').val(res.jumlah);
+                $('#jumlah').val('');
                 $('#kondisi').val(res.kondisi);
-                $('#keterangan').val(res.keterangan);
             }
         });
     }
 
-    function deleteFunc(id) {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Delete this record?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "Cancel"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('delete-barang') }}",
-                    data: {
-                        id: id
-                    },
-                    dataType: 'json',
-                    success: function(res) {
-                        $('#barang').DataTable().ajax.reload(null, false);
-                        Swal.fire("Deleted!", "Your record has been deleted.", "success");
-                    }
-                });
-            }
-        });
-    }
 
     $('#barangForm').submit(function(e) {
         e.preventDefault();
@@ -313,4 +269,33 @@
         $('#import-modal').modal('show');
     }
 </script>
-@endpush
+    <!-- Plugin JavaScript -->
+    <script src="{{ asset('../assets/node_modules/moment/moment.js') }}"></script>
+    <script src="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
+    <!-- Clock Plugin JavaScript -->
+    <script src="{{ asset('../assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+
+    <script src="{{ asset('assets/node_modules/moment/moment.js') }}"></script>
+    <script src="{{ asset('assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
+    <!-- Clock Plugin JavaScript -->
+    <script src="{{ asset('assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+    <!-- Color Picker Plugin JavaScript -->
+    <script src="{{ asset('assets/node_modules/jquery-asColor/dist/jquery-asColor.js') }}"></script>
+    <script src="{{ asset('assets/node_modules/jquery-asGradient/dist/jquery-asGradient.js') }}"></script>
+    <script src="{{ asset('assets/node_modules/jquery-asColorPicker-master/dist/jquery-asColorPicker.min.js') }}"></script>
+    <!-- Date Picker Plugin JavaScript -->
+    <script src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <!-- Date range Plugin JavaScript -->
+    <script src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    <script>
+    // MAterial Date picker    
+    $('#mdate').bootstrapMaterialDatePicker({ weekStart: 0, time: false });
+    $('#pdate').bootstrapMaterialDatePicker({ weekStart: 0, time: false });
+    $('#timepicker').bootstrapMaterialDatePicker({ format: 'HH:mm', time: true, date: false });
+    $('#date-format').bootstrapMaterialDatePicker({ format: 'dddd DD MMMM YYYY - HH:mm' });
+    
+    $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+
+    </script>
+    @endpush

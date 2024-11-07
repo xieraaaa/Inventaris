@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    @stack('styles')
     <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
     <link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet">
     <!--Toaster Popup message CSS -->
