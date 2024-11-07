@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Imports\ExcelData;
 
-class barangController extends Controller
+class BarangController extends Controller
 {
     public function index()
     {

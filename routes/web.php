@@ -3,6 +3,7 @@
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\MerekController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
@@ -46,6 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::post('delete-barang', [BarangController::class, 'destroy']);
     Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
     Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
+
+    Route::get('Peminjaman', [PeminjamanController::class, 'index'])->name('minjam');
 });
 
 require __DIR__.'/auth.php';

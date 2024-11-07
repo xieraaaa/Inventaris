@@ -5,9 +5,9 @@ use App\Models\kategori;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class kategoriImport implements ToModel, WithHeadingRow
+class KategoriImport implements ToModel, WithHeadingRow
 {
-    public function model(array $row)
+    public function model(array $row)   
     {
         // Check if the kategori already exists to prevent duplicates
         $existingkategori = kategori::where('kategori', $row['kategori'])->first();
