@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
 use App\Imports\ExcelData;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
@@ -29,7 +30,7 @@ class BarangController extends Controller
         $mereks = Merek::all();
         $barang = Barang::first();
         $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
-    
+
         return view('content.barang.admin', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
     }
 
@@ -200,24 +201,5 @@ class BarangController extends Controller
         } else {
         return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
         }
-    }
-
-    public function pinjam(Request $request)
-    {
-        $barangId = $request->id;
-
-        $request->validate([
-            'kode_barang' => 'required',
-            'nama_barang' => 'required',
-            'id_kategori' => 'required',
-            'id_unit' => 'required',
-            'id_merek' => 'required',
-            'jumlah' => 'required',
-            'kondisi' => 'required',
-            'keterangan' => 'required',
-            
-        ]);
-
-
     }
 }

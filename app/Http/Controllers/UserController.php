@@ -43,8 +43,10 @@ class UserController extends Controller
         $barang    = Barang::first();
 
         $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
+
+        $koleksiBarang = Barang::all();
     
-        return view('content.barang.user', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
+        return view('content.barang.user', compact('kategoris', 'units', 'mereks', 'kondisiLabel', 'koleksiBarang'));
     }
     
    public function index(Request $request)
@@ -57,5 +59,18 @@ class UserController extends Controller
         else if ($user->hasRole('admin')) {
             return view('content.dashboard.admin');
         }
+    }
+
+    public function pinjam(Request $request)
+    {
+        $barangId = $request->id;
+
+        $request->validate([
+            'nama_barang' => 'required',
+            'id_merek'    => 'required',
+            'jumlah'      => 'required',
+            'kondisi'     => 'required',
+            'keterangan'  => 'required',
+        ]);
     }
 }

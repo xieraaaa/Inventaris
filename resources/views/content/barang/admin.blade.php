@@ -1,42 +1,68 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h4 class="text-themecolor">Barang</h4>
-        </div>
-        <div class="col-md-7 align-self-center text-end">
-            <div class="d-flex justify-content-end align-items-center">
-                <ol class="breadcrumb justify-content-end">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active">Barang</li>
-                </ol>
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h4 class="text-themecolor">Barang</h4>
             </div>
-        </div>
-    </div>
-    <div class="card p-3 rounded">
-        <div class="row mt-2">
-            <div class="col-md-12">
-                <div class="mb-3">
-                    <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
-                    <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Data</a>
+            <div class="col-md-7 align-self-center text-end">
+                <div class="d-flex justify-content-end align-items-center">
+                    <ol class="breadcrumb justify-content-end">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Barang</li>
+                    </ol>
                 </div>
             </div>
         </div>
-        @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-        @endif
-        <div class="card-body">
-            <table class="table table-striped table-bordered yajra-datatable" id="barang">
-
-            </table>
+        <div class="card p-3 rounded">
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
+                        <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Data</a>
+                    </div>
+                </div>
+            </div>
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                    <p>{{ $message }}</p>
+                </div>
+            @endif
+            <div class="card-body">
+                <table class="table table-striped table-bordered yajra-datatable" id="barang"></table>
+            </div>
         </div>
     </div>
 
-    <!-- Bootstrap barang model -->
+    <!-- Modal import data -->
+    <div class="modal fade" id="import-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Import Data Excel</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="barangForm" name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
+                        @csrf
+                        <input type="hidden" name="id" id="id">
+                        <div class="form-group">
+                            <label for="kode_barang" class="col-sm-8 mb-2 control-label">Data</label>
+                            <div class="col-sm-12">
+                                <input type="file" class="form-control" id="data_excel" name="data_excel" required="" />
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="btn-save">Upload</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal barang -->
     <div class="modal fade" id="barang-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -132,87 +158,58 @@
         </div>
     </div>
 
-    <!-- Modal import data -->
-    <div class="modal fade" id="import-modal" aria-hidden="true">
+    <!-- Modal detail barang -->
+    <div class="modal fade" id="detail-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Import Data Excel</h4>
+                    <h4 class="modal-title">Detail Data Barang</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="barangForm" name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
-                        @csrf
-                        <input type="hidden" name="id" id="id">
-                        <div class="form-group">
-                            <label for="kode_barang" class="col-sm-8 mb-2 control-label">Data</label>
-                            <div class="col-sm-12">
-                                <input type="file" class="form-control" id="data_excel" name="data_excel" required="" />
-                            </div>
-                        </div>
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary" id="btn-save">Upload</button>
-                        </div>
-                    </form>
+                    <div class="form-group">
+                        <label for="barcode">Barcode:</label>
+                        <div id="barcode"></div> <!-- Tempat untuk menampilkan gambar -->
+                    </div>
+                    <div class="form-group">
+                        <label for="kode_barang">Kode Barang:</label>
+                        <textarea class="form-control" id="detail_kode_barang" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_nama_barang">Nama Barang:</label>
+                        <textarea class="form-control" id="detail_nama_barang" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_kategori">Kategori:</label>
+                        <textarea class="form-control" id="detail_kategori" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_unit">Unit:</label>
+                        <textarea class="form-control" id="detail_unit" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_merek">Merek:</label>
+                        <textarea class="form-control" id="detail_merek" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_kondisi">Kondisi:</label>
+                        <textarea class="form-control" id="detail_kondisi" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_jumlah">Jumlah:</label>
+                        <textarea class="form-control" id="detail_jumlah" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail_keterangan">Keterangan:</label>
+                        <textarea class="form-control" id="detail_keterangan" readonly></textarea>
+                    </div>
                 </div>
-                <div class="modal-footer"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Modal for viewing details -->
-<div class="modal fade" id="detail-modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Detail Data Barang</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="barcode">Barcode:</label>
-                    <div id="barcode"></div> <!-- Tempat untuk menampilkan gambar -->
-                </div>
-                <div class="form-group">
-                    <label for="kode_barang">Kode Barang:</label>
-                    <textarea class="form-control" id="detail_kode_barang" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_nama_barang">Nama Barang:</label>
-                    <textarea class="form-control" id="detail_nama_barang" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_kategori">Kategori:</label>
-                    <textarea class="form-control" id="detail_kategori" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_unit">Unit:</label>
-                    <textarea class="form-control" id="detail_unit" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_merek">Merek:</label>
-                    <textarea class="form-control" id="detail_merek" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_kondisi">Kondisi:</label>
-                    <textarea class="form-control" id="detail_kondisi" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_jumlah">Jumlah:</label>
-                    <textarea class="form-control" id="detail_jumlah" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_keterangan">Keterangan:</label>
-                    <textarea class="form-control" id="detail_keterangan" readonly></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')

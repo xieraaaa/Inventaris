@@ -21,14 +21,42 @@
             </div>
         </div>
     </div>
-    <div class="card p-3 rounded">
+    <div class="p-3 rounded">
         @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <p>{{ $message }}</p>
         </div>
         @endif
-        <div class="card-body">
-            <table class="table table-striped table-bordered yajra-datatable" id="barang"></table>
+        <div>
+            <div class="container">
+                @for ($index = 0; $index < 50; ++$index)
+                    <div class="row">
+                            <?php
+                                $increment = 4;
+                                $max_index = $index + $increment;
+                                for (; $index < $max_index; ++$index):
+                                    $barang = $koleksiBarang[$index];
+
+                                    $nama_barang = $barang['nama_barang'];
+                                    $merek       = $mereks[$barang['id_merek']]['merek'];
+                                    $keterangan  = $barang['keterangan'];
+                            ?>
+                        
+                            <div class="card col-sm m-3 px-0" style="width: 18rem;">
+                                <img class="card-img-top img-fluid" src="/assets/images/img1.jpg" alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= $nama_barang ?></h5>
+                                    <h6 class="card-subtitle mb-2 text-muted"><?= $merek ?></h6>
+                                    <p class="card-text"><?= $keterangan ?></p>
+                                    <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary">Pinjam</a>
+                                </div>
+                            </div>
+                        <?php
+                            endfor;
+                        ?>
+                    </div>
+                @endfor
+            </div>
         </div>
     </div>
 

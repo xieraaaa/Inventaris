@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 
     Route::get('Peminjaman', [PeminjamanController::class, 'index'])->name('minjam');
+    Route::post('tambah-peminjaman', [PeminjamanController::class, 'add']);
 });
 
 require __DIR__.'/auth.php';
