@@ -18,6 +18,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
+
 Route::middleware(['auth', 'role:admin'])->group(function() {
     Route::get('barang', [BarangController::class, 'index'])->name('barang');
     Route::get('merek', [MerekController::class, 'index'])->name('merek');

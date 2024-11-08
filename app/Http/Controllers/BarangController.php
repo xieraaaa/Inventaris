@@ -18,39 +18,11 @@ use App\Imports\ExcelData;
 
 class BarangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if (request()->ajax()) {
-            //return datatables()->of(barang::select('*'))
-            return datatables()->of(Barang::with(['kategori', 'unit', 'merek'])
-            ->select('id', 'kode_barang','nama_barang','id_kategori','id_unit','id_merek','jumlah','kondisi','keterangan',))
-                ->addColumn('kategori', function ($barang) {
-                    return $barang->kategori ? $barang->kategori->kategori : '-';
-                })
-                ->addColumn('unit', function ($barang) {
-                    return $barang->unit ? $barang->unit->unit : '-';
-                })
-                ->addColumn('merek', function ($barang) {
-                    return $barang->merek ? $barang->merek->merek : '-';
-                })
-                ->addColumn('kondisi_label', function ($barang) {
-                    
-                    return $barang->kondisi == 1 ? 'Baik' : 'Rusak';
-                })
-                ->addColumn('barcode', function ($barang) {
-                    return $barang->barcode;
-                })
-                ->addColumn('barcode', function ($barang) {
-                    return '<img src=' . asset('storage/barcodes/' . $barang->kode_barang . '.png') . ' alt="Barcode" style="max-width: 150px;" />';
-                })
-                ->addColumn('action', 'content.barang.barang-action')
-                ->rawColumns(['action','barcode'])
-                ->addColumn('action', 'content.barang.action.admin')
-                ->rawColumns(['action'])
-                ->addIndexColumn()
-                ->make(true);
+        if ($request->ajax()) {
+            return $this->getDatatables();
         }
-        
 
         $kategoris = kategori::all();
         $units = Unit::all();
@@ -59,6 +31,43 @@ class BarangController extends Controller
         $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
     
         return view('content.barang.admin', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
+    }
+
+    /**
+     * Mengambil data untuk AJAX Datatable
+     * 
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function getDatatables()
+    {
+        return datatables()
+            ->of(Barang::with(['kategori', 'unit', 'merek'])
+            ->select('id', 'kode_barang','nama_barang','id_kategori','id_unit','id_merek','jumlah','kondisi','keterangan',))
+            ->addColumn('kategori', function ($barang) {
+                return $barang->kategori ? $barang->kategori->kategori : '-';
+            })
+            ->addColumn('unit', function ($barang) {
+                return $barang->unit ? $barang->unit->unit : '-';
+            })
+            ->addColumn('merek', function ($barang) {
+                return $barang->merek ? $barang->merek->merek : '-';
+            })
+            ->addColumn('kondisi_label', function ($barang) {
+                
+                return $barang->kondisi == 1 ? 'Baik' : 'Rusak';
+            })
+            ->addColumn('barcode', function ($barang) {
+                return $barang->barcode;
+            })
+            ->addColumn('barcode', function ($barang) {
+                return '<img src=' . asset('storage/barcodes/' . $barang->kode_barang . '.png') . ' alt="Barcode" style="max-width: 150px;" />';
+            })
+            ->addColumn('action', 'content.barang.barang-action')
+            ->rawColumns(['action','barcode'])
+            ->addColumn('action', 'content.barang.action.admin')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
     }
 
     
