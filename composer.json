@@ -13,6 +13,7 @@
         "phpoffice/phpspreadsheet": "^1.29",
         "picqer/php-barcode-generator": "^3.2",
         "spatie/laravel-permission": "^6.10",
+        "yajra/laravel-datatables": "^11.0",
         "yajra/laravel-datatables-oracle": "11.0"
     },
     "require-dev": {
