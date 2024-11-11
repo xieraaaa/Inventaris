@@ -14,20 +14,36 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'name'          => 'admin',
-            'email'         => 'admin@wbi.ac.id',
-            'profile_photo' => null,
-            'password'      => Hash::make('adminadmin')
-        ]);
-
+        // superadmin memang hanya 1!
         User::create([
-            'name'          => 'user',
-            'email'         => 'user@wbi.ac.id',
+            'name'          => 'superadmin',
+            'email'         => 'superadmin@wbi.ac.id',
             'profile_photo' => null,
-            'password'      => Hash::make('userpassword')
-        ]);
+            'password'      => Hash::make('superadminsecure')
+        ])->removeRole('user')->assignRole('superadmin');
+        
+        if (is_null(User::where('name', 'admin')->first()))
+        {
+            \Illuminate\Support\Facades\Log::info('UserSeeder.php\n\tUser dengan nama \'admin\' sudah dibuat');
 
-        $admin->assignRole('admin');
+            User::create([
+                'name'          => 'admin',
+                'email'         => 'admin@wbi.ac.id',
+                'profile_photo' => null,
+                'password'      => Hash::make('adminadmin')
+            ])->removeRole('user')->assignRole('admin');
+        }
+
+        if (is_null(User::where('name', 'user')))
+        {
+            \Illuminate\Support\Facades\Log::info('UserSeeder.php\n\tUser dengan nama \'user\' sudah dibuat');
+            
+            User::create([
+                'name'          => 'user',
+                'email'         => 'user@wbi.ac.id',
+                'profile_photo' => null,
+                'password'      => Hash::make('userpassword')
+            ]);
+        }
     }
 }

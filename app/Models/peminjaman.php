@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class peminjaman extends Model
 {
-    protected $table = 'peminjamen';
+    protected $table = 'peminjaman';
 
     protected $fillable = [
         'id_barang',
-        'id_user',
-        'tanggal_pinjam',
+        'tanggal_peminjaman',
         'tanggal_kembali',
         'keterangan',
         'status',

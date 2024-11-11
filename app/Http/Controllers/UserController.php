@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\barang as Barang;
-use App\Models\kategori as Kategori;
+use App\Models\Barang;
+use App\Models\Kategori;
 use App\Models\Unit;
-use App\Models\merek as Merek;
+use App\Models\Merek;
+
+use App\DataTables\Peminjaman;
+use App\DataTables\PeminjamanDataTable;
+use App\Http\Controllers\PeminjamanController;
 
 class UserController extends Controller
 {
@@ -48,34 +52,43 @@ class UserController extends Controller
     
         return view('content.barang.user', compact('kategoris', 'units', 'mereks', 'kondisiLabel', 'koleksiBarang'));
     }
+
+    public function getSuperadminDashboard()
+    {
+        return app(PeminjamanController::class)->index(new PeminjamanDataTable());
+    }
     
    public function index(Request $request)
    {
         $user = $request->user();
         
-        if ($user->hasRole('user')) {
+        if ($user->hasRole('user'))
+        {
             return $this->getUserDashboard($request->ajax());
         }
-        else if ($user->hasRole('admin')) {
+        else if ($user->hasRole('admin'))
+        {
             return view('content.dashboard.admin');
+        }
+        else if ($user->hasRole('superadmin'))
+        {
+            return $this->getSuperadminDashboard();
         }
     }
 
     public function store(Request $request)
     {
-        $barangId = $request->id;
-
         $request->validate([                                                        
-            'mdate'      => 'required|date_format:Y-m-d',
-            'pdate'      => 'required|date_format:Y-m-d|after_or_equal:mdate',
-            'jumlah'      => 'required|min:1|numeric',
+            'mdate'  => 'required|date_format:Y-m-d',
+            'pdate'  => 'required|date_format:Y-m-d|after_or_equal:mdate',
+            'jumlah' => 'required|min:1|numeric',
         ]);
     }
 
     public function edit(Request $request)
     {
-        $where = array('id' => $request->id);
-        $barang  = barang::where($where)->first();
+        $where  = array('id' => $request->id);
+        $barang = barang::where($where)->first();
 
         return Response()->json($barang);
     }

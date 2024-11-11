@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\DataTables\PeminjamanDataTable;
 
 class PeminjamanController extends Controller
 {
-    public function index()
+    public function index(PeminjamanDataTable $dataTable)
     {
-        return view('content.peminjaman.index');
+        return $dataTable->render('content.peminjaman.index');
     }
 
 }
