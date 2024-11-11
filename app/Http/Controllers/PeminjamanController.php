@@ -10,4 +10,5 @@ class PeminjamanController extends Controller
     {
         return view('content.peminjaman.index');
     }
+
 }

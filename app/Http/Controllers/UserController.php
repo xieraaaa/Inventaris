@@ -61,16 +61,22 @@ class UserController extends Controller
         }
     }
 
-    public function pinjam(Request $request)
+    public function store(Request $request)
     {
         $barangId = $request->id;
 
-        $request->validate([
-            'nama_barang' => 'required',
-            'id_merek'    => 'required',
-            'jumlah'      => 'required',
-            'kondisi'     => 'required',
-            'keterangan'  => 'required',
+        $request->validate([                                                        
+            'mdate'      => 'required|date_format:Y-m-d',
+            'pdate'      => 'required|date_format:Y-m-d|after_or_equal:mdate',
+            'jumlah'      => 'required|min:1|numeric',
         ]);
+    }
+
+    public function edit(Request $request)
+    {
+        $where = array('id' => $request->id);
+        $barang  = barang::where($where)->first();
+
+        return Response()->json($barang);
     }
 }

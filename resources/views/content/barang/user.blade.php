@@ -40,6 +40,7 @@
                                     $nama_barang = $barang['nama_barang'];
                                     $merek       = $mereks[$barang['id_merek']]['merek'];
                                     $keterangan  = $barang['keterangan'];
+                                    $jumlah      = $barang['jumlah']
                             ?>
                         
                             <div class="card col-sm m-3 px-0" style="width: 18rem;">
@@ -48,7 +49,8 @@
                                     <h5 class="card-title"><?= $nama_barang ?></h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><?= $merek ?></h6>
                                     <p class="card-text"><?= $keterangan ?></p>
-                                    <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary">Pinjam</a>
+                                    <p class="card-text">Stok : <?= $jumlah ?></p>
+                                    <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary ">Pinjam</a>
                                 </div>
                             </div>
                         <?php
@@ -95,11 +97,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label class="m-t-20 form-label">Dari</label>
-                                        <input type="text" class="form-control" placeholder="2017-06-04" id="mdate">
+                                        <input type="text" class="form-control" placeholder="2017-06-04" id="mdate" name="mdate">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="m-t-20 form-label">Sampai</label>
-                                        <input type="text" class="form-control" placeholder="2017-06-04" id="pdate">
+                                        <input type="text" class="form-control" placeholder="2017-06-04" id="pdate" name="pdate">
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +306,7 @@
     function PinjamFunc(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('edit-barang') }}",
+            url: "{{ url('edit-item') }}",
             data: {
                 id: id
             },
@@ -326,7 +328,7 @@
         var formData = new FormData(this);
         $.ajax({
             type: 'POST',
-            url: "{{ url('store-barang') }}",
+            url: "{{ url('store-item') }}",
             data: formData,
             cache: false,
             contentType: false,

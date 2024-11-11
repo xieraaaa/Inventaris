@@ -18,6 +18,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('/store-item', [UserController::class, 'store'])->middleware(['auth', 'verified']);
+Route::post('edit-item', [UserController::class, 'edit']);
+
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
 
 Route::middleware(['auth', 'role:admin'])->group(function() {
