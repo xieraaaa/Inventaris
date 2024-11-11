@@ -16,9 +16,11 @@ class peminjaman extends Model
         'keterangan',
         'status',
     ];
+
     public function Barang() {
         return $this->belongsTo(barang::class, 'id_barang');
     }
+
     public function user() {
         return $this->belongsTo(User::class, 'id');
     }

@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 
 @section('content')
+
+
     <div class="container-fluid">
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -29,12 +31,23 @@
             </div>
             @endif
             <div class="card-body">
-                {{ $dataTable->table() }}
+                <table class="table table-striped table-bordered yajra-datatable" id="peminjaman">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Nama Peminjam</th>
+                            <th>Tanggal Pinjam</th>                       
+                            <th>Tanggal Kembali</th>
+                            <th>deskripsi</th>
+                            <th width="150px">Action</th>
+                        </tr>
+                </table>
             </div>
         </div>
-    </div>
-@endsection
 
-@push('scripts')
-    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
-@endpush
+        <!-- Bootstrap peminjaman model -->
+
+    </div>
+    </div>
+    @endsection
