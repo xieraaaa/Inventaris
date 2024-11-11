@@ -31,139 +31,142 @@
             <div class="container">
                 @for ($index = 0; $index < 50; ++$index)
                     <div class="row">
-                            <?php
-                                $increment = 4;
-                                $max_index = $index + $increment;
-                                for (; $index < $max_index; ++$index):
-                                    $barang = $koleksiBarang[$index];
+                    <?php
+                    $increment = 4;
+                    $max_index = $index + $increment;
+                    for (; $index < $max_index; ++$index):
+                        $barang = $koleksiBarang[$index];
 
-                                    $nama_barang = $barang['nama_barang'];
-                                    $merek       = $mereks[$barang['id_merek']]['merek'];
-                                    $keterangan  = $barang['keterangan'];
-                            ?>
-                        
-                            <div class="card col-sm m-3 px-0" style="width: 18rem;">
-                                <img class="card-img-top img-fluid" src="/assets/images/img1.jpg" alt="Card image cap">
-                                <div class="card-body">
+                        $nama_barang = $barang['nama_barang'];
+                        $merek       = $mereks[$barang['id_merek']]['merek'];
+                        $keterangan  = $barang['keterangan'];
+                    ?>
+
+                        <div class="card col-sm m-3 px-0" style="width: 18rem;">
+                            <img class="card-img-top img-fluid" src="/assets/images/img1.jpg" alt="Card image cap">
+                            <div class="card-body d-flex flex-column">
+                                <div class="mb-auto">
                                     <h5 class="card-title"><?= $nama_barang ?></h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><?= $merek ?></h6>
                                     <p class="card-text"><?= $keterangan ?></p>
-                                    <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary">Pinjam</a>
                                 </div>
+                                <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary mt-auto align-self-end">Pinjam</a>
                             </div>
-                        <?php
-                            endfor;
-                        ?>
+                        </div>
+
+                    <?php
+                    endfor;
+                    ?>
+            </div>
+            @endfor
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap barang model -->
+<div class="modal fade" id="barang-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="barangModal"></h4>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0)" id="barangForm" name="barangForm" class="form-horizontal"
+                    method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="id">
+                    <div class="form-group">
+                        <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="nama_barang" name="nama_barang"
+                                placeholder="nama barang" maxlength="50" required="" disabled>
+                        </div>
                     </div>
-                @endfor
-            </div>
-        </div>
-    </div>
 
-    <!-- Bootstrap barang model -->
-    <div class="modal fade" id="barang-modal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="barangModal"></h4>
-                </div>
-                <div class="modal-body">
-                    <form action="javascript:void(0)" id="barangForm" name="barangForm" class="form-horizontal"
-                        method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="id" id="id">
-                        <div class="form-group">
-                            <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" id="nama_barang" name="nama_barang"
-                                    placeholder="nama barang" maxlength="50" required="" disabled>
-                            </div>
+                    <div class="form-group">
+                        <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
+                        <div class="col-sm-12">
+                            <select class="form-control" id="id_merek" name="id_merek" required disabled>
+                                <option value="">-- Select merek --</option>
+                                @foreach ($mereks as $merek)
+                                <option value="{{ $merek->id }}">{{ $merek->merek }}</option>
+                                @endforeach
+                            </select>
                         </div>
-
-                        <div class="form-group">
-                            <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="id_merek" name="id_merek" required disabled>
-                                    <option value="">-- Select merek --</option>
-                                    @foreach ($mereks as $merek)
-                                    <option value="{{ $merek->id }}">{{ $merek->merek }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="m-t-20 form-label">Dari</label>
-                                        <input type="text" class="form-control" placeholder="2017-06-04" id="mdate">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="m-t-20 form-label">Sampai</label>
-                                        <input type="text" class="form-control" placeholder="2017-06-04" id="pdate">
-                                    </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="m-t-20 form-label">Dari</label>
+                                    <input type="text" class="form-control" placeholder="2017-06-04" id="mdate">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="m-t-20 form-label">Sampai</label>
+                                    <input type="text" class="form-control" placeholder="2017-06-04" id="pdate">
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="jumlah" class="col-sm-8 mb-2 control-label">jumlah</label>
-                            <div class="col-sm-12">
-                                <input type="number" class="form-control" id="jumlah" name="jumlah" min="1" value="1"
-                                    placeholder="jumlah stock" maxlength="50" required="">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="jumlah" class="col-sm-8 mb-2 control-label">jumlah</label>
+                        <div class="col-sm-12">
+                            <input type="number" class="form-control" id="jumlah" name="jumlah" min="1" value="1"
+                                placeholder="jumlah stock" maxlength="50" required="">
                         </div>
-                        <div class="form-group">
-                            <label for="kondisi" class="col-sm-8 mb-2 control-label">Kondisi</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="kondisi" name="kondisi" required disabled>
-                                    <option value="1">Baik</option>
-                                    <option value="0">Rusak</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="kondisi" class="col-sm-8 mb-2 control-label">Kondisi</label>
+                        <div class="col-sm-12">
+                            <select class="form-control" id="kondisi" name="kondisi" required disabled>
+                                <option value="1">Baik</option>
+                                <option value="0">Rusak</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
-                            <div class="col-sm-12">
-                                <textarea class="form-control" id="keterangan" name="keterangan" placeholder="keterangan" rows="4" maxlength="500" required=""></textarea>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
+                        <div class="col-sm-12">
+                            <textarea class="form-control" id="keterangan" name="keterangan" placeholder="keterangan" rows="4" maxlength="500" required=""></textarea>
                         </div>
+                    </div>
 
 
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary" id="btn-save">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer"></div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary" id="btn-save">Save Changes</button>
+                    </div>
+                </form>
             </div>
+            <div class="modal-footer"></div>
         </div>
     </div>
+</div>
 
-    <!-- Modal import data -->
-    <div class="modal fade" id="import-modal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Import Data Excel</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="barangForm" name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
-                        @csrf
-                        <input type="hidden" name="id" id="id">
-                        <div class="form-group">
-                            <label for="kode_barang" class="col-sm-8 mb-2 control-label">Data</label>
-                            <div class="col-sm-12">
-                                <input type="file" class="form-control" id="data_excel" name="data_excel" required="" />
-                            </div>
-                        </div>
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-primary" id="btn-save">Upload</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer"></div>
+<!-- Modal import data -->
+<div class="modal fade" id="import-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Import Data Excel</h4>
             </div>
+            <div class="modal-body">
+                <form id="barangForm" name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
+                    @csrf
+                    <input type="hidden" name="id" id="id">
+                    <div class="form-group">
+                        <label for="kode_barang" class="col-sm-8 mb-2 control-label">Data</label>
+                        <div class="col-sm-12">
+                            <input type="file" class="form-control" id="data_excel" name="data_excel" required="" />
+                        </div>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary" id="btn-save">Upload</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer"></div>
         </div>
     </div>
+</div>
 </div>
 <div class="modal fade" id="detail-modal" aria-hidden="true">
     <div class="modal-dialog">
@@ -349,7 +352,7 @@
     /* Skrip untuk modal detail */
     $(document).on('click', '#barang tbody tr', function(event) {
         console.log('Clicked');
-        
+
         // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
         if ($(event.target).closest('td').hasClass('action')) {
             return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
@@ -374,33 +377,47 @@
         }
     });
 </script>
-    <!-- Plugin JavaScript -->
-    <script src="{{ asset('../assets/node_modules/moment/moment.js') }}"></script>
-    <script src="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
-    <!-- Clock Plugin JavaScript -->
-    <script src="{{ asset('../assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+<!-- Plugin JavaScript -->
+<script src="{{ asset('../assets/node_modules/moment/moment.js') }}"></script>
+<script src="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
+<!-- Clock Plugin JavaScript -->
+<script src="{{ asset('../assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
 
-    <script src="{{ asset('assets/node_modules/moment/moment.js') }}"></script>
-    <script src="{{ asset('assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
-    <!-- Clock Plugin JavaScript -->
-    <script src="{{ asset('assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
-    <!-- Color Picker Plugin JavaScript -->
-    <script src="{{ asset('assets/node_modules/jquery-asColor/dist/jquery-asColor.js') }}"></script>
-    <script src="{{ asset('assets/node_modules/jquery-asGradient/dist/jquery-asGradient.js') }}"></script>
-    <script src="{{ asset('assets/node_modules/jquery-asColorPicker-master/dist/jquery-asColorPicker.min.js') }}"></script>
-    <!-- Date Picker Plugin JavaScript -->
-    <script src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <!-- Date range Plugin JavaScript -->
-    <script src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
-    <script src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
-    <script>
+<script src="{{ asset('assets/node_modules/moment/moment.js') }}"></script>
+<script src="{{ asset('assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
+<!-- Clock Plugin JavaScript -->
+<script src="{{ asset('assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+<!-- Color Picker Plugin JavaScript -->
+<script src="{{ asset('assets/node_modules/jquery-asColor/dist/jquery-asColor.js') }}"></script>
+<script src="{{ asset('assets/node_modules/jquery-asGradient/dist/jquery-asGradient.js') }}"></script>
+<script src="{{ asset('assets/node_modules/jquery-asColorPicker-master/dist/jquery-asColorPicker.min.js') }}"></script>
+<!-- Date Picker Plugin JavaScript -->
+<script src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+<!-- Date range Plugin JavaScript -->
+<script src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
+<script src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+<script>
     // MAterial Date picker    
-    $('#mdate').bootstrapMaterialDatePicker({ weekStart: 0, time: false });
-    $('#pdate').bootstrapMaterialDatePicker({ weekStart: 0, time: false });
-    $('#timepicker').bootstrapMaterialDatePicker({ format: 'HH:mm', time: true, date: false });
-    $('#date-format').bootstrapMaterialDatePicker({ format: 'dddd DD MMMM YYYY - HH:mm' });
-    
-    $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+    $('#mdate').bootstrapMaterialDatePicker({
+        weekStart: 0,
+        time: false
+    });
+    $('#pdate').bootstrapMaterialDatePicker({
+        weekStart: 0,
+        time: false
+    });
+    $('#timepicker').bootstrapMaterialDatePicker({
+        format: 'HH:mm',
+        time: true,
+        date: false
+    });
+    $('#date-format').bootstrapMaterialDatePicker({
+        format: 'dddd DD MMMM YYYY - HH:mm'
+    });
 
-    </script>
-    @endpush
+    $('#min-date').bootstrapMaterialDatePicker({
+        format: 'DD/MM/YYYY HH:mm',
+        minDate: new Date()
+    });
+</script>
+@endpush
