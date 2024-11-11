@@ -36,6 +36,10 @@
     </div>
 
     <!-- Modal import data -->
+    <!--
+        BEGIN
+        Modal Import Data
+    -->
     <div class="modal fade" id="import-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -43,7 +47,7 @@
                     <h4 class="modal-title">Import Data Excel</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="barangForm" name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
+                    <form name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
                         @csrf
                         <input type="hidden" name="id" id="id">
                         <div class="form-group">
@@ -61,6 +65,18 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            function importData() {
+                $('#import-modal').modal('show');
+            }
+        </script>
+    @endpush
+    <!--
+        END
+        Modal Import Data
+    -->
 
     <!-- Modal barang -->
     <div class="modal fade" id="barang-modal" aria-hidden="true">
@@ -213,203 +229,199 @@
 @endsection
 
 @push('scripts')
-<!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $('#barang').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ url('barang') }}",
-                type: 'GET',
-                dataSrc: function(json) {
-                    console.log(json); // Inspect JSON structure to confirm data mapping
-                    return json.data || []; // Ensure the data source path is correct
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            },
-            responsive: true,
-            autoWidth: true, // Allow automatic column width adjustments
-            columns: [{
-                    data: null,
-                    name: 'id',
-                    title: 'ID',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
+            });
+
+            $('#barang').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ url('barang') }}",
+                    type: 'GET',
+                    dataSrc: function(json) {
+                        console.log(json); // Inspect JSON structure to confirm data mapping
+                        return json.data || []; // Ensure the data source path is correct
                     }
                 },
-                {
-                    data: 'kode_barang',
-                    name: 'kode_barang',
-                    title: 'Kode Barang',
-                },
-                {
-                    data: 'nama_barang',
-                    name: 'nama_barang',
-                    title: 'Nama Barang',
-                },
-                {
-                    data: 'kategori',
-                    name: 'kategori',
-                    title: 'Kategori',
-                },
-                {
-                    data: 'unit',
-                    name: 'unit',
-                    title: 'Unit',
-                },
-                {
-                    data: 'merek',
-                    name: 'merek',
-                    title: 'Merek',
-                },
-                {
-                    data: 'kondisi_label',
-                    name: 'kondisi_label',
-                    title: 'Kondisi Label',
-                },
-                {
-                    data: 'jumlah',
-                    name: 'jumlah',
-                    title: 'Jumlah',
-                },
-                {
-                    data: 'keterangan',
-                    name: 'keterangan',
-                    title: 'Keterangan',
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    title: 'Action',
-                     className: 'action',
-                    orderable: false
-                }
-
-            ],
-            order: [
-                [2, 'asc']
-            ],
-            scrollX: true
-        });
-    });
-
-    function add() {
-        $('#barangForm').trigger("reset");
-        $('#barangModal').html("Add barang");
-        $('#barang-modal').modal('show');
-        $('#id').val('');
-    }
-
-    function editFunc(id) {
-        $.ajax({
-            type: "POST",
-            url: "{{ url('edit-barang') }}",
-            data: {
-                id: id
-            },
-            dataType: 'json',
-            success: function(res) {
-                $('#barangModal').html("Edit barang");
-                $('#barang-modal').modal('show');
-                $('#id').val(res.id);
-                $('#kode_barang').val(res.kode_barang);
-                $('#nama_barang').val(res.nama_barang);
-                $('#id_kategori').val(res.id_kategori);
-                $('#id_unit').val(res.id_unit);
-                $('#id_merek').val(res.id_merek);
-                $('#jumlah').val(res.jumlah);
-                $('#kondisi').val(res.kondisi);
-                $('#keterangan').val(res.keterangan);
-            }
-        });
-    }
-
-    function deleteFunc(id) {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Delete this record?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "Cancel"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('delete-barang') }}",
-                    data: {
-                        id: id
+                responsive: true,
+                autoWidth: true, // Allow automatic column width adjustments
+                columns: [{
+                        data: null,
+                        name: 'id',
+                        title: 'ID',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
+                        }
                     },
-                    dataType: 'json',
-                    success: function(res) {
-                        $('#barang').DataTable().ajax.reload(null, false);
-                        Swal.fire("Deleted!", "Your record has been deleted.", "success");
+                    {
+                        data: 'kode_barang',
+                        name: 'kode_barang',
+                        title: 'Kode Barang',
+                    },
+                    {
+                        data: 'nama_barang',
+                        name: 'nama_barang',
+                        title: 'Nama Barang',
+                    },
+                    {
+                        data: 'kategori',
+                        name: 'kategori',
+                        title: 'Kategori',
+                    },
+                    {
+                        data: 'unit',
+                        name: 'unit',
+                        title: 'Unit',
+                    },
+                    {
+                        data: 'merek',
+                        name: 'merek',
+                        title: 'Merek',
+                    },
+                    {
+                        data: 'kondisi_label',
+                        name: 'kondisi_label',
+                        title: 'Kondisi Label',
+                    },
+                    {
+                        data: 'jumlah',
+                        name: 'jumlah',
+                        title: 'Jumlah',
+                    },
+                    {
+                        data: 'keterangan',
+                        name: 'keterangan',
+                        title: 'Keterangan',
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        title: 'Action',
+                        className: 'action',
+                        orderable: false
                     }
-                });
-            }
+
+                ],
+                order: [
+                    [2, 'asc']
+                ],
+                scrollX: true
+            });
         });
-    }
 
-    $('#barangForm').submit(function(e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        $.ajax({
-            type: 'POST',
-            url: "{{ url('store-barang') }}",
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: (data) => {
-                $("#barang-modal").modal('hide');
-                $('#barang').DataTable().ajax.reload(null, false);
-                Swal.fire("Success!", "barang has been saved successfully.", "success");
-            },
-            error: function(data) {
-                Swal.fire("Error!", "Something went wrong.", "error");
-            }
-        });
-    });
-
-    function importData() {
-        $('#import-modal').modal('show');
-    }
-
-    $(document).on('click', '#barang tbody tr', function(event) {
-        console.log('Clicked');
-        
-        // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
-        if ($(event.target).closest('td').hasClass('action')) {
-            return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
+        function add() {
+            $('#barangForm').trigger("reset");
+            $('#barangModal').html("Add barang");
+            $('#barang-modal').modal('show');
+            $('#id').val('');
         }
 
-        var data = $('#barang').DataTable().row(this).data();
-
-        if (data) {
-            // Isi detail modal dengan data yang sesuai
-            $('#barcode').html(data.barcode.replace('&gt;', '>').replace('&lt;', '<'));
-            $('#detail_kode_barang').text(data.kode_barang);
-            $('#detail_nama_barang').text(data.nama_barang);
-            $('#detail_kategori').text(data.kategori);
-            $('#detail_unit').text(data.unit);
-            $('#detail_merek').text(data.merek);
-            $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
-            $('#detail_jumlah').text(data.jumlah);
-            $('#detail_keterangan').text(data.keterangan);
-
-            // Tampilkan modal detail
-            $('#detail-modal').modal('show');
+        function editFunc(id) {
+            $.ajax({
+                type: "POST",
+                url: "{{ url('edit-barang') }}",
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(res) {
+                    $('#barangModal').html("Edit barang");
+                    $('#barang-modal').modal('show');
+                    $('#id').val(res.id);
+                    $('#kode_barang').val(res.kode_barang);
+                    $('#nama_barang').val(res.nama_barang);
+                    $('#id_kategori').val(res.id_kategori);
+                    $('#id_unit').val(res.id_unit);
+                    $('#id_merek').val(res.id_merek);
+                    $('#jumlah').val(res.jumlah);
+                    $('#kondisi').val(res.kondisi);
+                    $('#keterangan').val(res.keterangan);
+                }
+            });
         }
-    });
-</script>
+
+        function deleteFunc(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Delete this record?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('delete-barang') }}",
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json',
+                        success: function(res) {
+                            $('#barang').DataTable().ajax.reload(null, false);
+                            Swal.fire("Deleted!", "Your record has been deleted.", "success");
+                        }
+                    });
+                }
+            });
+        }
+
+        $('#barangForm').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                type: 'POST',
+                url: "{{ url('store-barang') }}",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: (data) => {
+                    $("#barang-modal").modal('hide');
+                    $('#barang').DataTable().ajax.reload(null, false);
+                    Swal.fire("Success!", "barang has been saved successfully.", "success");
+                },
+                error: function(data) {
+                    Swal.fire("Error!", "Something went wrong.", "error");
+                }
+            });
+        });
+
+        $(document).on('click', '#barang tbody tr', function(event) {
+            console.log('Clicked');
+            
+            // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
+            if ($(event.target).closest('td').hasClass('action')) {
+                return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
+            }
+
+            var data = $('#barang').DataTable().row(this).data();
+
+            if (data) {
+                // Isi detail modal dengan data yang sesuai
+                $('#barcode').html(data.barcode.replace('&gt;', '>').replace('&lt;', '<'));
+                $('#detail_kode_barang').text(data.kode_barang);
+                $('#detail_nama_barang').text(data.nama_barang);
+                $('#detail_kategori').text(data.kategori);
+                $('#detail_unit').text(data.unit);
+                $('#detail_merek').text(data.merek);
+                $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
+                $('#detail_jumlah').text(data.jumlah);
+                $('#detail_keterangan').text(data.keterangan);
+
+                // Tampilkan modal detail
+                $('#detail-modal').modal('show');
+            }
+        });
+    </script>
 @endpush
