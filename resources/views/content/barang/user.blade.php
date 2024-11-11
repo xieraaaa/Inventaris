@@ -37,15 +37,6 @@
                     for (; $index < $max_index; ++$index):
                         $barang = $koleksiBarang[$index];
 
-                                    $nama_barang = $barang['nama_barang'];
-                                    $merek       = $mereks[$barang['id_merek']]['merek'];
-                                    $keterangan  = $barang['keterangan'];
-                                    $jumlah      = $barang['jumlah']
-                            ?>
-                        
-                            <div class="card col-sm m-3 px-0" style="width: 18rem;">
-                                <img class="card-img-top img-fluid" src="/assets/images/img1.jpg" alt="Card image cap">
-                                <div class="card-body">
                         $nama_barang = $barang['nama_barang'];
                         $merek       = $mereks[$barang['id_merek']]['merek'];
                         $keterangan  = $barang['keterangan'];
@@ -58,8 +49,6 @@
                                     <h5 class="card-title"><?= $nama_barang ?></h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><?= $merek ?></h6>
                                     <p class="card-text"><?= $keterangan ?></p>
-                                    <p class="card-text">Stok : <?= $jumlah ?></p>
-                                    <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary ">Pinjam</a>
                                 </div>
                                 <a href="#" onClick="PinjamFunc({{ $barang['id'] }})" class="btn btn-primary mt-auto align-self-end">Pinjam</a>
                             </div>
@@ -93,53 +82,6 @@
                         </div>
                     </div>
 
-                        <div class="form-group">
-                            <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="id_merek" name="id_merek" required disabled>
-                                    <option value="">-- Select merek --</option>
-                                    @foreach ($mereks as $merek)
-                                    <option value="{{ $merek->id }}">{{ $merek->merek }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="m-t-20 form-label">Dari</label>
-                                        <input type="text" class="form-control" placeholder="2017-06-04" id="mdate" name="mdate">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="m-t-20 form-label">Sampai</label>
-                                        <input type="text" class="form-control" placeholder="2017-06-04" id="pdate" name="pdate">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="jumlah" class="col-sm-8 mb-2 control-label">jumlah</label>
-                            <div class="col-sm-12">
-                                <input type="number" class="form-control" id="jumlah" name="jumlah" min="1" value="1"
-                                    placeholder="jumlah stock" maxlength="50" required="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="kondisi" class="col-sm-8 mb-2 control-label">Kondisi</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="kondisi" name="kondisi" required disabled>
-                                    <option value="1">Baik</option>
-                                    <option value="0">Rusak</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
-                            <div class="col-sm-12">
-                                <textarea class="form-control" id="keterangan" name="keterangan" placeholder="keterangan" rows="4" maxlength="500" required=""></textarea>
-                            </div>
-                        </div>
                     <div class="form-group">
                         <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
                         <div class="col-sm-12">
@@ -156,11 +98,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label class="m-t-20 form-label">Dari</label>
-                                    <input type="text" class="form-control" placeholder="2017-06-04" id="mdate">
+                                    <input type="text" class="form-control" placeholder="2017-06-04" name = "mdate" id="mdate">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="m-t-20 form-label">Sampai</label>
-                                    <input type="text" class="form-control" placeholder="2017-06-04" id="pdate">
+                                    <input type="text" class="form-control" placeholder="2017-06-04" name="pdate" id="pdate">
                                 </div>
                             </div>
                         </div>
