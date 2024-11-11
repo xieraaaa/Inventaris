@@ -74,6 +74,10 @@
                 <form action="javascript:void(0)" id="barangForm" name="barangForm" class="form-horizontal"
                     method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="id_user" value="<?=Auth::user()->id?>">
+                    <input type="hidden" name='id_barang' id="id_barang">
+
+                    
                     <div class="form-group">
                         <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
                         <div class="col-sm-12">
@@ -81,7 +85,7 @@
                                 placeholder="nama barang" maxlength="50" required="" disabled>
                         </div>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
                         <div class="col-sm-12">
@@ -123,6 +127,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
                         <div class="col-sm-12">
@@ -141,84 +146,8 @@
     </div>
 </div>
 
-<!-- Modal import data -->
-<div class="modal fade" id="import-modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Import Data Excel</h4>
-            </div>
-            <div class="modal-body">
-                <form id="barangForm" name="barangForm" class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ route('barang.import') }}">
-                    @csrf
-                    <input type="hidden" name="id" id="id">
-                    <div class="form-group">
-                        <label for="kode_barang" class="col-sm-8 mb-2 control-label">Data</label>
-                        <div class="col-sm-12">
-                            <input type="file" class="form-control" id="data_excel" name="data_excel" required="" />
-                        </div>
-                    </div>
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary" id="btn-save">Upload</button>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer"></div>
-        </div>
-    </div>
-</div>
-</div>
-<div class="modal fade" id="detail-modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Detail Data Barang</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="barcode">Barcode:</label>
-                    <div id="barcode"></div> <!-- Tempat untuk menampilkan gambar -->
-                </div>
-                <div class="form-group">
-                    <label for="kode_barang">Kode Barang:</label>
-                    <textarea class="form-control" id="detail_kode_barang" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_nama_barang">Nama Barang:</label>
-                    <textarea class="form-control" id="detail_nama_barang" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_kategori">Kategori:</label>
-                    <textarea class="form-control" id="detail_kategori" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_unit">Unit:</label>
-                    <textarea class="form-control" id="detail_unit" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_merek">Merek:</label>
-                    <textarea class="form-control" id="detail_merek" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_kondisi">Kondisi:</label>
-                    <textarea class="form-control" id="detail_kondisi" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_jumlah">Jumlah:</label>
-                    <textarea class="form-control" id="detail_jumlah" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="detail_keterangan">Keterangan:</label>
-                    <textarea class="form-control" id="detail_keterangan" readonly></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-            </div>
-        </div>
-    </div>
-</div>
+
 @endsection
 
 @push('scripts')
@@ -315,6 +244,7 @@
             success: function(res) {
                 $('#barangModal').html("Pinjam Barang");
                 $('#barang-modal').modal('show');
+                $('#id_barang').val(res.id);
                 $('#nama_barang').val(res.nama_barang);
                 $('#id_merek').val(res.id_merek);
                 $('#jumlah').val('');

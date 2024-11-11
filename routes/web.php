@@ -18,8 +18,11 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('/store-item', [UserController::class, 'store'])->middleware(['auth', 'verified']);
-Route::post('edit-item', [UserController::class, 'edit']);
+Route::post('/store-item', [PeminjamanController::class, 'store'])->middleware(['auth', 'verified']);
+Route::post('edit-item', [PeminjamanController::class, 'edit']);
+
+
+
 
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
 

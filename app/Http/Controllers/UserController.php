@@ -41,6 +41,7 @@ class UserController extends Controller
         $units     = Unit::all();
         $mereks    = Merek::all();
         $barang    = Barang::first();
+        
 
         $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
 
@@ -61,22 +62,5 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
-        $barangId = $request->id;
 
-        $request->validate([                                                        
-            'mdate'      => 'required|date_format:Y-m-d',
-            'pdate'      => 'required|date_format:Y-m-d|after_or_equal:mdate',
-            'jumlah'      => 'required|min:1|numeric',
-        ]);
-    }
-
-    public function edit(Request $request)
-    {
-        $where = array('id' => $request->id);
-        $barang  = barang::where($where)->first();
-
-        return Response()->json($barang);
-    }
 }
