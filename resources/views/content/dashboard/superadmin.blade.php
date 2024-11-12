@@ -1,8 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-
-
     <div class="container-fluid">
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -25,13 +23,8 @@
                     </div>
                 </div>
             </div>
-            @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-            @endif
             <div class="card-body">
-                <table class="table table-striped table-bordered yajra-datatable" id="peminjaman">
+                <table class="table" id="peminjaman">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -45,9 +38,5 @@
                 </table>
             </div>
         </div>
-
-        <!-- Bootstrap peminjaman model -->
-
     </div>
-    </div>
-    @endsection
+@endsection

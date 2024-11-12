@@ -26,7 +26,8 @@
                         </ul>
                     </li>
                     
-                    <li><a class="waves-effect waves-dark" href="{{route('dashboard')}}"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
+                    <li><a class="waves-effect waves-dark" href="{{ route('dashboard') }}"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
+                    <li><a href="{{ route('pos') }}">Point-of-Sale</a></li>
 
                     <!-- Letakkan page-page yang hanya bisa diakses oleh Admin dibawah -->
                     
@@ -37,8 +38,8 @@
                     </li>
                     <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fa-solid fa-crown"></i><span class="hide-menu">Master</span></a>
                         <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{route('kategori')}}">Kategori</a></li>
-                            <li><a href="{{route('merek')}}">Merek</a></li>
+                            <li><a href="{{ route('kategori') }}">Kategori</a></li>
+                            <li><a href="{{ route('merek') }}">Merek</a></li>
                             <li><a href="{{ route('unit') }}">Unit</a></li>
                         </ul>
                     </li>
