@@ -27,7 +27,6 @@
                     </li>
                     
                     <li><a class="waves-effect waves-dark" href="{{ route('dashboard') }}"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
-                    <li><a href="{{ route('pos') }}">Point-of-Sale</a></li>
 
                     <!-- Letakkan page-page yang hanya bisa diakses oleh Admin dibawah -->
                     

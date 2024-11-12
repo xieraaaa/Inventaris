@@ -61,7 +61,7 @@ class UserController extends Controller
         
         if ($user->hasRole('user'))
         {
-            return $this->getUserDashboard($request->ajax());
+            return view('content.pos.index');
         }
         else if ($user->hasRole('admin'))
         {

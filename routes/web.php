@@ -62,11 +62,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('Peminjaman',         [PeminjamanController::class, 'index'])->name('minjam');
     Route::post('tambah-peminjaman', [PeminjamanController::class, 'add']);
-
-    Route::get('pos', function()
-    {
-        return view('content.pos.index');
-    })->name('pos');
 });
 
 require __DIR__.'/auth.php';
