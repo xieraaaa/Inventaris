@@ -85,7 +85,6 @@
                                 placeholder="nama barang" maxlength="50" required="" disabled>
                         </div>
                     </div>
-                    
                     <div class="form-group">
                         <label for="id_merek" class="col-sm-8 mb-2 control-label">Merek</label>
                         <div class="col-sm-12">
@@ -327,7 +326,7 @@
 <script src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
 <script src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 <script>
-    // MAterial Date picker    
+    // Material Date Picker
     $('#mdate').bootstrapMaterialDatePicker({
         weekStart: 0,
         time: false
@@ -344,7 +343,6 @@
     $('#date-format').bootstrapMaterialDatePicker({
         format: 'dddd DD MMMM YYYY - HH:mm'
     });
-
     $('#min-date').bootstrapMaterialDatePicker({
         format: 'DD/MM/YYYY HH:mm',
         minDate: new Date()

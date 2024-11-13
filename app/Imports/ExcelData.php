@@ -20,6 +20,10 @@ class ExcelData implements ToCollection, WithHeadingRow
     {
         foreach ($collections as $collection)
         {
+            if (Barang::firstWhere('kode_barang', $collection['kode_barang'])) {
+                return;
+            }
+            
             $kategori = Kategori::where('kategori', $collection['kategori'])->first();
             $merek    = Merek::where('merek', $collection['merk'])->first();
             $unit     = Unit::where('unit', $collection['satuan'])->first();

@@ -11,7 +11,7 @@ use App\Models\Merek;
 
 class UserController extends Controller
 {
-    private function getUserDashboard(bool $isAjax)
+    public function getUserDashboard(bool $isAjax = false)
     {
         if ($isAjax)
         {
@@ -28,7 +28,6 @@ class UserController extends Controller
                     return $barang->merek ? $barang->merek->merek : '-';
                 })
                 ->addColumn('kondisi_label', function ($barang) {
-                    
                     return $barang->kondisi == 1 ? 'Baik' : 'Rusak';
                 })
                 ->addColumn('action', 'content.barang.action.user')
@@ -41,7 +40,6 @@ class UserController extends Controller
         $units     = Unit::all();
         $mereks    = Merek::all();
         $barang    = Barang::first();
-        
 
         $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
 
