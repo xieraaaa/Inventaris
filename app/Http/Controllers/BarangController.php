@@ -76,9 +76,10 @@ class BarangController extends Controller
      * 
      * @return Illuminate\Http\JsonResponse
      */
-    public function get()
+    public function get(Request $request)
     {
-        return Barang::all()->toJson();
+        $itemsToSkip = $request->page * 5;
+        return Barang::skip($itemsToSkip)->take(20)->orderBy('nama_barang', 'asc')->get();
     }
     
     /**
@@ -186,9 +187,9 @@ class BarangController extends Controller
             'data_excel' => 'required|mimes:csv,xls,xlsx'
         ]);
 
-        $file = $request->file('data_excel');
+        $file      = $request->file('data_excel');
         $nama_file = $file->hashName();
-        $path = $file->store('app/public/excel');
+        $path      = $file->store('app/public/excel');
 
         $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
 
