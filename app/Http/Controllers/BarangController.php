@@ -71,6 +71,15 @@ class BarangController extends Controller
             ->make(true);
     }
 
+    /**
+     * Mengembalikan data barang melalui format JSON
+     * 
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function get()
+    {
+        return Barang::all()->toJson();
+    }
     
     /**
      * Store a newly created resource in storage.

@@ -1,3 +1,7 @@
+<?php
+    use Illuminate\Support\Facades\Auth;
+?>
+
 @extends('layouts.admin')
 
 @section('content')
@@ -37,9 +41,11 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">Update Password</button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="delete-account-tab" data-bs-toggle="tab" data-bs-target="#delete-account" type="button" role="tab" aria-controls="delete-account" aria-selected="false">Delete Account</button>
-                        </li>
+                        @if (!Auth::user()->hasRole('user'))
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="delete-account-tab" data-bs-toggle="tab" data-bs-target="#delete-account" type="button" role="tab" aria-controls="delete-account" aria-selected="false">Delete Account</button>
+                            </li>
+                        @endif
                     </ul>
 
                     <!-- Tab Content -->

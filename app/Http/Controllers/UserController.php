@@ -9,10 +9,6 @@ use App\Models\Kategori;
 use App\Models\Unit;
 use App\Models\Merek;
 
-use App\DataTables\Peminjaman;
-use App\DataTables\PeminjamanDataTable;
-use App\Http\Controllers\PeminjamanController;
-
 class UserController extends Controller
 {
     private function getUserDashboard(bool $isAjax)
@@ -56,7 +52,7 @@ class UserController extends Controller
 
     public function getSuperadminDashboard()
     {
-        return app(PeminjamanController::class)->index(new PeminjamanDataTable());
+        return view('content.dashboard.superadmin');
     }
     
    public function index(Request $request)
@@ -65,7 +61,7 @@ class UserController extends Controller
         
         if ($user->hasRole('user'))
         {
-            return $this->getUserDashboard($request->ajax());
+            return view('content.pos.index');
         }
         else if ($user->hasRole('admin'))
         {

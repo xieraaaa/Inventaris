@@ -34,32 +34,33 @@ Route::middleware(['auth', 'role:admin'])->group(function() {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('profile',    [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('profile',   [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('store-merek', [MerekController::class, 'store']);
-    Route::post('edit-merek', [MerekController::class, 'edit']);
-    Route::post('delete-merek', [MerekController::class, 'destroy']);
+    Route::post('store-merek',   [MerekController::class, 'store']);
+    Route::post('edit-merek',    [MerekController::class, 'edit']);
+    Route::post('delete-merek',  [MerekController::class, 'destroy']);
     Route::post('/merek/import', [MerekController::class, 'import'])->name('merek.import');
 
-    Route::post('store-unit', [UnitController::class, 'store']);
-    Route::post('edit-unit', [UnitController::class, 'edit']);
-    Route::post('delete-unit', [UnitController::class, 'destroy']);
+    Route::post('store-unit',   [UnitController::class, 'store']);
+    Route::post('edit-unit',    [UnitController::class, 'edit']);
+    Route::post('delete-unit',  [UnitController::class, 'destroy']);
     Route::post('/unit/import', [UnitController::class, 'import'])->name('unit.import');
 
-    Route::post('store-kategori', [kategoriController::class, 'store']);
-    Route::post('edit-kategori', [kategoriController::class, 'edit']);
-    Route::post('delete-kategori', [kategoriController::class, 'destroy']);
+    Route::post('store-kategori',   [kategoriController::class, 'store']);
+    Route::post('edit-kategori',    [kategoriController::class, 'edit']);
+    Route::post('delete-kategori',  [kategoriController::class, 'destroy']);
     Route::post('/kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
 
-    Route::post('store-barang', [BarangController::class, 'store']);
-    Route::post('edit-barang', [BarangController::class, 'edit']);
+    Route::post('store-barang',  [BarangController::class, 'store']);
+    Route::post('edit-barang',   [BarangController::class, 'edit']);
     Route::post('delete-barang', [BarangController::class, 'destroy']);
+    Route::get('get-barang',     [BarangController::class, 'get']);
     Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
     Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 
-    Route::get('Peminjaman', [PeminjamanController::class, 'index'])->name('minjam');
+    Route::get('Peminjaman',         [PeminjamanController::class, 'index'])->name('minjam');
     Route::post('tambah-peminjaman', [PeminjamanController::class, 'add']);
 });
 

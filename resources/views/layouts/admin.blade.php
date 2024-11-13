@@ -4,42 +4,42 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="">
     <meta name="author" content="">
-    <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon.png">
     <title>Inventory</title>
-    <!-- This page CSS -->
-    <!-- chartist CSS -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css" />
     
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" />
+
     @stack('styles')
+
     <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet">
-    <!--Toaster Popup message CSS -->
-    <link href="{{ asset('../assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet">
+
     <!-- Morris CSS -->
     <link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet">
-            <!-- Dashboard 1 Page CSS -->
-            <link href="{{asset('dist/css/pages/dashboard1.css')}}" rel="stylesheet">
 
-            @vite(['resources/js/app.js'])
-    <!-- Custom CSS -->
+    <!-- Toaster Popup message CSS -->
+    <link href="{{ asset('../assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet">
 
+    <!-- Morris CSS -->
+    <link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
+    <!-- Dashboard 1 Page CSS -->
+    <link href="{{asset('dist/css/pages/dashboard1.css')}}" rel="stylesheet">
+
+    @vite(['resources/js/app.js'])
 </head>
 
 <body class="skin-blue fixed-layout">
@@ -74,27 +74,46 @@
         @include('partials.rightbar')
 
     </div>
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- All Jquery -->
-    <!-- ============================================================== -->
-    @stack('scripts')
-    
+
+    <!-- SweetAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ asset('../assets/node_modules/jquery/dist/jquery.min.js') }}"></script>
-    <!-- Bootstrap tether Core JavaScript -->
+
+    <script>
+        /**
+         * Buat semua panggilan AJAX mengikuti aturan CSRF
+         */
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name=\'csrf-token\']').attr('content')
+                }
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
     <script src="{{ asset('../assets/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- slimscrollbar scrollbar JavaScript -->
+
+    <!-- Perfect Scrollbar Library -->
     <script src="{{ asset('dist/js/perfect-scrollbar.jquery.min.js') }}"></script>
-    <!--Wave Effects -->
+
+    <!-- Wave Effects -->
     <script src="{{ asset('dist/js/waves.js') }}"></script>
-    <!--Menu sidebar -->
+
+    <!-- Menu Sidebar -->
     <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
-    <!--Custom JavaScript -->
+
+    <!-- Custom JavaScript -->
     <script src="{{ asset('dist/js/custom.min.js') }}"></script>   
 
+    <!-- Datatables -->
     <script src="https://cdn.datatables.net/2.1.3/js/dataTables.min.js"></script>
+
+    @stack('scripts')
 </body>
 
 </html>
