@@ -14,6 +14,11 @@ class PeminjamanController extends Controller
         return $dataTable->render('content.peminjaman.index');
     }
 
+    public function riwayat()
+    {
+        return view('content.peminjaman.user');
+    }
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -41,5 +46,6 @@ class PeminjamanController extends Controller
         return response()->json($barang);
     }
 }
+
 
 

@@ -76,10 +76,6 @@
                     <!-- Or Login With -->
                     <div class="text-center text-muted my-3">{{ __('Or login with') }}</div>
                     <div class="d-flex justify-content-center gap-3 mb-4">
-                        <a href="#" class="btn btn-outline-primary btn-sm rounded-pill px-3"><i
-                                class="fab fa-facebook"></i> Facebook</a>
-                        <a href="#" class="btn btn-outline-info btn-sm rounded-pill px-3"><i
-                                class="fab fa-twitter"></i> Twitter</a>
                         <a href="/socialite/google" class="btn btn-outline-danger btn-sm rounded-pill px-3"><i
                                 class="fab fa-google"></i> Google</a>
                     </div>

@@ -18,6 +18,7 @@ class ExcelData implements ToCollection, WithHeadingRow
     */
     public function collection(Collection $collections)
     {
+        
         foreach ($collections as $collection)
         {
             $kategori = Kategori::where('kategori', $collection['kategori'])->first();

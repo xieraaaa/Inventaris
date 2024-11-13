@@ -21,7 +21,7 @@ Route::get('/dashboard', [UserController::class, 'index'])->middleware(['auth', 
 Route::post('/store-item', [PeminjamanController::class, 'store'])->middleware(['auth', 'verified']);
 Route::post('edit-item', [PeminjamanController::class, 'edit']);
 
-
+Route::get('Riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
 
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
