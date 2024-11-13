@@ -5,9 +5,9 @@ use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\MerekController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
-
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
@@ -63,4 +63,6 @@ Route::middleware('auth')->group(function () {
     Route::post('tambah-peminjaman', [PeminjamanController::class, 'add']);
 });
 
+Route::get('/socialite/{driver}', [SocialLoginController::class, 'toProvider'])->where('driver', 'google');
+Route::get('/auth/{driver}/login', [SocialLoginController::class, 'handleCallback'])->where('driver', 'google');
 require __DIR__.'/auth.php';

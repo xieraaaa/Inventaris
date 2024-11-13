@@ -80,7 +80,7 @@
                                 class="fab fa-facebook"></i> Facebook</a>
                         <a href="#" class="btn btn-outline-info btn-sm rounded-pill px-3"><i
                                 class="fab fa-twitter"></i> Twitter</a>
-                        <a href="#" class="btn btn-outline-danger btn-sm rounded-pill px-3"><i
+                        <a href="/socialite/google" class="btn btn-outline-danger btn-sm rounded-pill px-3"><i
                                 class="fab fa-google"></i> Google</a>
                     </div>
 
