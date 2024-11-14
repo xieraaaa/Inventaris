@@ -7,22 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Jalankan migrasinya
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('profile_photo')->nullable()->after('email');
+        Schema::create('merek', function (Blueprint $table) {
+            $table->id();
+            $table->string('merek')->unique();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Hapus migrasinya
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('merek');
     }
 };

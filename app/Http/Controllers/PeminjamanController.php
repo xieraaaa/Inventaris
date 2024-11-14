@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
-use App\DataTables\PeminjamanDataTable;
-
-// debug
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
@@ -17,12 +14,21 @@ class PeminjamanController extends Controller
 	 */
 	public function add(Request $request)
 	{
-		// $data = $request->all();
+		$data = json_decode($request->getContent(), true);
 
-		// foreach ($data as $unit)
-		// {
-		// 	Peminjaman::create()
-		// }
+		foreach ($data['data'] as $datum) {
+			$id     = $datum['id'];
+			$barang = Barang::firstWhere('kode_barang', $id);
+
+			Peminjaman::create([
+				'id_barang'   => $barang['id'],
+				'id_user'     => Auth::user()->id,
+				'tgl_pinjam'  => $request['tgl_pinjam'],
+				'tgl_kembali' => $request['tgl_kembali'],
+				'keterangan'  => $request['keterangan'],
+				'status'      => 'pending'
+			]);
+		}
 	}
 	
 	public function store(Request $request)
@@ -52,5 +58,3 @@ class PeminjamanController extends Controller
 		return response()->json($barang);
 	}
 }
-
-

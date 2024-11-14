@@ -7,31 +7,27 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Menjalankan migrasinya
      */
     public function up(): void
     {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
-            $table->date('tgl_pinjam');
+            $table->unsignedBigInteger('id_detail_peminjaman');
+
             $table->date('tgl_kembali');
+            $table->date('tgl_pinjam');
             $table->string('status');
-            $table->unsignedBigInteger('id_barang');
             $table->string('keterangan');
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_barang')->references('id')->on('barang')->onDelete('cascade');
         });
-
-
     }
 
-    
-
     /**
-     * Reverse the migrations.
+     * Menghapus migrasinya
      */
     public function down(): void
     {

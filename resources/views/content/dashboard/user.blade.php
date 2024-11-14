@@ -1,7 +1,3 @@
-<?php
-	use App\Models\Barang;
-?>
-
 @extends ('layouts.admin')
 
 @section('content')
@@ -42,43 +38,37 @@
 			<div class="mb-2">
 				<input type="text" class="form-control" placeholder="Cari produk" />
 			</div>
-			<div id="list-product" class="order-product d-flex flex-wrap justify-content-between" style="row-gap: 8px; column-gap: 8px">
-				<template id="product-item">
-					<div style="height: 100px; width: 200px;"
-						class="d-flex flex-column justify-content-center align-items-center bg-info hover-product-effect cursor-pointer px-5 rounded"
-						onClick="addToCart(this)">
-						<span class="text-center font-bold clamp-lines" data-role="name"></span>
-						<span>Jumlah: <span class="text-center" data-role="jumlah"></span></span>
-					</div>
-				</template>
-			</div>
-			<div style="height: 75px" class="w-100 d-flex align-items-center justify-content-between">
-				<div>
-					<i class="fa-solid fa-angles-left fa-xl"></i>
-					<i class="fa-solid fa-chevron-left fa-xl"></i>
-				</div>
-				<div class="d-flex gap-2">
-					<?php
-						$barangLength = ceil(count(Barang::all()) / 20);
+			<div
+				id="list-product"
+				class="order-product d-flex flex-wrap justify-content-between"
+				style="row-gap: 8px; column-gap: 8px"
+			></div>
+			<nav class="mt-3">
+				@php
+					$paginationLength = 5;
+				@endphp
+				<ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
+					<li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
 
-						for ($idx = 1; $idx <= $barangLength; ++$idx):
-					?>
-						<div
-							class="cursor-pointer size-12 rounded flex items-center justify-center hover:opacity-75"
-						>
-							<span class="text-xl">{{ $idx }}</span>
-						</div>
-					<?php
-						endfor;
-					?>
-				</div>
-				<div>
-					<i class="fa-solid fa-chevron-right fa-xl"></i>
-					<i class="fa-solid fa-angles-right fa-xl"></i>
-				</div>
-			</div>
+					<li onclick="changePage(1)" data-page="1" data-role="pagination-number" class="page-item active"><a class="page-link" href="#">1</a></li>
+					@for ($idx = 2; $idx <= $paginationLength; ++$idx)
+						<li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item"><a class="page-link" href="#">{{ $idx }}</a></li>
+					@endfor
+
+					<li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+				</ul>
+			</nav>
 		</div>
 	</div>
+
+	<template id="product-item">
+		<div style="height: 100px; width: 200px;"
+			class="d-flex flex-column justify-content-center align-items-center bg-info hover-product-effect cursor-pointer px-5 rounded"
+			onClick="addToCart(this)">
+			<span class="text-center font-bold clamp-lines" data-role="name"></span>
+			<span>Jumlah: <span class="text-center" data-role="jumlah"></span></span>
+		</div>
+	</template>
 
 	<x-modals.peminjaman />
 @endsection
@@ -114,28 +104,36 @@
 	<script defer src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 
 	<script defer>
-		let cart = [];
+		let cart = []; // { id, name, jumlah }
 
-		// Ambil data barang untuk list produk
-		$.ajax({
-			dataType   : 'json',
-			url        : '{{ url('get-barang') }}',
-			data       : { page: 1 },
-			contentType: 'application/json',
+		const productTemplate = document.getElementById('product-item').content.firstElementChild;
 
-			success: function(data) {
-				const template = document.getElementById('product-item').content.firstElementChild;
-				for (const barang of data) {
-					const html = template.cloneNode(true);
+		function changePage(pageNumber) {
+			$.ajax({
+				dataType   : 'json',
+				url        : '{{ url('get-barang') }}',
+				data       : { 'page': pageNumber },
+				contentType: 'application/json',
 
-					html.dataset.id                                      = barang.kode_barang;
-					html.querySelector('[data-role="name"]').innerText   = barang.nama_barang;
-					html.querySelector('[data-role="name"]').title       = barang.nama_barang;
-					html.querySelector('[data-role="jumlah"]').innerText = barang.jumlah;
-					$('#list-product').append(html);
+				success: function(data) {
+					$('#list-product').html('');
+					
+					for (const barang of data) {
+						const html = productTemplate.cloneNode(true);
+
+						html.dataset.id = barang.kode_barang;
+
+						html.querySelector('[data-role="name"]')  .innerText = barang.nama_barang;
+						html.querySelector('[data-role="name"]')  .title     = barang.nama_barang;
+						html.querySelector('[data-role="jumlah"]').innerText = barang.jumlah;
+
+						$('#list-product').append(html);
+					}
 				}
-			}
-		});
+			});
+		}
+
+		changePage(1);
 
 		// Add a product to the cart
 		function addToCart(element) {
@@ -145,7 +143,20 @@
 
 			const existingProduct = cart.find(item => item.id === id);
 
+			console.log(cart);
+
 			if (existingProduct) {
+				if (existingProduct.jumlah + 1 > jumlah) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Ups...',
+						text: 'Anda tidak bisa meminjam lebih dari stok yang ada!',
+						confirmButtonText: 'OKE'
+					});
+
+					return;
+				}
+				
 				existingProduct.jumlah++;
 			} else {
 				cart.push({ id, name, jumlah: 1 });
@@ -180,15 +191,6 @@
 		// Mengirim data ke server untuk mengajukan peminjaman
 		function handleClickSubmit() {
 			$('#barang-modal').modal('show');
-			
-			if (false) {
-				$.ajax({
-					method     : 'POST',
-					url        : '{{ url('tambah-peminjaman ') }}',
-					contentType: 'application/json',
-					data       : cart
-				});
-			}
 		}
 	</script>
 @endpush
