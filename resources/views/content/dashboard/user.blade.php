@@ -108,6 +108,13 @@
 
 		const productTemplate = document.getElementById('product-item').content.firstElementChild;
 
+		const paginationButtons = document.querySelectorAll('[data-role="pagination-number"]');
+		let page = paginationButtons[0].dataset.page;
+
+		function enablePaginationButton(idx) {
+			
+		}
+
 		function changePage(pageNumber) {
 			$.ajax({
 				dataType   : 'json',
