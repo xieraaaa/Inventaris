@@ -27,11 +27,14 @@
                     </li>
                     
                     <li><a class="waves-effect waves-dark" href="{{ route('dashboard') }}"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard</span></a>
+
+					@if (Auth::user()->hasRole('user'))
+
                     <li><a class="waves-effect waves-dark" href="{{ route('riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i><span class="hide-menu">Riwayat</span></a>
 
                     <!-- Letakkan page-page yang hanya bisa diakses oleh Admin dibawah -->
                     
-                    @if ($admin)    
+                    @elseif (Auth::user()->hasRole('admin'))
 
                     <li><a class="waves-effect waves-dark" href="{{ route('barang') }}"><i class="fa-solid fa-box-open"></i><span class="hide-menu">Barang</span></a>
                     <li><a class="waves-effect waves-dark" href="{{route('minjam')}}"><i class="fa-solid fa-handshake"></i><span class="hide-menu">Peminjaman</span></a>

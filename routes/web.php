@@ -9,9 +9,7 @@ use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\DashboardController;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
 
 Route::get('/', function () {
 	return view('auth.login');
@@ -22,7 +20,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::post('/store-item', [PeminjamanController::class, 'store'])->middleware(['auth', 'verified']);
 Route::post('edit-item', [PeminjamanController::class, 'edit']);
 
-Route::get('Riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
 
@@ -32,6 +29,8 @@ Route::middleware(['auth', 'role:admin'])->group(function() {
 	Route::get('unit', [UnitController::class, 'index'])->name('unit');
 	Route::get('kategori', [kategoriController::class, 'index'])->name('kategori');
 });
+
+Route::get('Riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
 Route::middleware('auth')->group(function () {
 	Route::get('profile',    [ProfileController::class, 'edit'])->name('profile.edit');

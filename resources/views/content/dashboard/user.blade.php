@@ -48,14 +48,14 @@
 					$paginationLength = 5;
 				@endphp
 				<ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
-					<li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+					<li data-role="pagination-left" class="page-item"><a class="page-link" href="#">&laquo;</a></li>
 
 					<li onclick="changePage(1)" data-page="1" data-role="pagination-number" class="page-item active"><a class="page-link" href="#">1</a></li>
 					@for ($idx = 2; $idx <= $paginationLength; ++$idx)
 						<li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item"><a class="page-link" href="#">{{ $idx }}</a></li>
 					@endfor
 
-					<li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+					<li data-role="pagination-right" class="page-item"><a class="page-link" href="#">&raquo;</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -103,17 +103,13 @@
 	<script defer src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
 	<script defer src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
 
+	@vite('resources/js/dashboard/user/pagination.js')
+
 	<script defer>
 		let cart = []; // { id, name, jumlah }
 
 		const productTemplate = document.getElementById('product-item').content.firstElementChild;
-
-		const paginationButtons = document.querySelectorAll('[data-role="pagination-number"]');
-		let page = paginationButtons[0].dataset.page;
-
-		function enablePaginationButton(idx) {
-			
-		}
+		const paginationRoot  = document.getElementById('pagination');
 
 		function changePage(pageNumber) {
 			$.ajax({
@@ -123,6 +119,7 @@
 				contentType: 'application/json',
 
 				success: function(data) {
+					
 					$('#list-product').html('');
 					
 					for (const barang of data) {
@@ -140,7 +137,7 @@
 			});
 		}
 
-		changePage(1);
+		changePage(0);
 
 		// Add a product to the cart
 		function addToCart(element) {

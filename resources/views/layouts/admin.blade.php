@@ -39,7 +39,7 @@
 	<!-- Dashboard 1 Page CSS -->
 	<link href="{{asset('dist/css/pages/dashboard1.css')}}" rel="stylesheet">
 
-	@vite(['resources/js/app.js', 'resources/css/app.css'])
+	@vite(['resources/js/app.js'])
 </head>
 
 <body class="skin-blue fixed-layout">
@@ -65,7 +65,7 @@
 		<!-- ============================================================== -->
 		<!-- End Topbar header -->
 		<!-- ============================================================== -->
-		<x-sidebar />
+		@include ('partials.sidebar')
 
 		<div class="page-wrapper">
 			@yield('content')

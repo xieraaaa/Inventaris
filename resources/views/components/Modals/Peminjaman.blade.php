@@ -102,7 +102,7 @@
 			
 			$.ajax({
 				method     : 'POST',
-			url        : '{{ url('tambah-peminjaman ') }}',
+				url        : '{{ url('tambah-peminjaman ') }}',
 				contentType: 'application/json',
 				data       : JSON.stringify(payload),
 
