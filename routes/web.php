@@ -24,6 +24,10 @@ Route::post('edit-item', [PeminjamanController::class, 'edit']);
 
 Route::get('Riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
+// routes/api.php
+Route::get('/items/{code}', [PeminjamanController::class, 'show']);
+
+
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
 
 Route::middleware(['auth', 'role:admin'])->group(function() {

@@ -38,6 +38,11 @@
 			<div class="mb-2">
 				<input type="text" class="form-control" placeholder="Cari produk" />
 			</div>
+			<div class="col">
+            <button type="button" class="btn btn-secondary btn-block" onClick="openQrModal()">
+                Scan barcode
+            </button>
+        </div>
 			<div
 				id="list-product"
 				class="order-product d-flex flex-wrap justify-content-between"
@@ -70,6 +75,18 @@
 		</div>
 	</template>
 
+
+	 <!-- Modal for QR Code Scanner -->
+<div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="reader" style="width: 500px; height: 500px;"></div> 
+            <div id="scanned-result" style="margin-top: 250px;">
+                <p id="decoded-text"></p>
+            </div>
+        </div>
+    </div>
+</div>
 	<x-modals.peminjaman />
 @endsection
 
@@ -96,6 +113,8 @@
 @endpush
 
 @push('scripts')
+
+<script src="https://unpkg.com/html5-qrcode"></script>
 	<!-- Date Picker Plugin -->
 	<script defer src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
 
@@ -174,20 +193,21 @@
 
 		// Render the cart items in the table
 		function renderCart() {
-			const cartTable = document.getElementById('cart');
-			cartTable.innerHTML = '';
+    const cartTable = document.getElementById('cart');
+    cartTable.innerHTML = '';
 
-			cart.forEach(item => {
-				const row = `<tr>
-					<td>${item.name}</td>
-					<td>${item.jumlah}</td>
-				</tr>`;
-				cartTable.innerHTML += row;
-			});
+    cart.forEach(item => {
+        const row = `<tr>
+            <td>${item.name}</td>
+            <td>${item.jumlah}</td>
+        </tr>`;
+        cartTable.innerHTML += row;
+    });
 
-			document.getElementById('cancelButton').disabled = cart.length === 0;
-			document.getElementById('checkoutButton').disabled = cart.length === 0;
-		}
+    document.getElementById('cancelButton').disabled = cart.length === 0;
+    document.getElementById('checkoutButton').disabled = cart.length === 0;
+}
+
 
 		// Handle cart cancelation
 		function handleEmptyCart() {
@@ -199,5 +219,63 @@
 		function handleClickSubmit() {
 			$('#barang-modal').modal('show');
 		}
+
+		
+		function openQrModal() {
+    $('#qrModal').modal('show');
+    if (!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: { width: 250, height: 250 } }, false
+        );
+    }
+    html5QrcodeScanner.render(onScanSuccess);
+}
+
+let html5QrcodeScanner = null;
+
+// QR Scanner success callback with detailed error handling
+function onScanSuccess(decodedText, decodedResult) {
+    fetch(`http://127.0.0.1:8000/items/${decodedText}`)
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const itemName = data.name;
+            const itemId = data.id;
+            const itemJumlah = data.jumlah;
+
+            document.getElementById('decoded-text').innerText = itemName;
+
+            const existingProduct = cart.find(item => item.id === itemId);
+            if (existingProduct) {
+                if (existingProduct.jumlah + 1 <= itemJumlah) {
+                    existingProduct.jumlah++;
+                } else {
+                    alert('Stock limit reached');
+                }
+            } else {
+                cart.push({ id: itemId, name: itemName, jumlah: 1 });
+            }
+
+            renderCart();
+        })
+        .catch(error => {
+            console.error('Detailed error:', error);
+            alert('Error fetching item details: ' + error.message);
+        });
+}
+
+// Clear QR scanner when modal is closed
+$('#qrModal').on('hidden.bs.modal', function () {
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear();
+        html5QrcodeScanner = null;  // Reset for re-initialization on next open
+    }
+});
+
 	</script>
 @endpush
