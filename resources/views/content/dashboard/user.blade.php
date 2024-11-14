@@ -133,47 +133,83 @@
     }
 
     // Add a product to the cart
-    function addToCart(element) {
-        const id     = element.dataset.id;
-        const name   = element.querySelector('[data-role="name"]').innerText;
-        const jumlah = parseInt(element.querySelector('[data-role="jumlah"]').innerText);
+	function addToCart(element) {
+    const id = element.dataset.id;
+    const name = element.querySelector('[data-role="name"]').innerText;
+    const jumlah = parseInt(element.querySelector('[data-role="jumlah"]').innerText);
+    const stock = jumlah;
 
-        const existingProduct = cart.find(item => item.id === id);
+    const existingProduct = cart.find(item => item.id === id);
 
-        if (existingProduct) {
-            if (existingProduct.jumlah + 1 > jumlah) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ups...',
-                    text: 'Anda tidak bisa meminjam lebih dari stok yang ada!',
-                    confirmButtonText: 'OKE'
-                });
-                return;
-            }
-            existingProduct.jumlah++;
-        } else {
-            cart.push({ id, name, jumlah: 1 });
+    if (existingProduct) {
+        if (existingProduct.jumlah + 1 > stock) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ups...',
+                text: 'Anda tidak bisa meminjam lebih dari stok yang ada!',
+                confirmButtonText: 'OKE'
+            });
+            return;
         }
-
-        renderCart();
+        existingProduct.jumlah++;
+    } else {
+        cart.push({ id, name, jumlah: 1, stock });
     }
+
+    renderCart();
+}
 
     // Render the cart items in the table
     function renderCart() {
-        const cartTable = document.getElementById('cart');
-        cartTable.innerHTML = '';
+    const cartTable = document.getElementById('cart');
+    cartTable.innerHTML = '';
 
-        cart.forEach(item => {
-            const row = `<tr>
-                <td>${item.name}</td>
-                <td>${item.jumlah}</td>
-            </tr>`;
-            cartTable.innerHTML += row;
-        });
+    cart.forEach(item => {
+        const row = `<tr>
+            <td>${item.name}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-secondary" onClick="decreaseQuantity('${item.id}')">-</button>
+                <input type="number" value="${item.jumlah}" min="1" max="${item.stock}" style="width: 60px; text-align: center;" onChange="updateQuantity('${item.id}', this.value)" />
+                <button type="button" class="btn btn-sm btn-secondary" onClick="increaseQuantity('${item.id}', ${item.stock})">+</button>
+            </td>
+        </tr>`;
+        cartTable.innerHTML += row;
+    });
 
-        document.getElementById('cancelButton').disabled = cart.length === 0;
-        document.getElementById('checkoutButton').disabled = cart.length === 0;
+    document.getElementById('cancelButton').disabled = cart.length === 0;
+    document.getElementById('checkoutButton').disabled = cart.length === 0;
+}
+
+function increaseQuantity(id, maxQuantity) {
+    const item = cart.find(product => product.id === id);
+    if (item.jumlah < maxQuantity) {
+        item.jumlah++;
+    } else {
+        alert('Stock limit reached');
     }
+    renderCart();
+}
+
+function decreaseQuantity(id) {
+    const item = cart.find(product => product.id === id);
+    if (item.jumlah > 1) {
+        item.jumlah--;
+    }
+    renderCart();
+}
+
+function updateQuantity(id, quantity) {
+    const item = cart.find(product => product.id === id);
+    const newQuantity = parseInt(quantity);
+
+    if (newQuantity >= 1 && newQuantity <= item.stock) {
+        item.jumlah = newQuantity;
+    } else {
+        alert('Quantity must be between 1 and available stock');
+    }
+    renderCart();
+}
+
 
     // Handle cart cancelation
     function handleEmptyCart() {
