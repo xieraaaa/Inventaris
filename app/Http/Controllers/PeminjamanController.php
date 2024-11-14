@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
-use App\DataTables\PeminjamanDataTable;
-
-// debug
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
@@ -17,27 +14,27 @@ class PeminjamanController extends Controller
 	 */
 	public function add(Request $request)
 	{
-		// $data = $request->all();
+		$data = json_decode($request->getContent(), true);
 
-<<<<<<< HEAD
+		foreach ($data['data'] as $datum) {
+			$id     = $datum['id'];
+			$barang = Barang::firstWhere('kode_barang', $id);
+
+			Peminjaman::create([
+				'id_barang'   => $barang['id'],
+				'id_user'     => Auth::user()->id,
+				'tgl_pinjam'  => $request['tgl_pinjam'],
+				'tgl_kembali' => $request['tgl_kembali'],
+				'keterangan'  => $request['keterangan'],
+				'status'      => 'pending'
+			]);
+		}
+	}
+
     public function riwayat()
     {
         return view('content.peminjaman.user');
     }
-    
-    public function store(Request $request)
-    {
-        $request->validate([
-            'mdate'  => 'required|date_format:Y-m-d',
-            'pdate'  => 'required|date_format:Y-m-d|after_or_equal:mdate',
-            'jumlah' => 'required|min:1|numeric',
-        ]);
-=======
-		// foreach ($data as $unit)
-		// {
-		// 	Peminjaman::create()
-		// }
-	}
 	
 	public function store(Request $request)
 	{
@@ -46,7 +43,6 @@ class PeminjamanController extends Controller
 			'pdate'  => 'required|date_format:Y-m-d|after_or_equal:mdate',
 			'jumlah' => 'required|min:1|numeric',
 		]);
->>>>>>> 68ed8a2a0b5d2ade7b37046118ff7be1155a35ec
 
 		$peminjaman = peminjaman::create([
 			'id_user'     => $request->id_user,
@@ -67,6 +63,5 @@ class PeminjamanController extends Controller
 		return response()->json($barang);
 	}
 }
-
 
 

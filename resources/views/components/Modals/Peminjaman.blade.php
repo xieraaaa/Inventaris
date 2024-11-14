@@ -48,6 +48,8 @@
 </div>
 
 @push('scripts')
+	<!-- SweetAlert2 CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<!-- Plugin JavaScript -->
 	<script src="{{ asset('../assets/node_modules/moment/moment.js') }}"></script>
 	<script src="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
@@ -88,6 +90,32 @@
 		$('#min-date').bootstrapMaterialDatePicker({
 			format: 'DD/MM/YYYY HH:mm',
 			minDate: new Date()
+		});
+
+		$('#btn-save').click(function() {
+			const payload = {
+				'data'       : cart,
+				'tgl_pinjam' : document.getElementById('mdate').value,
+				'tgl_kembali': document.getElementById('pdate').value,
+				'keterangan' : document.getElementById('keterangan').value
+			};
+			
+			$.ajax({
+				method     : 'POST',
+			url        : '{{ url('tambah-peminjaman ') }}',
+				contentType: 'application/json',
+				data       : JSON.stringify(payload),
+
+				success: function() {
+					// Munculkan notifikasi menandakan keberhasilan pengajuan peminjaman
+					Swal.fire("Success!", "Peminjaman berhasil diajukan", "success");
+					$('#barang-modal').modal('hide');
+
+					// FIXME
+					// Kosongkan cart untuk pengajuan berikutnya
+					handleEmptyCart();
+				}
+			});
 		});
 	</script>
 @endpush

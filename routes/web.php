@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
@@ -16,17 +17,13 @@ Route::get('/', function () {
 	return view('auth.login');
 });
 
-Route::get('/dashboard', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::post('/store-item', [PeminjamanController::class, 'store'])->middleware(['auth', 'verified']);
 Route::post('edit-item', [PeminjamanController::class, 'edit']);
 
-<<<<<<< HEAD
 Route::get('Riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
-
-=======
->>>>>>> 68ed8a2a0b5d2ade7b37046118ff7be1155a35ec
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
 
 Route::middleware(['auth', 'role:admin'])->group(function() {

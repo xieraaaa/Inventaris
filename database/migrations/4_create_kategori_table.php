@@ -7,19 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Jalankan migrasinya
      */
     public function up(): void
     {
         Schema::create('kategori', function (Blueprint $table) {
             $table->id();
             $table->string('kategori');
-            $table->timestamps();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Hapus migrasinya
      */
     public function down(): void
     {
