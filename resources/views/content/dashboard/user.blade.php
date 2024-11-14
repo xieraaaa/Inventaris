@@ -207,8 +207,8 @@
                 return response.json();
             })
             .then(data => {
-                const itemName = data.name;
-                const itemId = data.id;
+                const itemName   = data.name;
+                const itemId     = data.id;
                 const itemJumlah = data.jumlah;
 
                 document.getElementById('decoded-text').innerText = itemName;

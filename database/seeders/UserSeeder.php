@@ -5,12 +5,11 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Isi tabel 'user' dengan data
      */
     public function run(): void
     {
@@ -34,7 +33,7 @@ class UserSeeder extends Seeder
             ])->removeRole('user')->assignRole('admin');
         }
 
-        if (is_null(User::where('name', 'user')))
+        if (is_null(User::firstWhere('name', 'user')))
         {
             \Illuminate\Support\Facades\Log::info('UserSeeder.php\n\tUser dengan nama \'user\' sudah dibuat');
             

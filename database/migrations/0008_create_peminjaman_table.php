@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_detail_peminjaman');
 
             $table->date('tgl_kembali');
             $table->date('tgl_pinjam');
