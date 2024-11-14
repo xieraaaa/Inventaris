@@ -21,6 +21,10 @@ Route::post('/store-item', [PeminjamanController::class, 'store'])->middleware([
 Route::post('edit-item', [PeminjamanController::class, 'edit']);
 
 
+// routes/api.php
+Route::get('/items/{code}', [PeminjamanController::class, 'show']);
+
+
 Route::get('getDatatables', [BarangController::class, 'getDatatables'])->middleware(['role:user|admin']);
 
 Route::middleware(['auth', 'role:admin'])->group(function() {
