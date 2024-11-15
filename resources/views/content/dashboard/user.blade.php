@@ -248,12 +248,36 @@ function confirmCartSubmission() {
         }
 
         function decreaseQuantity(id) {
-            const item = cart.find(product => product.id === id);
-            if (item.jumlah > 1) {
-                item.jumlah--;
+    const item = cart.find(product => product.id === id);
+    if (item.jumlah > 1) {
+        item.jumlah--;
+        renderCart();
+    } else {
+        // Show confirmation alert when quantity is 1
+        Swal.fire({
+            title: 'Hapus Item',
+            text: `Apakah Anda yakin ingin menghapus ${item.name} dari keranjang?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Remove item from cart
+                cart = cart.filter(product => product.id !== id);
+                renderCart();
+                
+                Swal.fire(
+                    'Terhapus!',
+                    'Item telah dihapus dari keranjang.',
+                    'success'
+                );
             }
-            renderCart();
-        }
+        });
+    }
+}
 
         function updateQuantity(id, quantity) {
             const item = cart.find(product => product.id === id);
