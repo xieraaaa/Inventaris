@@ -111,6 +111,7 @@
 
 @push('scripts')
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script defer src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script defer src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
     <script defer src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
@@ -149,6 +150,29 @@
                 }
             });
         }
+
+        // untuk menampilkan swal konfirmasi
+function confirmCartSubmission() {
+    let cartSummary = "Apakah Anda yakin ingin meminjam barang berikut ini?\n\n";
+    cart.forEach(item => {
+        cartSummary += `nama barang: ${item.name}
+         Jumlah: ${item.jumlah}\n`;
+    });
+
+    Swal.fire({
+        title: 'Konfirmasi Pinjaman',
+        text: cartSummary,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Lanjutkan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#barang-modal').modal('show');
+        }
+    });
+}
+
 
         // Add a product to the cart
         function addToCart(element) {
@@ -230,10 +254,11 @@
             renderCart();
         }
 
-        // Function for handling the checkout modal
         function handleClickSubmit() {
-            $('#barang-modal').modal('show');
-        }
+    // Call the confirmCartSubmission function before proceeding to checkout
+    confirmCartSubmission();
+}
+
 
         // Open QR modal for barcode scanning
         function openQrModal() {
