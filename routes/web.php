@@ -31,7 +31,7 @@ Route::middleware(['auth', 'role:admin'])->group(function() {
 	Route::get('kategori', [kategoriController::class, 'index'])->name('kategori');
 });
 
-Route::get('Riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
+Route::get('riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
 Route::middleware('auth')->group(function () {
 	Route::get('profile',    [ProfileController::class, 'edit'])->name('profile.edit');
