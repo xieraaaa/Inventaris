@@ -50,21 +50,35 @@
             
             success: function(data) {
                 let rows = '';
+
                 data.forEach(function(item) {
-                    rows += `<tr>
-                        <td>${item.id}</td>
-                        <td>${item.id_user}</td>
-                        <td>${item.id_barang}</td>
-                        <td>${item.tgl_pinjam}</td>
-                        <td>${item.tgl_kembali}</td>
-                        <td>${item.status}</td>
-                        <td>
-                            <button class="btn btn-success btn-sm" onclick="updateStatus(${item.id}, 'accepted')"></button>
-                            <button class="btn btn-danger btn-sm" onclick="updateStatus(${item.id}, 'rejected')"></button>
-                        </td>
-                    </tr>`;
+                    let userName;
+
+                    $.ajax({
+                        url: `/peminjaman/detail/${item.id}`,
+
+                        success: function(data) {
+                            data = JSON.parse(data);
+
+                            const userName = data['nama_user'];
+
+                            rows += `<tr>
+                                <td>${item.id}</td>
+                                <td>${userName}</td>
+                                <td>${data.nama_barang}</td>
+                                <td>${item.tgl_pinjam}</td>
+                                <td>${item.tgl_kembali}</td>
+                                <td>${item.status}</td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" onclick="updateStatus(${item.id}, 'accepted')"></button>
+                                    <button class="btn btn-danger btn-sm" onclick="updateStatus(${item.id}, 'rejected')"></button>
+                                </td>
+                            </tr>`;
+
+                            $('#peminjaman-table tbody').html(rows);
+                        }
+                    })
                 });
-                $('#peminjaman-table tbody').html(rows);
             }
         });
     }

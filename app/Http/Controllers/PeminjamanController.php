@@ -13,7 +13,7 @@ class PeminjamanController extends Controller
 {
     /**
      * Menambahkan data pengajuan peminjaman ke database
-     * 
+     *
      * Format data yang dikirim melalui parameter $request berupa:
      *      'data'
      *          sebuah array yang berisikan informasi mengenai barang-barang
@@ -77,6 +77,7 @@ class PeminjamanController extends Controller
     {
         return view('content.peminjaman.user');
     }
+
     public function index()
     {
         return view('content.peminjaman.index');
@@ -149,12 +150,13 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function get(){  
+    public function get(){
         $peminjaman = Peminjaman::where('status', 'pending')->get();
-        
+
         return response()->json($peminjaman);
 
     }
+
     public function updateStatus(Request $request, $id)
     {
         $peminjaman = Peminjaman::find($id);
@@ -167,4 +169,17 @@ class PeminjamanController extends Controller
 
         return response()->json(['message' => 'Status berhasil diperbarui']);
     }
+
+    public function getDetails($id)
+    {
+        return DetailPeminjaman::where('detail-peminjaman.id_peminjaman', $id)
+            ->join('peminjaman', 'peminjaman.id', '=', 'id_peminjaman')
+            ->join('users', 'peminjaman.id_user', '=', 'users.id')
+            ->join('barang', 'id_barang', '=', 'barang.id')
+            ->select('users.name as nama_user', 'barang.nama_barang as nama_barang')
+            ->first()
+            ->toJson();
+    }
+    
+
 }

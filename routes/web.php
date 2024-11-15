@@ -33,6 +33,8 @@ Route::middleware(['auth', 'role:admin'])->group(function() {
 
 Route::get('riwayat',  [PeminjamanController::class, 'riwayat'])->name('riwayat');
 
+Route::get('peminjaman/detail/{id}', [PeminjamanController::class, 'getDetails']);
+
 Route::middleware('auth')->group(function () {
 	Route::get('profile',    [ProfileController::class, 'edit'])->name('profile.edit');
 	Route::post('profile',   [ProfileController::class, 'update'])->name('profile.update');
