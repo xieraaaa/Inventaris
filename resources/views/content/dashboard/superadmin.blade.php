@@ -2,90 +2,58 @@
 
 @section('content')
 <div class="container-fluid">
-        <div class="row page-titles">
-            <div class="col-md-5 align-self-center">
-                <h4 class="text-themecolor">Barang</h4>
-            </div>
-            <div class="col-md-7 align-self-center text-end">
-                <div class="d-flex justify-content-end align-items-center">
-                    <ol class="breadcrumb justify-content-end">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Barang</li>
-                    </ol>
-                </div>
+    <div class="row page-titles">
+        <div class="col-md-5 align-self-center">
+            <h4 class="text-themecolor">Barang</h4>
+        </div>
+        <div class="col-md-7 align-self-center text-end">
+            <div class="d-flex justify-content-end align-items-center">
+                <ol class="breadcrumb justify-content-end">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">Barang</li>
+                </ol>
             </div>
         </div>
-        <div class="card p-3 rounded">
-    <table class="table table-striped table-bordered yajra-datatable" id="peminjaman-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nama Peminjam</th>
-                <th>Nama Barang</th>
-                <th>Tanggal Pinjam</th>
-                <th>Tanggal Kembali</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data akan dimuat di sini melalui Ajax -->
-        </tbody>
-        
-        
-    </table>
     </div>
+    <div class="card p-3 rounded">
+        <table class="table table-striped table-bordered yajra-datatable" id="peminjaman-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Peminjam</th>
+                    <th>Nama Barang</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+        </table>
     </div>
-
-
 </div>
 @endsection
+
 @push('scripts')
 <script>
-    // Fungsi untuk mengambil data peminjaman dan menampilkannya di tabel
-    function loadPeminjaman() {
-        $.ajax({
-            url: '/peminjaman',  // URL untuk mengambil data
-            method: 'GET',
-            
-            success: function(data) {
-                let rows = '';
-
-                data.forEach(function(item) {
-                    let userName;
-
-                    $.ajax({
-                        url: `/peminjaman/detail/${item.id}`,
-
-                        success: function(data) {
-                            data = JSON.parse(data);
-
-                            const userName = data['nama_user'];
-
-                            rows += `<tr>
-                                <td>${item.id}</td>
-                                <td>${userName}</td>
-                                <td>${data.nama_barang}</td>
-                                <td>${item.tgl_pinjam}</td>
-                                <td>${item.tgl_kembali}</td>
-                                <td>${item.status}</td>
-                                <td>
-                                    <button class="btn btn-success btn-sm" onclick="updateStatus(${item.id}, 'accepted')"></button>
-                                    <button class="btn btn-danger btn-sm" onclick="updateStatus(${item.id}, 'rejected')"></button>
-                                </td>
-                            </tr>`;
-
-                            $('#peminjaman-table tbody').html(rows);
-                        }
-                    })
-                });
-            }
+    $(function () {
+        $('#peminjaman-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: `/peminjaman`,
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'nama_user', name: 'nama_user' },
+                { data: 'nama_barang', name: 'nama_barang' },
+                { data: 'tgl_pinjam', name: 'tgl_pinjam' },
+                { data: 'tgl_kembali', name: 'tgl_kembali' },
+                { data: 'status', name: 'status' },
+                { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+            ]
         });
-    }
+    });
 
-    // Fungsi untuk mengubah status peminjaman (approve/reject)
     function updateStatus(id, status) {
-        Swal.fire({
+        Swal.fire({ 
             title: 'Konfirmasi',
             text: `Apakah Anda yakin ingin ${status} peminjaman ini?`,
             icon: 'warning',
@@ -103,7 +71,7 @@
                     },
                     success: function(response) {
                         Swal.fire('Berhasil', response.message, 'success');
-                        loadPeminjaman(); // Reload tabel setelah update
+                        $('#peminjaman-table').DataTable().ajax.reload(); // Reload tabel setelah update
                     },
                     error: function() {
                         Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui status', 'error');
@@ -112,13 +80,5 @@
             }
         });
     }
-
-    // Load data peminjaman saat halaman dimuat
-    $(document).ready(function() {
-        loadPeminjaman();
-    });
 </script>
-
 @endpush
-</body>
-</html>

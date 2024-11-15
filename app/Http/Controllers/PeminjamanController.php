@@ -8,6 +8,7 @@ use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class PeminjamanController extends Controller
 {
@@ -153,7 +154,10 @@ class PeminjamanController extends Controller
     public function get(){
         $peminjaman = Peminjaman::where('status', 'pending')->get();
 
-        return response()->json($peminjaman);
+        return DataTables::of($peminjaman)
+            ->addColumn('action', function ($peminjaman) {
+            })
+            ->make(true);
 
     }
 
@@ -172,14 +176,15 @@ class PeminjamanController extends Controller
 
     public function getDetails($id)
     {
-        return DetailPeminjaman::where('detail-peminjaman.id_peminjaman', $id)
+        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)
             ->join('peminjaman', 'peminjaman.id', '=', 'id_peminjaman')
             ->join('users', 'peminjaman.id_user', '=', 'users.id')
             ->join('barang', 'id_barang', '=', 'barang.id')
             ->select('users.name as nama_user', 'barang.nama_barang as nama_barang')
-            ->first()
-            ->toJson();
+            ->first();
+
+        return DataTables::of($detailPeminjaman)
+            ->make(true);
     }
-    
 
 }
