@@ -70,6 +70,8 @@ Route::prefix('test')->group(function()
 	Route::get('user/barang', [UserController::class, 'getUserDashboard']);
 });
 
+Route::get('/peminjaman', [PeminjamanController::class, 'get']);
+Route::post('/peminjaman/{id}/update-status', [PeminjamanController::class, 'updateStatus']);
 Route::get('/socialite/{driver}', [SocialLoginController::class, 'toProvider'])->where('driver', 'google');
 Route::get('/auth/{driver}/login', [SocialLoginController::class, 'handleCallback'])->where('driver', 'google');
 require __DIR__.'/auth.php';

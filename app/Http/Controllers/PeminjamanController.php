@@ -40,7 +40,7 @@ class PeminjamanController extends Controller
                     'id_user'     => Auth::user()->id,
                     'tgl_pinjam'  => $data['tgl_pinjam'],
                     'tgl_kembali' => $data['tgl_kembali'],
-                    'status'      => '',
+                    'status'      => 'pending',
                     'keterangan'  => $data['keterangan'],
                 ])->id;
 
@@ -76,6 +76,10 @@ class PeminjamanController extends Controller
     public function riwayat()
     {
         return view('content.peminjaman.user');
+    }
+    public function index()
+    {
+        return view('content.peminjaman.index');
     }
 
     /**
@@ -143,5 +147,24 @@ class PeminjamanController extends Controller
         } else {
             return response()->json(['error' => 'Barang not found'], 404);
         }
+    }
+
+    public function get(){  
+        $peminjaman = Peminjaman::where('status', 'pending')->get();
+        
+        return response()->json($peminjaman);
+
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        $peminjaman = Peminjaman::find($id);
+        if (!$peminjaman) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $peminjaman->status = $request->status;
+        $peminjaman->save();
+
+        return response()->json(['message' => 'Status berhasil diperbarui']);
     }
 }
