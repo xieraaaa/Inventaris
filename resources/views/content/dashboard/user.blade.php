@@ -45,20 +45,21 @@
                 <!-- Product items will be rendered here -->
             </div>
             <nav class="mt-3">
-                @php
-                    $paginationLength = 5;
-                @endphp
-                <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
-                    <li data-role="pagination-direction" data-direction="left" class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+    @php
+        $paginationLength = 5;
+    @endphp
+    <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
+        <li data-role="pagination-direction" data-direction="left" class="page-item"><a class="page-link" href="#">&laquo;</a></li>
 
-                    <li onclick="changePage(1)" data-page="1" data-role="pagination-number" class="page-item active"><a class="page-link" href="#">1</a></li>
-                    @for ($idx = 2; $idx <= $paginationLength; ++$idx)
-                        <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item"><a class="page-link" href="#">{{ $idx }}</a></li>
-                    @endfor
+        <li onclick="changePage(1)" data-page="1" data-role="pagination-number" class="page-item active"><a class="page-link" href="#">1</a></li>
+        @for ($idx = 2; $idx <= $paginationLength; ++$idx)
+            <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item"><a class="page-link" href="#">{{ $idx }}</a></li>
+        @endfor
 
-                    <li data-role="pagination-direction" data-direction="right" class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                </ul>
-            </nav>
+        <li data-role="pagination-direction" data-direction="right" class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+    </ul>
+</nav>
+
         </div>
     </div>
 
@@ -106,11 +107,16 @@
         .hover-product-effect:hover {
             background-color: #0291d3 !important;
         }
+        .pagination .page-item.active .page-link {
+        background-color: #0291d3;  /* Highlight color */
+        border-color: #0291d3;
+    }
     </style>
 @endpush
 
 @push('scripts')
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script defer src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script defer src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
     <script defer src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
@@ -137,18 +143,55 @@
         }
 
         function changePage(pageNumber) {
-            $.ajax({
-                dataType   : 'json',
-                url        : '{{ url('get-barang') }}',
-                data       : { 'page': pageNumber },
-                contentType: 'application/json',
+    $.ajax({
+        dataType   : 'json',
+        url        : '{{ url('get-barang') }}',
+        data       : { 'page': pageNumber },
+        contentType: 'application/json',
 
-                success: function(data) {
-                    allProducts = data;  // Save all the products fetched
-                    filterAndRenderProducts(); // Render the products based on search query
-                }
+        success: function(data) {
+            allProducts = data;  // Save all the products fetched
+            filterAndRenderProducts(); // Render the products based on search query
+
+            // Update pagination active class
+            const paginationItems = paginationRoot.querySelectorAll('[data-role="pagination-number"]');
+            paginationItems.forEach(item => {
+                // Remove active class from all items
+                item.classList.remove('active');
             });
+
+            // Add active class to the selected page
+            const activePageItem = paginationRoot.querySelector(`[data-page="${pageNumber}"]`);
+            if (activePageItem) {
+                activePageItem.classList.add('active');
+            }
         }
+    });
+}
+
+
+        // untuk menampilkan swal konfirmasi
+function confirmCartSubmission() {
+    let cartSummary = "Apakah Anda yakin ingin meminjam barang berikut ini?\n\n";
+    cart.forEach(item => {
+        cartSummary += `nama barang: ${item.name}
+         Jumlah: ${item.jumlah}\n`;
+    });
+
+    Swal.fire({
+        title: 'Konfirmasi Pinjaman',
+        text: cartSummary,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Lanjutkan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#barang-modal').modal('show');
+        }
+    });
+}
+
 
         // Add a product to the cart
         function addToCart(element) {
@@ -230,10 +273,11 @@
             renderCart();
         }
 
-        // Function for handling the checkout modal
         function handleClickSubmit() {
-            $('#barang-modal').modal('show');
-        }
+    // Call the confirmCartSubmission function before proceeding to checkout
+    confirmCartSubmission();
+}
+
 
         // Open QR modal for barcode scanning
         function openQrModal() {
