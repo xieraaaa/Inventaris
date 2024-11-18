@@ -46,18 +46,22 @@
             </div>
             <nav class="mt-3">
     @php
-        $paginationLength = 5;
+        $paginationLength =30;
     @endphp
-    <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
-        <li data-role="pagination-direction" data-direction="left" class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+   <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
+    <li data-role="pagination-direction" data-direction="left" class="page-item" onclick="changePage(currentPage - paginationLength)">
+        <a class="page-link" href="#">&laquo;</a>
+    </li>
+    @for ($idx = 1; $idx <= $paginationLength; ++$idx)
+        <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item">
+            <a class="page-link" href="#">{{ $idx }}</a>
+        </li>
+    @endfor
+    <li data-role="pagination-direction" data-direction="right" class="page-item" onclick="changePage(currentPage + paginationLength)">
+        <a class="page-link" href="#">&raquo;</a>
+    </li>
+</ul>
 
-        <li onclick="changePage(1)" data-page="1" data-role="pagination-number" class="page-item active"><a class="page-link" href="#">1</a></li>
-        @for ($idx = 2; $idx <= $paginationLength; ++$idx)
-            <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item"><a class="page-link" href="#">{{ $idx }}</a></li>
-        @endfor
-
-        <li data-role="pagination-direction" data-direction="right" class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-    </ul>
 </nav>
 
         </div>
@@ -126,6 +130,9 @@
     <script defer>
         let cart = []; // { id, name, jumlah }
         let allProducts = []; // To store all products
+        let currentPage = 1;
+        let totalPages = 20; // This should be dynamically calculated from the server-side data
+        const paginationLength = 5; // Number of pages to show at a time
         const productTemplate = document.getElementById('product-item').content.firstElementChild;
         const paginationRoot  = document.getElementById('pagination');
 
@@ -143,30 +150,50 @@
         }
 
         function changePage(pageNumber) {
+    if (pageNumber < 1 || pageNumber > totalPages) return; // Prevent out-of-range page changes
+    currentPage = pageNumber;
+    updatePagination(); // Update the pagination display
+    loadPageData(pageNumber); // Load the data for the selected page
+}
+
+// Load data for the current page
+function loadPageData(pageNumber) {
+    // Perform AJAX request to load the data for the current page
     $.ajax({
-        dataType   : 'json',
-        url        : '{{ url('get-barang') }}',
-        data       : { 'page': pageNumber },
-        contentType: 'application/json',
-
+        dataType: 'json',
+        url: '{{ url('get-barang') }}',
+        data: { 'page': pageNumber },
         success: function(data) {
-            allProducts = data;  // Save all the products fetched
-            filterAndRenderProducts(); // Render the products based on search query
-
-            // Update pagination active class
-            const paginationItems = paginationRoot.querySelectorAll('[data-role="pagination-number"]');
-            paginationItems.forEach(item => {
-                // Remove active class from all items
-                item.classList.remove('active');
-            });
-
-            // Add active class to the selected page
-            const activePageItem = paginationRoot.querySelector(`[data-page="${pageNumber}"]`);
-            if (activePageItem) {
-                activePageItem.classList.add('active');
-            }
+            allProducts = data;
+            filterAndRenderProducts(); // Render the products for the selected page
         }
     });
+}
+
+
+function updatePagination() {
+    const paginationRoot = document.getElementById('pagination');
+    const paginationItems = paginationRoot.querySelectorAll('[data-role="pagination-number"]');
+    const prevButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="left"]');
+    const nextButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="right"]');
+
+    // Calculate the first and last page number in the current set
+    const startPage = Math.floor((currentPage - 1) / paginationLength) * paginationLength + 1;
+    const endPage = Math.min(startPage + paginationLength - 1, totalPages);
+
+    // Update active pages
+    paginationItems.forEach(item => {
+        const pageNumber = parseInt(item.dataset.page);
+        item.style.display = (pageNumber >= startPage && pageNumber <= endPage) ? 'block' : 'none'; // Show only pages in the current set
+        item.classList.remove('active');
+        if (pageNumber === currentPage) {
+            item.classList.add('active');
+        }
+    });
+
+    // Update previous/next button visibility
+    prevButton.style.display = currentPage > 1 ? 'block' : 'none';
+    nextButton.style.display = currentPage < totalPages ? 'block' : 'none';
 }
 
 
@@ -381,7 +408,7 @@ function confirmCartSubmission() {
         // Event listener for search input
         document.getElementById('searchInput').addEventListener('keyup', filterAndRenderProducts);
 
-        // Initialize first page
-        changePage(1);
+        updatePagination();
+        changePage(1); // Start on page 1
     </script>
 @endpush
