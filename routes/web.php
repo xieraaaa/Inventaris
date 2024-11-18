@@ -63,9 +63,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/store-item',           [PeminjamanController::class, 'store']);
     Route::post('edit-item',             [PeminjamanController::class, 'edit']);
 	Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
+	Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
+
 });
 
 // Route::get('/peminjaman', [PeminjamanController::class, 'get']);
+
 
 Route::get('/socialite/{driver}', [SocialLoginController::class, 'toProvider'])->where('driver', 'google');
 Route::get('/auth/{driver}/login', [SocialLoginController::class, 'handleCallback'])->where('driver', 'google');

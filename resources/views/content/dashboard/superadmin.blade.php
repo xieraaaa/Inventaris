@@ -148,6 +148,25 @@
     });
 });
 
+peminjamanTable.on('click', '.btn-reject', function() {
+    const id = $(this).data('id'); // Ambil ID peminjaman
+
+    $.ajax({
+        type: 'POST',
+        url: `/peminjaman/reject/${id}`, // Endpoint Laravel
+        data: {
+            _token: '{{ csrf_token() }}' // Token CSRF
+        },
+        success: (response) => {
+            Swal.fire("Success!", response.message, "success");
+            peminjamanTable.ajax.reload(null, false); // Reload tabel
+        },
+        error: (xhr) => {
+            Swal.fire("Error!", xhr.responseJSON.error || "Failed to delete peminjaman.", "error");
+        }
+    });
+});
+
     </script>
 
 
