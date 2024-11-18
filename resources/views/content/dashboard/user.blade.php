@@ -198,20 +198,29 @@ function updatePagination() {
 
 
         // untuk menampilkan swal konfirmasi
-function confirmCartSubmission() {
-    let cartSummary = "Apakah Anda yakin ingin meminjam barang berikut ini?\n\n";
+        function confirmCartSubmission() {
+    let cartSummary = '<ul>'; // Start a list for better formatting
     cart.forEach(item => {
-        cartSummary += `nama barang: ${item.name}
-         Jumlah: ${item.jumlah}\n`;
+        cartSummary += `
+            <li><strong>Nama Barang:</strong> ${item.name} <br>
+            <strong>Jumlah:</strong> ${item.jumlah}</li><br>
+        `;
     });
+    cartSummary += '</ul>'; // End the list
 
     Swal.fire({
         title: 'Konfirmasi Pinjaman',
-        text: cartSummary,
+        html: `
+            ${cartSummary} <!-- Insert the formatted list of items -->
+            <p><strong>Apakah Anda yakin ingin meminjam barang-barang di atas?</strong></p>
+        `,
         icon: 'info',
         showCancelButton: true,
         confirmButtonText: 'Ya, Lanjutkan',
-        cancelButtonText: 'Batal'
+        cancelButtonText: 'Batal',
+        customClass: {
+            content: 'text-left', // Align text to the left for better readability
+        }
     }).then((result) => {
         if (result.isConfirmed) {
             $('#barang-modal').modal('show');
