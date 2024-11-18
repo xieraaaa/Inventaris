@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class peminjaman extends Model
+class Peminjaman extends Model
 {
     protected $table = 'peminjaman';
 
     protected $fillable = [
-        'id_barang',
         'id_user',
         'tgl_pinjam',
         'tgl_kembali',
@@ -17,12 +16,18 @@ class peminjaman extends Model
         'status',
     ];
 
-    public function Barang() {
-        return $this->belongsTo(barang::class, 'id_barang');
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function user() {
-        return $this->belongsTo(User::class, 'id');
+    public function detail()
+    {
+        return $this->hasMany(DetailPeminjaman::class, 'id_peminjaman');
     }
-    
+
+    public function barang()
+    {
+        return $this->belongsToMany(Barang::class, 'detail-peminjaman', 'id_peminjaman', 'id_barang');
+    }
 }

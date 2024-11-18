@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
 	Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
 	Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 
-	Route::get('Peminjaman',         [PeminjamanController::class, 'index'])->name('minjam');
+	Route::get('peminjaman',         [PeminjamanController::class, 'get'])->name('minjam');
 	Route::post('tambah-peminjaman', [PeminjamanController::class, 'add']);
 });
 

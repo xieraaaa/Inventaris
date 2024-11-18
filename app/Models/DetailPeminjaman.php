@@ -13,6 +13,11 @@ class DetailPeminjaman extends Model {
         'jumlah'
     ];
 
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'id_barang');
+    }
+
     public function peminjaman()
     {
         return $this->belongsTo(Peminjaman::class, 'id_peminjaman');

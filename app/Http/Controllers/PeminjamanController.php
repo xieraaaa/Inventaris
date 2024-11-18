@@ -56,7 +56,8 @@ class PeminjamanController extends Controller
                             'id_barang'     => $barang->id,
                             'jumlah'        => $datum['jumlah']
                         ]);
-                    } else {
+                    }
+                    else {
                         // Handle the case where the barang is not found
                         return response()->json(['error' => 'Barang with kode_barang ' . $id . ' not found'], 404);
                     }
@@ -151,16 +152,6 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function get(){
-        $peminjaman = Peminjaman::where('status', 'pending')->get();
-
-        return DataTables::of($peminjaman)
-            ->addColumn('action', function ($peminjaman) {
-            })
-            ->make(true);
-
-    }
-
     public function updateStatus(Request $request, $id)
     {
         $peminjaman = Peminjaman::find($id);
@@ -174,17 +165,34 @@ class PeminjamanController extends Controller
         return response()->json(['message' => 'Status berhasil diperbarui']);
     }
 
+    /**
+     * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
+     * Diakses dari rute 'peminjaman/detail/{id}/'
+     */
     public function getDetails($id)
     {
-        $detailPeminjaman = DetailPeminjaman::where('id_peminjaman', $id)
-            ->join('peminjaman', 'peminjaman.id', '=', 'id_peminjaman')
-            ->join('users', 'peminjaman.id_user', '=', 'users.id')
-            ->join('barang', 'id_barang', '=', 'barang.id')
-            ->select('users.name as nama_user', 'barang.nama_barang as nama_barang')
-            ->first();
+        $data = [];
 
-        return DataTables::of($detailPeminjaman)
-            ->make(true);
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->get();
+        foreach ($peminjamanData as $peminjaman) {
+            $buffer = [];
+
+            $buffer['id']          = $peminjaman['id'];
+            $buffer['nama_user']   = $peminjaman->user->name;
+            $buffer['tgl_pinjam']  = $peminjaman['tgl_pinjam'];
+            $buffer['tgl_kembali'] = $peminjaman['tgl_kembali'];
+            $buffer['keterangan']  = $peminjaman['keterangan'];
+            $buffer['barang']      = $peminjaman->detail->map(function ($item) {
+                return $item->barang->setVisible([
+                    'kode_barang',
+                    'nama_barang',
+                    'jumlah'
+                ]);
+            });
+
+            array_push($data, $buffer);
+        }
+
+        return $data;
     }
-
 }

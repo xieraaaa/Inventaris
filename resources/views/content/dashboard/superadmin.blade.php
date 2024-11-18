@@ -19,6 +19,7 @@
         <table class="table table-striped table-bordered yajra-datatable" id="peminjaman-table">
             <thead>
                 <tr>
+                    {{--
                     <th>ID</th>
                     <th>Nama Peminjam</th>
                     <th>Nama Barang</th>
@@ -26,6 +27,7 @@
                     <th>Tanggal Kembali</th>
                     <th>Status</th>
                     <th>Aksi</th>
+                    --}}
                 </tr>
             </thead>
         </table>
@@ -34,51 +36,75 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(function () {
-        $('#peminjaman-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: `/peminjaman`,
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'nama_user', name: 'nama_user' },
-                { data: 'nama_barang', name: 'nama_barang' },
-                { data: 'tgl_pinjam', name: 'tgl_pinjam' },
-                { data: 'tgl_kembali', name: 'tgl_kembali' },
-                { data: 'status', name: 'status' },
-                { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
-            ]
-        });
-    });
+    <script>
+        function createChild(data) {
+            return `<span><b>${data.nama_barang}</b>: ${data.jumlah}</span>`;
+        }
+    
+        function format(data) {
+            let str = '';
 
-    function updateStatus(id, status) {
-        Swal.fire({ 
-            title: 'Konfirmasi',
-            text: `Apakah Anda yakin ingin ${status} peminjaman ini?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya',
-            cancelButtonText: 'Tidak'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/peminjaman/${id}/update-status`,
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        status: status
-                    },
-                    success: function(response) {
-                        Swal.fire('Berhasil', response.message, 'success');
-                        $('#peminjaman-table').DataTable().ajax.reload(); // Reload tabel setelah update
-                    },
-                    error: function() {
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui status', 'error');
-                    }
-                });
+            for (const barang of data.barang) {
+                str += createChild(barang) + '<br />';
+            }
+
+            return str;
+        }
+    
+        const peminjamanTable = $('#peminjaman-table').DataTable({
+            ajax: {
+                url: 'peminjaman/detail/1',
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    className     : 'dt-control',
+                    data          : null,
+                    orderable     : false,
+                    defaultContent: ''
+                },
+                {
+                    data : 'id',
+                    title: 'ID'
+                },
+                {
+                    data : 'nama_user',
+                    title: 'Nama User'
+                },
+                {
+                    data     : 'tgl_pinjam',
+                    title    : 'Tanggal Peminjaman',
+                    orderable: false
+                },
+                {
+                    data     : 'tgl_kembali',
+                    title    : 'Tanggal Pengembalian',
+                    orderable: false
+                },
+                {
+                    data     : 'keterangan',
+                    title    : 'Keterangan',
+                    orderable: false
+                },
+                {
+                    data   : 'barang',
+                    visible: false
+                }
+            ],
+            order: [[1, 'asc']]
+        });
+
+        peminjamanTable.on('click', 'td.dt-control', evt => {
+            const rowElement = evt.target.closest('tr');
+            const row        = peminjamanTable.row(rowElement);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+            }
+            else {
+                row.child(format(row.data()));
+                row.child.show();
             }
         });
-    }
-</script>
+    </script>
 @endpush

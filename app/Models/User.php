@@ -39,6 +39,11 @@ class User extends Authenticatable
         'created' => UserCreated::class
     ];
 
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'id_user');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -48,7 +53,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 }
