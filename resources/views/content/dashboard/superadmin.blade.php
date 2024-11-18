@@ -87,9 +87,27 @@
                     orderable: false
                 },
                 {
-                    data   : 'barang',
-                    visible: false
+                    data     : 'status',
+                    title    : 'Status',
+                    orderable: false
+                },
+                {
+                    data: null,
+                    title: 'Action',
+                    orderable: false,
+                    render: function(data, type, row) {
+
+                        return `
+                            <button class="btn btn-success btn-accept" data-id="${row.id}">
+                                <i class="fas fa-check"></i> Accept
+                            </button>
+                            <button class="btn btn-danger btn-reject" data-id="${row.id}">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        `;
+                    }
                 }
+
             ],
             order: [[1, 'asc']]
         });
@@ -106,5 +124,30 @@
                 row.child.show();
             }
         });
+
+
+        peminjamanTable.on('click', '.btn-accept', function() {
+    const id = $(this).data('id'); // Ambil ID peminjaman
+    const newStatus = 'dipinjam'; // Status baru
+
+    $.ajax({
+        type: 'POST',
+        url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
+        data: {
+            _token: '{{ csrf_token() }}', // Token CSRF
+            status: newStatus // Status baru yang akan dikirim
+        },
+        success: (response) => {
+            Swal.fire("Success!", response.message, "success");
+            peminjamanTable.ajax.reload(null, false); // Reload tabel
+        },
+        error: (xhr) => {
+            Swal.fire("Error!", xhr.responseJSON.error || "Failed to update status.", "error");
+        }
+    });
+});
+
     </script>
+
+
 @endpush

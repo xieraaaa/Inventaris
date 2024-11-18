@@ -175,7 +175,7 @@ function confirmCartSubmission() {
     let cartSummary = "Apakah Anda yakin ingin meminjam barang berikut ini?\n\n";
     cart.forEach(item => {
         cartSummary += `nama barang: ${item.name}
-         Jumlah: ${item.jumlah}\n`;
+         Jumlah: ${item.jumlah}\n `;
     });
 
     Swal.fire({

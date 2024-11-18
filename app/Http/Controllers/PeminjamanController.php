@@ -36,28 +36,27 @@ class PeminjamanController extends Controller
 
         // Ensure the 'data' key exists and is an array
         if (isset($data['data']) && is_array($data['data'])) {
-            DB::transaction(function() use ($data, $request) {
+            DB::transaction(function () use ($data, $request) {
                 $idPeminjaman = Peminjaman::create([
-                    'id_user'     => Auth::user()->id,
-                    'tgl_pinjam'  => $data['tgl_pinjam'],
+                    'id_user' => Auth::user()->id,
+                    'tgl_pinjam' => $data['tgl_pinjam'],
                     'tgl_kembali' => $data['tgl_kembali'],
-                    'status'      => 'pending',
-                    'keterangan'  => $data['keterangan'],
+                    'status' => 'pending',
+                    'keterangan' => $data['keterangan'],
                 ])->id;
 
                 foreach ($data['data'] as $datum) {
-                    $id     = $datum['id'];
+                    $id = $datum['id'];
                     $barang = Barang::firstWhere('kode_barang', $id);
 
                     // Pastikan barang ada di database
                     if ($barang) {
                         DetailPeminjaman::create([
                             'id_peminjaman' => $idPeminjaman,
-                            'id_barang'     => $barang->id,
-                            'jumlah'        => $datum['jumlah']
+                            'id_barang' => $barang->id,
+                            'jumlah' => $datum['jumlah']
                         ]);
-                    }
-                    else {
+                    } else {
                         // Handle the case where the barang is not found
                         return response()->json(['error' => 'Barang with kode_barang ' . $id . ' not found'], 404);
                     }
@@ -95,12 +94,11 @@ class PeminjamanController extends Controller
 
         if ($barang) {
             return response()->json([
-                'id'     => $code,
-                'name'   => $barang->nama_barang,
+                'id' => $code,
+                'name' => $barang->nama_barang,
                 'jumlah' => $barang->jumlah,
             ]);
-        }
-        else {
+        } else {
             return response()->json(['message' => 'Barang not found'], 404);
         }
     }
@@ -112,19 +110,19 @@ class PeminjamanController extends Controller
     {
         // Validate the request inputs
         $request->validate([
-            'mdate'  => 'required|date_format:Y-m-d',
-            'pdate'  => 'required|date_format:Y-m-d|after_or_equal:mdate',
+            'mdate' => 'required|date_format:Y-m-d',
+            'pdate' => 'required|date_format:Y-m-d|after_or_equal:mdate',
             'jumlah' => 'required|min:1|numeric',
         ]);
 
         // Create the new peminjaman record
         $peminjaman = Peminjaman::create([
-            'id_user'     => $request->id_user,
-            'id_barang'   => $request->id_barang,
-            'tgl_pinjam'  => $request->mdate,
+            'id_user' => $request->id_user,
+            'id_barang' => $request->id_barang,
+            'tgl_pinjam' => $request->mdate,
             'tgl_kembali' => $request->pdate,
-            'keterangan'  => $request->keterangan ?? '',
-            'status'      => 'pending'
+            'keterangan' => $request->keterangan ?? '',
+            'status' => 'pending'
         ]);
 
         // Return the created peminjaman data
@@ -152,18 +150,22 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function updateStatus(Request $request, $id)
+    public function acceptPeminjaman(Request $request, $id)
     {
-        $peminjaman = Peminjaman::find($id);
-        if (!$peminjaman) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        // Find the peminjaman entry by ID
+        $peminjaman = peminjaman::find($id);
+
+        if ($peminjaman) {
+            // Update the status to 'di pinjam'
+            $peminjaman->status = 'di pinjam';
+            $peminjaman->save();
+
+            return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
+        } else {
+            return response()->json(['error' => 'Peminjaman not found'], 404);
         }
-
-        $peminjaman->status = $request->status;
-        $peminjaman->save();
-
-        return response()->json(['message' => 'Status berhasil diperbarui']);
     }
+
 
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
@@ -171,18 +173,20 @@ class PeminjamanController extends Controller
      */
     public function getDetails($id)
     {
+
         $data = [];
 
         $peminjamanData = Peminjaman::with(['detail', 'user'])->get();
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
-            $buffer['id']          = $peminjaman['id'];
-            $buffer['nama_user']   = $peminjaman->user->name;
-            $buffer['tgl_pinjam']  = $peminjaman['tgl_pinjam'];
+            $buffer['id'] = $peminjaman['id'];
+            $buffer['nama_user'] = $peminjaman->user->name;
+            $buffer['tgl_pinjam'] = $peminjaman['tgl_pinjam'];
             $buffer['tgl_kembali'] = $peminjaman['tgl_kembali'];
-            $buffer['keterangan']  = $peminjaman['keterangan'];
-            $buffer['barang']      = $peminjaman->detail->map(function ($item) {
+            $buffer['keterangan'] = $peminjaman['keterangan'];
+            $buffer['status'] = $peminjaman['status'];
+            $buffer['barang'] = $peminjaman->detail->map(function ($item) {
                 return $item->barang->setVisible([
                     'kode_barang',
                     'nama_barang',
