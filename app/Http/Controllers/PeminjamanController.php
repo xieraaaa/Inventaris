@@ -166,6 +166,28 @@ class PeminjamanController extends Controller
         }
     }
 
+    public function rejectPeminjaman(Request $request, $id)
+    {
+        // Cari peminjaman berdasarkan ID
+        $peminjaman = Peminjaman::find($id);
+    
+        if ($peminjaman) {
+            // Hapus data peminjaman beserta detailnya
+            DB::transaction(function () use ($peminjaman) {
+                // Hapus detail peminjaman
+                $peminjaman->detail()->delete();
+    
+                // Hapus peminjaman utama
+                $peminjaman->delete();
+            });
+    
+            return response()->json(['message' => 'Peminjaman has been deleted successfully']);
+        } else {
+            return response()->json(['error' => 'Peminjaman not found'], 404);
+        }
+    }
+    
+
 
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
