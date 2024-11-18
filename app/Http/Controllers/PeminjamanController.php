@@ -200,5 +200,32 @@ class PeminjamanController extends Controller
         return $data;
     }
 
-    
+    public function detailAdmin($id)
+    {
+
+        $data = [];
+
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'di pinjam')->get();
+        foreach ($peminjamanData as $peminjaman) {
+            $buffer = [];
+
+            $buffer['id'] = $peminjaman['id'];
+            $buffer['nama_user'] = $peminjaman->user->name;
+            $buffer['tgl_pinjam'] = $peminjaman['tgl_pinjam'];
+            $buffer['tgl_kembali'] = $peminjaman['tgl_kembali'];
+            $buffer['keterangan'] = $peminjaman['keterangan'];
+            $buffer['status'] = $peminjaman['status'];
+            $buffer['barang'] = $peminjaman->detail->map(function ($item) {
+                return $item->barang->setVisible([
+                    'kode_barang',
+                    'nama_barang',
+                    'jumlah'
+                ]);
+            });
+
+            array_push($data, $buffer);
+        }
+
+        return $data;
+    }
 }

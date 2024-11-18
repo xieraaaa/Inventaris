@@ -42,7 +42,7 @@
                         <th>Name</th>
                         <th width="150px">Action</th>
                     </tr>
-                </thead>
+                </thead>    
             </table>
         </div>
     </div>
