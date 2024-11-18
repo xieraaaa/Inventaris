@@ -176,7 +176,7 @@ class PeminjamanController extends Controller
 
         $data = [];
 
-        $peminjamanData = Peminjaman::with(['detail', 'user'])->get();
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'pending')->get();
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
@@ -199,4 +199,6 @@ class PeminjamanController extends Controller
 
         return $data;
     }
+
+    
 }

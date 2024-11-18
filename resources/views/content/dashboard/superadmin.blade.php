@@ -55,6 +55,7 @@
             ajax: {
                 url: 'peminjaman/detail/1',
                 dataSrc: ''
+                
             },
             columns: [
                 {
@@ -92,21 +93,21 @@
                     orderable: false
                 },
                 {
-                    data: null,
-                    title: 'Action',
-                    orderable: false,
-                    render: function(data, type, row) {
+    data: null,
+    title: 'Action',
+    orderable: false,
+    render: function(data, type, row) {
+        return `
+            <button class="btn btn-success btn-accept" data-id="${row.id}">
+                <i class="fas fa-check"></i> Accept
+            </button>
+            <button class="btn btn-danger btn-reject" data-id="${row.id}">
+                <i class="fas fa-times"></i> Reject
+            </button>
+        `;
+    }
+}
 
-                        return `
-                            <button class="btn btn-success btn-accept" data-id="${row.id}">
-                                <i class="fas fa-check"></i> Accept
-                            </button>
-                            <button class="btn btn-danger btn-reject" data-id="${row.id}">
-                                <i class="fas fa-times"></i> Reject
-                            </button>
-                        `;
-                    }
-                }
 
             ],
             order: [[1, 'asc']]
