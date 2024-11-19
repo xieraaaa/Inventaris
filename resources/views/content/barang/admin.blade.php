@@ -254,59 +254,59 @@
                 responsive: true,
                 autoWidth: true, // Allow automatic column width adjustments
                 columns: [{
-                        data: null,
-                        name: 'id',
-                        title: 'ID',
-                        orderable: false,
+                        data      : null,
+                        name      : 'id',
+                        title     : 'ID',
+                        orderable : false,
                         searchable: false,
-                        render: function(data, type, row, meta) {
+                        render    : function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
                         }
                     },
                     {
-                        data: 'kode_barang',
-                        name: 'kode_barang',
+                        data : 'kode_barang',
+                        name : 'kode_barang',
                         title: 'Kode Barang',
                     },
                     {
-                        data: 'nama_barang',
-                        name: 'nama_barang',
+                        data : 'nama_barang',
+                        name : 'nama_barang',
                         title: 'Nama Barang',
                     },
                     {
-                        data: 'kategori',
-                        name: 'kategori',
+                        data : 'kategori',
+                        name : 'kategori',
                         title: 'Kategori',
                     },
                     {
-                        data: 'unit',
-                        name: 'unit',
+                        data : 'unit',
+                        name : 'unit',
                         title: 'Unit',
                     },
                     {
-                        data: 'merek',
-                        name: 'merek',
+                        data : 'merek',
+                        name : 'merek',
                         title: 'Merek',
                     },
                     {
-                        data: 'kondisi_label',
-                        name: 'kondisi_label',
+                        data : 'kondisi_label',
+                        name : 'kondisi_label',
                         title: 'Kondisi Label',
                     },
                     {
-                        data: 'jumlah',
-                        name: 'jumlah',
+                        data : 'jumlah',
+                        name : 'jumlah',
                         title: 'Jumlah',
                     },
                     {
-                        data: 'keterangan',
-                        name: 'keterangan',
+                        data : 'keterangan',
+                        name : 'keterangan',
                         title: 'Keterangan',
                     },
                     {
-                        data: 'action',
-                        name: 'action',
-                        title: 'Action',
+                        data     : 'action',
+                        name     : 'action',
+                        title    : 'Action',
                         className: 'action',
                         orderable: false
                     }
