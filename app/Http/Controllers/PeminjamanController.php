@@ -194,12 +194,41 @@ class PeminjamanController extends Controller
         }
     }
     
+    public function history()
+    {
+        $data = [];
 
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'pending')->where('id_user', Auth::user()->id)->get();
+        foreach ($peminjamanData as $peminjaman) {
+            $buffer = [];
+
+            $buffer['id']          = $peminjaman['id'];
+            $buffer['nama_user']   = $peminjaman->user->name;
+            $buffer['tgl_pinjam']  = $peminjaman['tgl_pinjam'];
+            $buffer['tgl_kembali'] = $peminjaman['tgl_kembali'];
+            $buffer['keterangan']  = $peminjaman['keterangan'];
+            $buffer['status']      = $peminjaman['status'];
+            $buffer['barang']      = $peminjaman->detail->map(function ($item) {
+                $item->barang->setVisible(['nama_barang']);
+                
+                $barang = $item->barang->toArray();
+
+                $barang['jumlah'] = $item->jumlah;
+
+                return $barang;
+            });
+
+            array_push($data, $buffer);
+        }
+
+        return $data;
+    }
 
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
      * Diakses dari rute 'peminjaman/detail/{id}/'
-     */ public function getDetails($id)
+     */ 
+    public function getDetails()
     {
         $data = [];
 
@@ -229,7 +258,7 @@ class PeminjamanController extends Controller
         return $data;
     }
 
-    public function detailAdmin($id)
+    public function detailAdmin()
     {
 
         $data = [];
@@ -240,9 +269,9 @@ class PeminjamanController extends Controller
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
-            $buffer['id'] = $peminjaman['id'];
-            $buffer['nama_user'] = $peminjaman->user->name;
-            $buffer['tgl_pinjam'] = $peminjaman['tgl_pinjam'];
+            $buffer['id']          = $peminjaman['id'];
+            $buffer['nama_user']   = $peminjaman->user->name;
+            $buffer['tgl_pinjam']  = $peminjaman['tgl_pinjam'];
             $buffer['tgl_kembali'] = $peminjaman['tgl_kembali'];
             $buffer['keterangan'] = $peminjaman['keterangan'];
             $buffer['status'] = $peminjaman['status'];

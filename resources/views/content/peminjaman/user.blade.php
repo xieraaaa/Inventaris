@@ -25,18 +25,73 @@
             </div>
             <div class="card-body">
                 <table class="table" id="peminjaman">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Barang</th>
-                            <th>Nama Peminjam</th>
-                            <th>Tanggal Pinjam</th>                       
-                            <th>Tanggal Kembali</th>
-                            <th>deskripsi</th>
-                            <th width="150px">Action</th>
-                        </tr>
                 </table>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script defer>
+        function createChild(data) {
+            return `<span><b>${data.nama_barang}</b>: ${data.jumlah}</span>`;
+        }
+    
+        function format(data) {
+            let str = '';
+
+            for (const barang of data.barang) {
+                str += createChild(barang) + '<br />';
+            }
+
+            return str;
+        }
+    
+        const table = $('#peminjaman').DataTable({
+            ajax: {
+                url    : `peminjaman/riwayat`,
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    className     : 'dt-control',
+                    data          : null,
+                    orderable     : false,
+                    defaultContent: '',
+                    width         : 40
+                },
+                {
+                    data      : null,
+                    name      : 'id',
+                    title     : 'No.',
+                    searchable: false,
+                    render    : function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
+                    }
+                },
+                {
+                    data : 'keterangan',
+                    title: 'Keterangan'
+                },
+                {
+                    data : 'tgl_pinjam',
+                    title: 'Tanggal Pinjam'
+                }
+            ],
+            order: [1, 'asc']
+        });
+
+        table.on('click', 'td.dt-control', evt => {
+            const rowElement = evt.target.closest('tr');
+            const row        = table.row(rowElement);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+            }
+            else {
+                row.child(format(row.data()));
+                row.child.show();
+            }
+        });
+    </script>
+@endpush
