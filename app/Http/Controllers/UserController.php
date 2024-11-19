@@ -59,7 +59,7 @@ class UserController extends Controller
         
         if ($user->hasRole('user'))
         {
-            return view('content.pos.index');
+            return view('content.dashboard.user');
         }
         else if ($user->hasRole('admin'))
         {

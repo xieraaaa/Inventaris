@@ -234,7 +234,9 @@ class PeminjamanController extends Controller
 
         $data = [];
 
-        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'Approved')->get();
+        $peminjamanData = Peminjaman::with(['detail', 'user'])
+            ->whereIn('status', ['Approved', 'di pinjam'])
+            ->get();
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
@@ -245,11 +247,13 @@ class PeminjamanController extends Controller
             $buffer['keterangan'] = $peminjaman['keterangan'];
             $buffer['status'] = $peminjaman['status'];
             $buffer['barang'] = $peminjaman->detail->map(function ($item) {
-                return $item->barang->setVisible([
-                    'kode_barang',
-                    'nama_barang',
-                    'jumlah'
-                ]);
+                $item->barang->setVisible(['nama_barang']);
+                
+                $barang = $item->barang->toArray();
+
+                $barang['jumlah'] = $item->jumlah;
+
+                return $barang;
             });
 
             array_push($data, $buffer);
@@ -263,14 +267,37 @@ class PeminjamanController extends Controller
         // Find the peminjaman entry by ID
         $peminjaman = peminjaman::find($id);
 
-        if ($peminjaman) {
+        if ($peminjaman && $peminjaman->status !== 'di pinjam') {
             // Update the status to 'di pinjam'
             $peminjaman->status = 'di pinjam';
             $peminjaman->save();
 
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
         } else {
-            return response()->json(['error' => 'Peminjaman not found'], 404);
+            return response()->json(['error' => 'Peminjaman not found or already di pinjam'], 404);
+        }
+    }
+
+    public function peminjamanKembali(Request $request, $id)
+    {
+        $peminjaman = Peminjaman::find($id);
+
+        if ($peminjaman) {
+            // Update the status to 'di pinjam'
+            $peminjaman->status = 'di kembalikan';
+            $peminjaman->save();
+
+            $details = $peminjaman->detail;
+
+            foreach ($details as $detail) {
+                $barang = $detail->barang;
+                $barang->jumlah = $barang->jumlah + $detail->jumlah;
+                $barang->save(); 
+            }
+
+            return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
+        } else {
+            return response()->json(['error' => 'Peminjaman gagal ditemukan!'], 404);
         }
     }
 }

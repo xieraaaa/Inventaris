@@ -99,6 +99,9 @@
                         return `
             <button class="btn btn-success btn-accept" data-id="${row.id}">
                 <i class="fas fa-check"></i> Accept
+            </button>
+            <button class="btn btn-success btn-kembali" data-id="${row.id}">
+                <i class="fas fa-check"></i> kembali
             </button>`
                     }
                 }
@@ -121,6 +124,18 @@
             }
         });
 
+        peminjamanTable.on('draw.dt', function () {
+            peminjamanTable.rows().every(function () {
+                const row = this;
+                const data = row.data();
+                if (data.status === 'di pinjam') {
+                    $(row.node()).find('.btn-accept').hide();
+                }else {
+                    $(row.node()).find('.btn-kembali').hide();
+                }
+            });
+        });
+
         peminjamanTable.on('click', '.btn-accept', function() {
             const id = $(this).data('id'); // Ambil ID peminjaman
             const newStatus = 'di pinjam'; // Status baru
@@ -128,6 +143,27 @@
             $.ajax({
                 type: 'POST',
                 url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
+                data: {
+                    _token: '{{ csrf_token() }}', // Token CSRF
+                    status: newStatus // Status baru yang akan dikirim
+                },
+                success: (response) => {
+                    Swal.fire("Success!", response.message, "success");
+                    peminjamanTable.ajax.reload(null, false); // Reload tabel
+                },
+                error: (xhr) => {
+                    Swal.fire("Error!", xhr.responseJSON.error || "Failed to update status.", "error");
+                }
+            });
+        });
+
+        peminjamanTable.on('click', '.btn-kembali', function() {
+            const id = $(this).data('id'); // Ambil ID peminjaman
+            const newStatus = 'di kembalikan'; // Status baru
+
+            $.ajax({
+                type: 'POST',
+                url: `/peminjaman/kembali-status/${id}`, // Endpoint Laravel
                 data: {
                     _token: '{{ csrf_token() }}', // Token CSRF
                     status: newStatus // Status baru yang akan dikirim

@@ -40,6 +40,19 @@ Route::middleware('auth')->group(function () {
         Route::post('edit-kategori',    [kategoriController::class, 'edit']);
         Route::post('delete-kategori',  [kategoriController::class, 'destroy']);
         Route::post('/kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
+
+        Route::get('peminjaman',                      [PeminjamanController::class, 'index'])->name('minjam');
+        Route::get('riwayat',                         [PeminjamanController::class, 'riwayat'])->name('riwayat');
+        Route::get('peminjaman/detail/{id}',          [PeminjamanController::class, 'getDetails']);
+        Route::get('detal/Admin/{id}',                [PeminjamanController::class, 'detailAdmin']);
+        Route::get('/items/{code}',                   [PeminjamanController::class, 'show']);
+        Route::post('tambah-peminjaman',              [PeminjamanController::class, 'add']);
+        Route::post('/store-item',                    [PeminjamanController::class, 'store']);
+        Route::post('edit-item',                      [PeminjamanController::class, 'edit']);
+        Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
+        Route::post('/peminjaman/admin-status/{id}', [PeminjamanController::class, 'acceptStatus']);
+        Route::post('/peminjaman/kembali-status/{id}', [PeminjamanController::class, 'peminjamanKembali']);
+        Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
     });
     
 	Route::get('profile',    [ProfileController::class, 'edit'])->name('profile.edit');
@@ -54,17 +67,7 @@ Route::middleware('auth')->group(function () {
 	Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
 	Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 
-	Route::get('peminjaman',                      [PeminjamanController::class, 'index'])->name('minjam');
-    Route::get('riwayat',                         [PeminjamanController::class, 'riwayat'])->name('riwayat');
-    Route::get('peminjaman/detail/{id}',          [PeminjamanController::class, 'getDetails']);
-    Route::get('detal/Admin/{id}',                [PeminjamanController::class, 'detailAdmin']);
-    Route::get('/items/{code}',                   [PeminjamanController::class, 'show']);
-	Route::post('tambah-peminjaman',              [PeminjamanController::class, 'add']);
-    Route::post('/store-item',                    [PeminjamanController::class, 'store']);
-    Route::post('edit-item',                      [PeminjamanController::class, 'edit']);
-	Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
-	Route::post('/peminjaman/admin-status/{id}', [PeminjamanController::class, 'acceptStatus']);
-	Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
+
 
 });
 
