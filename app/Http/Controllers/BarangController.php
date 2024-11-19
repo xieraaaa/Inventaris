@@ -79,7 +79,7 @@ class BarangController extends Controller
     public function get(Request $request)
     {
         $itemsToSkip = $request->page * 5;
-        return Barang::skip($itemsToSkip)->take(20)->orderBy('nama_barang', 'asc')->get();
+        return Barang::where('jumlah', '>', 0)->skip($itemsToSkip)->take(20)->orderBy('nama_barang', 'asc')->get();
     }
     
     /**

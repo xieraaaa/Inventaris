@@ -63,10 +63,6 @@
 </ul>
 
 </nav>
-
-        </div>
-    </div>
-
     <template id="product-item">
         <div
             style="height: 100px; width: 200px;"
@@ -150,25 +146,25 @@
         }
 
         function changePage(pageNumber) {
-    if (pageNumber < 1 || pageNumber > totalPages) return; // Prevent out-of-range page changes
-    currentPage = pageNumber;
-    updatePagination(); // Update the pagination display
-    loadPageData(pageNumber); // Load the data for the selected page
-}
-
-// Load data for the current page
-function loadPageData(pageNumber) {
-    // Perform AJAX request to load the data for the current page
-    $.ajax({
-        dataType: 'json',
-        url: '{{ url('get-barang') }}',
-        data: { 'page': pageNumber },
-        success: function(data) {
-            allProducts = data;
-            filterAndRenderProducts(); // Render the products for the selected page
+            if (pageNumber < 1 || pageNumber > totalPages)
+                return;
+            currentPage = pageNumber;
+            updatePagination(); // Update the pagination display
+            loadPageData(pageNumber); // Load the data for the selected page
         }
-    });
-}
+
+        function loadPageData(pageNumber) {
+            // Perform AJAX request to load the data for the current page
+            $.ajax({
+                dataType: 'json',
+                url: '{{ url('get-barang') }}',
+                data: { 'page': pageNumber },
+                success: function(data) {
+                    allProducts = data;
+                    filterAndRenderProducts(); // Render the products for the selected page
+                }
+            });
+        }
 
 
 function updatePagination() {
@@ -406,8 +402,8 @@ function updatePagination() {
                 const html = productTemplate.cloneNode(true);
                 html.dataset.id = product.kode_barang;
 
-                html.querySelector('[data-role="name"]').innerText = product.nama_barang;
-                html.querySelector('[data-role="name"]').title = product.nama_barang;
+                html.querySelector('[data-role="name"]').innerText   = product.nama_barang;
+                html.querySelector('[data-role="name"]').title       = product.nama_barang;
                 html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
 
                 listProductContainer.appendChild(html);

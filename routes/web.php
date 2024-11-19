@@ -47,21 +47,21 @@ Route::middleware('auth')->group(function () {
 	Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 	Route::get('get-barang',     [BarangController::class, 'get']);
-    Route::get('getDatatables', [BarangController::class, 'getDatatables']);
+    Route::get('getDatatables',  [BarangController::class, 'getDatatables']);
 	Route::post('store-barang',  [BarangController::class, 'store']);
 	Route::post('edit-barang',   [BarangController::class, 'edit']);
 	Route::post('delete-barang', [BarangController::class, 'destroy']);
 	Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
 	Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 
-	Route::get('peminjaman',             [PeminjamanController::class, 'index'])->name('minjam');
-    Route::get('riwayat',                [PeminjamanController::class, 'riwayat'])->name('riwayat');
-    Route::get('peminjaman/detail/{id}', [PeminjamanController::class, 'getDetails']);
-    Route::get('detal/Admin/{id}', [PeminjamanController::class, 'detailAdmin']);
-    Route::get('/items/{code}',          [PeminjamanController::class, 'show']);
-	Route::post('tambah-peminjaman',     [PeminjamanController::class, 'add']);
-    Route::post('/store-item',           [PeminjamanController::class, 'store']);
-    Route::post('edit-item',             [PeminjamanController::class, 'edit']);
+	Route::get('peminjaman',                      [PeminjamanController::class, 'index'])->name('minjam');
+    Route::get('riwayat',                         [PeminjamanController::class, 'riwayat'])->name('riwayat');
+    Route::get('peminjaman/detail/{id}',          [PeminjamanController::class, 'getDetails']);
+    Route::get('detal/Admin/{id}',                [PeminjamanController::class, 'detailAdmin']);
+    Route::get('/items/{code}',                   [PeminjamanController::class, 'show']);
+	Route::post('tambah-peminjaman',              [PeminjamanController::class, 'add']);
+    Route::post('/store-item',                    [PeminjamanController::class, 'store']);
+    Route::post('edit-item',                      [PeminjamanController::class, 'edit']);
 	Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
 	Route::post('/peminjaman/admin-status/{id}', [PeminjamanController::class, 'acceptStatus']);
 	Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
@@ -71,6 +71,6 @@ Route::middleware('auth')->group(function () {
 // Route::get('/peminjaman', [PeminjamanController::class, 'get']);
 
 
-Route::get('/socialite/{driver}', [SocialLoginController::class, 'toProvider'])->where('driver', 'google');
+Route::get('/socialite/{driver}',  [SocialLoginController::class, 'toProvider'])->where('driver', 'google');
 Route::get('/auth/{driver}/login', [SocialLoginController::class, 'handleCallback'])->where('driver', 'google');
 require __DIR__.'/auth.php';

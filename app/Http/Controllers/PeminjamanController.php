@@ -152,17 +152,24 @@ class PeminjamanController extends Controller
 
     public function acceptPeminjaman(Request $request, $id)
     {
-        // Find the peminjaman entry by ID
-        $peminjaman = peminjaman::find($id);
+        $peminjaman = Peminjaman::find($id);
 
         if ($peminjaman) {
             // Update the status to 'di pinjam'
             $peminjaman->status = 'Approved';
             $peminjaman->save();
 
+            $details = $peminjaman->detail;
+
+            foreach ($details as $detail) {
+                $barang = $detail->barang;
+                $barang->jumlah = $barang->jumlah - $detail->jumlah;
+                $barang->save(); 
+            }
+
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
         } else {
-            return response()->json(['error' => 'Peminjaman not found'], 404);
+            return response()->json(['error' => 'Peminjaman gagal ditemukan!'], 404);
         }
     }
 
@@ -194,7 +201,6 @@ class PeminjamanController extends Controller
      * Diakses dari rute 'peminjaman/detail/{id}/'
      */ public function getDetails($id)
     {
-
         $data = [];
 
         $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'pending')->get();
