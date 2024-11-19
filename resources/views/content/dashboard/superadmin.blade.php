@@ -55,7 +55,6 @@
             ajax: {
                 url: 'peminjaman/detail/1',
                 dataSrc: ''
-                
             },
             columns: [
                 {
@@ -129,7 +128,7 @@
 
         peminjamanTable.on('click', '.btn-accept', function() {
     const id = $(this).data('id'); // Ambil ID peminjaman
-    const newStatus = 'dipinjam'; // Status baru
+    const newStatus = 'Approved'; // Status baru
 
     $.ajax({
         type: 'POST',

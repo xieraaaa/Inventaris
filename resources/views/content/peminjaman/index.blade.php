@@ -1,25 +1,25 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h4 class="text-themecolor">Barang</h4>
-        </div>
-        <div class="col-md-7 align-self-center text-end">
-            <div class="d-flex justify-content-end align-items-center">
-                <ol class="breadcrumb justify-content-end">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active">Peminjaman</li>
-                </ol>
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h4 class="text-themecolor">Barang</h4>
+            </div>
+            <div class="col-md-7 align-self-center text-end">
+                <div class="d-flex justify-content-end align-items-center">
+                    <ol class="breadcrumb justify-content-end">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Peminjaman</li>
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="card p-3 rounded">
-        <table class="table table-striped table-bordered yajra-datatable" id="peminjaman-table">
-            <thead>
-                <tr>
-                    {{--
+        <div class="card p-3 rounded">
+            <table class="table table-striped table-bordered yajra-datatable" id="peminjaman-table">
+                <thead>
+                    <tr>
+                        {{--
                     <th>ID</th>
                     <th>Nama Peminjam</th>
                     <th>Nama Barang</th>
@@ -28,11 +28,11 @@
                     <th>Status</th>
                     <th>Aksi</th>
                     --}}
-                </tr>
-            </thead>
-        </table>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
-</div>
 @endsection
 
 @push('scripts')
@@ -40,7 +40,7 @@
         function createChild(data) {
             return `<span><b>${data.nama_barang}</b>: ${data.jumlah}</span>`;
         }
-    
+
         function format(data) {
             let str = '';
 
@@ -50,69 +50,96 @@
 
             return str;
         }
-    
+
         const peminjamanTable = $('#peminjaman-table').DataTable({
             ajax: {
                 url: 'detal/Admin/1',
                 dataSrc: ''
-                
+
             },
-            columns: [
-                {
-                    className     : 'dt-control',
-                    data          : null,
-                    orderable     : false,
+            columns: [{
+                    className: 'dt-control',
+                    data: null,
+                    orderable: false,
                     defaultContent: ''
                 },
                 {
-                    data : 'id',
+                    data: 'id',
                     title: 'ID'
                 },
                 {
-                    data : 'nama_user',
+                    data: 'nama_user',
                     title: 'Nama User'
                 },
                 {
-                    data     : 'tgl_pinjam',
-                    title    : 'Tanggal Peminjaman',
+                    data: 'tgl_pinjam',
+                    title: 'Tanggal Peminjaman',
                     orderable: false
                 },
                 {
-                    data     : 'tgl_kembali',
-                    title    : 'Tanggal Pengembalian',
+                    data: 'tgl_kembali',
+                    title: 'Tanggal Pengembalian',
                     orderable: false
                 },
                 {
-                    data     : 'keterangan',
-                    title    : 'Keterangan',
+                    data: 'keterangan',
+                    title: 'Keterangan',
                     orderable: false
                 },
                 {
-                    data     : 'status',
-                    title    : 'Status',
+                    data: 'status',
+                    title: 'Status',
                     orderable: false
+                },
+                {
+                    data: null,
+                    title: 'Action',
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return `
+            <button class="btn btn-success btn-accept" data-id="${row.id}">
+                <i class="fas fa-check"></i> Accept
+            </button>`
+                    }
                 }
 
-
             ],
-            order: [[1, 'asc']]
+            order: [
+                [1, 'asc']
+            ]
         });
 
         peminjamanTable.on('click', 'td.dt-control', evt => {
             const rowElement = evt.target.closest('tr');
-            const row        = peminjamanTable.row(rowElement);
+            const row = peminjamanTable.row(rowElement);
 
             if (row.child.isShown()) {
                 row.child.hide();
-            }
-            else {
+            } else {
                 row.child(format(row.data()));
                 row.child.show();
             }
         });
 
+        peminjamanTable.on('click', '.btn-accept', function() {
+            const id = $(this).data('id'); // Ambil ID peminjaman
+            const newStatus = 'di pinjam'; // Status baru
 
+            $.ajax({
+                type: 'POST',
+                url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
+                data: {
+                    _token: '{{ csrf_token() }}', // Token CSRF
+                    status: newStatus // Status baru yang akan dikirim
+                },
+                success: (response) => {
+                    Swal.fire("Success!", response.message, "success");
+                    peminjamanTable.ajax.reload(null, false); // Reload tabel
+                },
+                error: (xhr) => {
+                    Swal.fire("Error!", xhr.responseJSON.error || "Failed to update status.", "error");
+                }
+            });
+        });
     </script>
-
-
 @endpush

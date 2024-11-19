@@ -157,7 +157,7 @@ class PeminjamanController extends Controller
 
         if ($peminjaman) {
             // Update the status to 'di pinjam'
-            $peminjaman->status = 'di pinjam';
+            $peminjaman->status = 'Approved';
             $peminjaman->save();
 
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
@@ -169,7 +169,7 @@ class PeminjamanController extends Controller
     public function rejectPeminjaman(Request $request, $id)
     {
         // Cari peminjaman berdasarkan ID
-        $peminjaman = Peminjaman::find($id);
+        $peminjaman = peminjaman::find($id);
     
         if ($peminjaman) {
             // Hapus data peminjaman beserta detailnya
@@ -192,8 +192,7 @@ class PeminjamanController extends Controller
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
      * Diakses dari rute 'peminjaman/detail/{id}/'
-     */
-    public function getDetails($id)
+     */ public function getDetails($id)
     {
 
         $data = [];
@@ -227,7 +226,7 @@ class PeminjamanController extends Controller
 
         $data = [];
 
-        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'di pinjam')->get();
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'Approved')->get();
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
@@ -249,5 +248,21 @@ class PeminjamanController extends Controller
         }
 
         return $data;
+    }
+
+    public function AcceptStatus(Request $request, $id)
+    {
+        // Find the peminjaman entry by ID
+        $peminjaman = peminjaman::find($id);
+
+        if ($peminjaman) {
+            // Update the status to 'di pinjam'
+            $peminjaman->status = 'di pinjam';
+            $peminjaman->save();
+
+            return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
+        } else {
+            return response()->json(['error' => 'Peminjaman not found'], 404);
+        }
     }
 }

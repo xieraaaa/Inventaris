@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/store-item',           [PeminjamanController::class, 'store']);
     Route::post('edit-item',             [PeminjamanController::class, 'edit']);
 	Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
+	Route::post('/peminjaman/admin-status/{id}', [PeminjamanController::class, 'acceptStatus']);
 	Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
 
 });
