@@ -46,9 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/items/{code}',                   [PeminjamanController::class, 'show']);
         Route::post('/store-item',                    [PeminjamanController::class, 'store']);
         Route::post('edit-item',                      [PeminjamanController::class, 'edit']);
-        Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
-        Route::post('/peminjaman/admin-status/{id}', [PeminjamanController::class, 'acceptStatus']);
-        Route::post('/peminjaman/kembali-status/{id}', [PeminjamanController::class, 'peminjamanKembali']);
+       
         Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
         Route::post('store-kategori',  [kategoriController::class, 'store']);
         Route::post('edit-kategori',   [kategoriController::class, 'edit']);
@@ -61,6 +59,9 @@ Route::middleware('auth')->group(function () {
         Route::get('peminjaman/riwayat','history');
         Route::post('tambah-peminjaman', 'add');
         Route::get('peminjaman/detail', 'getDetails');
+        Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
+        Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
+        Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
     });
 
 	Route::get('profile', [ProfileController::class, 'edit'])   ->name('profile.edit');
