@@ -42,11 +42,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
 
         Route::get('peminjaman',                      [PeminjamanController::class, 'index'])->name('minjam');
-        Route::get('riwayat',                         [PeminjamanController::class, 'riwayat'])->name('riwayat');
-        Route::get('peminjaman/detail/{id}',          [PeminjamanController::class, 'getDetails']);
         Route::get('detal/Admin/{id}',                [PeminjamanController::class, 'detailAdmin']);
         Route::get('/items/{code}',                   [PeminjamanController::class, 'show']);
-        Route::post('tambah-peminjaman',              [PeminjamanController::class, 'add']);
         Route::post('/store-item',                    [PeminjamanController::class, 'store']);
         Route::post('edit-item',                      [PeminjamanController::class, 'edit']);
         Route::post('/peminjaman/update-status/{id}', [PeminjamanController::class, 'acceptPeminjaman']);
@@ -59,8 +56,15 @@ Route::middleware('auth')->group(function () {
         Route::post('kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
     });
 
-	Route::get('profile',    [ProfileController::class, 'edit'])   ->name('profile.edit');
-	Route::post('profile',   [ProfileController::class, 'update']) ->name('profile.update');
+    Route::controller(PeminjamanController::class)->group(function() {
+        Route::get('riwayat', 'riwayat')->name('riwayat');
+        Route::get('peminjaman/riwayat','history');
+        Route::post('tambah-peminjaman', 'add');
+        Route::get('peminjaman/detail', 'getDetails');
+    });
+
+	Route::get('profile', [ProfileController::class, 'edit'])   ->name('profile.edit');
+	Route::post('profile', [ProfileController::class, 'update']) ->name('profile.update');
 	Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 	Route::get('get-barang',     [BarangController::class, 'get']);
