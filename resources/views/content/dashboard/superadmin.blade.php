@@ -124,23 +124,39 @@
         });
 
 
-        peminjamanTable.on('click', '.btn-accept', function() {
+        peminjamanTable.on('click', '.btn-accept', function () {
     const id = $(this).data('id'); // Ambil ID peminjaman
-    const newStatus = 'Approved'; // Status baru
 
-    $.ajax({
-        type: 'POST',
-        url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
-        data: {
-            _token: '{{ csrf_token() }}', // Token CSRF
-            status: newStatus // Status baru yang akan dikirim
-        },
-        success: (response) => {
-            Swal.fire("Success!", response.message, "success");
-            peminjamanTable.ajax.reload(null, false); // Reload tabel
-        },
-        error: (xhr) => {
-            Swal.fire("Error!", xhr.responseJSON.error || "Failed to update status.", "error");
+    // Tampilkan SweetAlert untuk konfirmasi
+    Swal.fire({
+        title: 'Konfirmasi Peminjaman',
+        text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Setujui!',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Jika admin mengonfirmasi, kirimkan data ke server
+            const newStatus = 'Approved'; // Status baru
+            
+            $.ajax({
+                type: 'POST',
+                url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
+                data: {
+                    _token: '{{ csrf_token() }}', // Token CSRF
+                    status: newStatus // Status baru yang akan dikirim
+                },
+                success: (response) => {
+                    // Tampilkan pesan berhasil
+                    Swal.fire("Berhasil!", response.message, "success");
+                    peminjamanTable.ajax.reload(null, false); // Reload tabel
+                },
+                error: (xhr) => {
+                    // Tampilkan pesan gagal
+                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal menyetujui peminjaman.", "error");
+                }
+            });
         }
     });
 });
