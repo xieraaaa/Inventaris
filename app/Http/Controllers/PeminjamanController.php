@@ -198,7 +198,7 @@ class PeminjamanController extends Controller
     {
         $data = [];
 
-        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'pending')->where('id_user', Auth::user()->id)->get();
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'di kembalikan')->where('id_user', Auth::user()->id)->get();
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 

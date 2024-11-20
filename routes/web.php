@@ -1,15 +1,19 @@
 <?php
 
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\kategoriController;
-use App\Http\Controllers\MerekController;
-use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SocialLoginController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UnitController;
-use App\Http\Controllers\DashboardController;
+
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\ {
+    BarangController,
+    DashboardController,
+    KategoriController,
+    MerekController,
+    PemindahanController,
+    PeminjamanController,
+    ProfileController,
+    SocialLoginController,
+    UnitController,
+};
 
 Route::get('/', function () {
 	return view('auth.login');
@@ -41,13 +45,12 @@ Route::middleware('auth')->group(function () {
         Route::post('delete-kategori',  [kategoriController::class, 'destroy']);
         Route::post('/kategori/import', [kategoriController::class, 'import'])->name('kategori.import');
 
-        Route::get('peminjaman',                      [PeminjamanController::class, 'index'])->name('minjam');
-        Route::get('detal/Admin/{id}',                [PeminjamanController::class, 'detailAdmin']);
-        Route::get('/items/{code}',                   [PeminjamanController::class, 'show']);
-        Route::post('/store-item',                    [PeminjamanController::class, 'store']);
-        Route::post('edit-item',                      [PeminjamanController::class, 'edit']);
+        Route::get('peminjaman',       [PeminjamanController::class, 'index'])->name('minjam');
+        Route::get('detal/Admin/{id}', [PeminjamanController::class, 'detailAdmin']);
+        Route::get('/items/{code}',    [PeminjamanController::class, 'show']);
+        Route::post('/store-item',     [PeminjamanController::class, 'store']);
+        Route::post('edit-item',       [PeminjamanController::class, 'edit']);
        
-        Route::post('/peminjaman/reject/{id}', [PeminjamanController::class, 'rejectPeminjaman']);
         Route::post('store-kategori',  [kategoriController::class, 'store']);
         Route::post('edit-kategori',   [kategoriController::class, 'edit']);
         Route::post('delete-kategori', [kategoriController::class, 'destroy']);
@@ -55,18 +58,26 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(PeminjamanController::class)->group(function() {
-        Route::get('riwayat', 'riwayat')->name('riwayat');
-        Route::get('peminjaman/riwayat','history');
-        Route::post('tambah-peminjaman', 'add');
-        Route::get('peminjaman/detail', 'getDetails');
-        Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
-        Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
-        Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
+        Route::middleware('role:user')->group(function() {
+            Route::get('riwayat', 'riwayat')->name('riwayat');
+            Route::get('peminjaman/riwayat','history');
+            Route::post('tambah-peminjaman', 'add');
+        });
+
+        Route::middleware('role:admin')->group(function() {
+            Route::get('peminjaman/detail', 'getDetails');
+            Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
+            Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
+            Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
+            Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
+        });
     });
 
-	Route::get('profile', [ProfileController::class, 'edit'])   ->name('profile.edit');
-	Route::post('profile', [ProfileController::class, 'update']) ->name('profile.update');
-	Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::controller(ProfileController::class)->group(function() {
+        Route::get('profile', 'edit')   ->name('profile.edit');
+        Route::post('profile', 'update') ->name('profile.update');
+        Route::delete('profile', 'destroy')->name('profile.destroy');
+    });
 
 	Route::get('get-barang',     [BarangController::class, 'get']);
     Route::get('getDatatables',  [BarangController::class, 'getDatatables']);
@@ -75,11 +86,12 @@ Route::middleware('auth')->group(function () {
 	Route::post('delete-barang', [BarangController::class, 'destroy']);
 	Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
 	Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
+
+    Route::get('pemindahan', [PemindahanController::class, 'index']);
 });
 
-// Route::get('/peminjaman', [PeminjamanController::class, 'get']);
-
-
-Route::get('socialite/{driver}',  [SocialLoginController::class, 'toProvider'])->where('driver', 'google');
-Route::get('auth/{driver}/login', [SocialLoginController::class, 'handleCallback'])->where('driver', 'google');
+Route::controller(SocialLoginController::class)->group(function() {
+    Route::get('socialite/{driver}', 'toProvider')->where('driver', 'google');
+    Route::get('auth/{driver}/login', 'handleCallback')->where('driver', 'google');
+});
 require __DIR__.'/auth.php';
