@@ -64,16 +64,17 @@
 
 </nav>
     <template id="product-item">
-        <div
-            style="height: 100px; width: 200px;"
-            class="user-select-none d-flex flex-column justify-content-center
-                   align-items-center bg-info hover-product-effect cursor-pointer
-                   px-5 rounded"
-            onClick="addToCart(this)">
-            <span class="text-center font-bold clamp-lines" data-role="name"></span>
-            <span>Jumlah: <span class="text-center" data-role="jumlah"></span></span>
+    <div
+        class="product-card d-flex flex-column justify-content-between align-items-center p-3 rounded shadow-sm"
+        onClick="addToCart(this)">
+        <img src="" alt="Product Image" data-role="image" class="product-image rounded mb-2" />
+        <div class="product-info text-center">
+            <h6 class="product-name font-weight-bold mb-1 clamp-lines" data-role="name"></h6>
+            <p class="product-quantity text-muted mb-0">Jumlah: <span data-role="jumlah"></span></p>
         </div>
-    </template>
+    </div>
+</template>
+
 
     <!-- Modal for QR Code Scanner -->
     <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">
@@ -111,6 +112,53 @@
         background-color: #0291d3;  /* Highlight color */
         border-color: #0291d3;
     }
+
+            .product-card {
+            width: 180px;
+            height: 220px;
+            background-color: #f9f9f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background-color: #e8f5ff;
+        }
+
+        .product-image {
+            max-width: 100%;
+            max-height: 100px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-name {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .product-quantity {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .clamp-lines {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
     </style>
 @endpush
 
@@ -388,23 +436,29 @@ function updatePagination() {
             }
         });
 
-        // Filter and render products based on search query
-        function filterAndRenderProducts() {
+                // Filter and render products based on search query
+                function filterAndRenderProducts() {
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const filteredProducts = allProducts.filter(product =>
                 product.nama_barang.toLowerCase().includes(searchQuery)
             );
 
             const listProductContainer = document.getElementById('list-product');
-            listProductContainer.innerHTML = ''; // Clear current products
+            listProductContainer.innerHTML = ''; // Bersihkan produk saat ini
 
             filteredProducts.forEach(product => {
                 const html = productTemplate.cloneNode(true);
                 html.dataset.id = product.kode_barang;
 
-                html.querySelector('[data-role="name"]').innerText   = product.nama_barang;
-                html.querySelector('[data-role="name"]').title       = product.nama_barang;
+                // Tambahkan data produk
+                html.querySelector('[data-role="name"]').innerText = product.nama_barang;
+                html.querySelector('[data-role="name"]').title = product.nama_barang;
                 html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
+
+                // Tambahkan gambar produk
+                const imageElement = html.querySelector('[data-role="image"]');
+                imageElement.src = product.image_url || "{{ asset('assets/images/imac.png') }}"; 
+                imageElement.alt = product.nama_barang;
 
                 listProductContainer.appendChild(html);
             });
