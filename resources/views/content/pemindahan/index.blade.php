@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('styles')
+    <link href="../assets/node_modules/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <div class="row page-titles">
@@ -52,10 +56,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="barang" class="form-label">Barang</label>
-                                        <select class="form-select" name="barang[]" id="barang">
-                                            <option value="">-- Select Barang --</option>
+                                        <select class="select2 form-control form-select" style="width: 100%; height:36px;" id="barang-select" name="barang[]">
+                                            <option>Select</option>
                                             @foreach ($koleksiBarang as $barang)
-                                            <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                                <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -81,6 +85,14 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('assets/node_modules/select2/dist/js/select2.full.min.js') }}" type="text/javascript"></script>
+
+    <script>
+        (function () {
+            // For select 2
+            $(".select2").select2();
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -134,7 +146,7 @@
                     }
 
                     $('#jumlah').val('');
-                    document.getElementById('barang').selectedIndex = 0;
+                    document.getElementById('barang-select').selectedIndex =01;
                 },
                 error: function (xhr) {
                     if (xhr.responseJSON && xhr.responseJSON.errors) {
