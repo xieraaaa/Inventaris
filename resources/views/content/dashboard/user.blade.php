@@ -368,10 +368,21 @@
             renderCart();
         }
 
-        // Handle cart cancelation
         function handleEmptyCart() {
-            cart = [];
-            renderCart();
+            Swal.fire({
+                'title'            : 'Konfirmasi Pengosongan',
+                'text'             : 'Yakin untuk mengosongkan keranjang?',
+                'confirmButtonText': 'Ya',
+                'cancelButtonText' : 'Batal',
+                'icon'             : 'warning',
+                'showCancelButton' : true
+            })
+            .then(result => {
+                if (result.isConfirmed) {
+                    cart = [];
+                    renderCart();
+                }
+            });
         }
 
         function handleClickSubmit() {
