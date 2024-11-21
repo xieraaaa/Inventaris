@@ -214,64 +214,61 @@
             });
         }
 
+        function updatePagination() {
+            const paginationRoot = document.getElementById('pagination');
+            const paginationItems = paginationRoot.querySelectorAll('[data-role="pagination-number"]');
+            const prevButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="left"]');
+            const nextButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="right"]');
 
-function updatePagination() {
-    const paginationRoot = document.getElementById('pagination');
-    const paginationItems = paginationRoot.querySelectorAll('[data-role="pagination-number"]');
-    const prevButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="left"]');
-    const nextButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="right"]');
+            // Calculate the first and last page number in the current set
+            const startPage = Math.floor((currentPage - 1) / paginationLength) * paginationLength + 1;
+            const endPage = Math.min(startPage + paginationLength - 1, totalPages);
 
-    // Calculate the first and last page number in the current set
-    const startPage = Math.floor((currentPage - 1) / paginationLength) * paginationLength + 1;
-    const endPage = Math.min(startPage + paginationLength - 1, totalPages);
+            // Update active pages
+            paginationItems.forEach(item => {
+                const pageNumber = parseInt(item.dataset.page);
+                item.style.display = (pageNumber >= startPage && pageNumber <= endPage) ? 'block' : 'none'; // Show only pages in the current set
+                item.classList.remove('active');
+                if (pageNumber === currentPage) {
+                    item.classList.add('active');
+                }
+            });
 
-    // Update active pages
-    paginationItems.forEach(item => {
-        const pageNumber = parseInt(item.dataset.page);
-        item.style.display = (pageNumber >= startPage && pageNumber <= endPage) ? 'block' : 'none'; // Show only pages in the current set
-        item.classList.remove('active');
-        if (pageNumber === currentPage) {
-            item.classList.add('active');
+            // Update previous/next button visibility
+            prevButton.style.display = currentPage > 1 ? 'block' : 'none';
+            nextButton.style.display = currentPage < totalPages ? 'block' : 'none';
         }
-    });
-
-    // Update previous/next button visibility
-    prevButton.style.display = currentPage > 1 ? 'block' : 'none';
-    nextButton.style.display = currentPage < totalPages ? 'block' : 'none';
-}
-
 
         // untuk menampilkan swal konfirmasi
         function confirmCartSubmission() {
-    let cartSummary = '<ul>'; // Start a list for better formatting
-    cart.forEach(item => {
-        cartSummary += `
-            <li><strong>Nama Barang:</strong> ${item.name} <br>
-            <strong>Jumlah:</strong> ${item.jumlah}</li><br>
-        `;
-    });
-    cartSummary += '</ul>'; // End the list
+            let cartSummary = '<ul>'; // Start a list for better formatting
+            cart.forEach(item => {
+                cartSummary += `
+                    <li><strong>Nama Barang:</strong> ${item.name} <br>
+                    <strong>Jumlah:</strong> ${item.jumlah}</li><br>
+                `;
+            });
+            cartSummary += '</ul>'; // End the list
 
-    Swal.fire({
-        title: 'Konfirmasi Pinjaman',
-        html: `
-            ${cartSummary} <!-- Insert the formatted list of items -->
-            <p><strong>Apakah Anda yakin ingin meminjam barang-barang di atas?</strong></p>
-        `,
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Lanjutkan',
-        cancelButtonText: 'Batal',
-        customClass: {
-            content: 'text-left', // Align text to the left for better readability
+            Swal.fire({
+                title: 'Konfirmasi Pinjaman',
+                html: `
+                    ${cartSummary} <!-- Insert the formatted list of items -->
+                    <p><strong>Apakah Anda yakin ingin meminjam barang-barang di atas?</strong></p>
+                `,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Lanjutkan',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    content: 'text-left', // Align text to the left for better readability
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#barang-modal').modal('show');
+                }
+            });
         }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $('#barang-modal').modal('show');
-        }
-    });
-}
-
 
         // Add a product to the cart
         function addToCart(element) {
@@ -328,36 +325,36 @@ function updatePagination() {
         }
 
         function decreaseQuantity(id) {
-    const item = cart.find(product => product.id === id);
-    if (item.jumlah > 1) {
-        item.jumlah--;
-        renderCart();
-    } else {
-        // Show confirmation alert when quantity is 1
-        Swal.fire({
-            title: 'Hapus Item',
-            text: `Apakah Anda yakin ingin menghapus ${item.name} dari keranjang?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Remove item from cart
-                cart = cart.filter(product => product.id !== id);
+            const item = cart.find(product => product.id === id);
+            if (item.jumlah > 1) {
+                item.jumlah--;
                 renderCart();
-                
-                Swal.fire(
-                    'Terhapus!',
-                    'Item telah dihapus dari keranjang.',
-                    'success'
-                );
+            } else {
+                // Show confirmation alert when quantity is 1
+                Swal.fire({
+                    title: 'Hapus Item',
+                    html: `Apakah Anda yakin ingin menghapus<br /><b>${item.name}</b><br />dari keranjang?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Remove item from cart
+                        cart = cart.filter(product => product.id !== id);
+                        renderCart();
+                        
+                        Swal.fire(
+                            'Terhapus!',
+                            'Item telah dihapus dari keranjang.',
+                            'success'
+                        );
+                    }
+                });
             }
-        });
-    }
-}
+        }
 
         function updateQuantity(id, quantity) {
             const item = cart.find(product => product.id === id);
@@ -371,17 +368,27 @@ function updatePagination() {
             renderCart();
         }
 
-        // Handle cart cancelation
         function handleEmptyCart() {
-            cart = [];
-            renderCart();
+            Swal.fire({
+                'title'            : 'Konfirmasi Pengosongan',
+                'text'             : 'Yakin untuk mengosongkan keranjang?',
+                'confirmButtonText': 'Ya',
+                'cancelButtonText' : 'Batal',
+                'icon'             : 'warning',
+                'showCancelButton' : true
+            })
+            .then(result => {
+                if (result.isConfirmed) {
+                    cart = [];
+                    renderCart();
+                }
+            });
         }
 
         function handleClickSubmit() {
-    // Call the confirmCartSubmission function before proceeding to checkout
-    confirmCartSubmission();
-}
-
+            // Call the confirmCartSubmission function before proceeding to checkout
+            confirmCartSubmission();
+        }
 
         // Open QR modal for barcode scanning
         function openQrModal() {
@@ -437,7 +444,7 @@ function updatePagination() {
         });
 
                 // Filter and render products based on search query
-                function filterAndRenderProducts() {
+        function filterAndRenderProducts() {
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const filteredProducts = allProducts.filter(product =>
                 product.nama_barang.toLowerCase().includes(searchQuery)

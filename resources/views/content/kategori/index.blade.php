@@ -22,8 +22,8 @@
         <div class="row mt-2">
             <div class="col-md-12">
                 <div class="mb-3">
-                    <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create kategori</a>
-                    <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">import</a>
+                    <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Buat Kategori</a>
+                    <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Kategori</a>
                 </div>
             </div>
 

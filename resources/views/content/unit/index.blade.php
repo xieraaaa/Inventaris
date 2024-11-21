@@ -22,12 +22,8 @@
         <div class="row mt-2">
             <div class="col-md-12">
                 <div class="mb-3">
-                    <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create unit</a>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="mb-3">
-                    <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import</a>
+                    <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Buat Unit</a>
+                    <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Unit</a>
                 </div>
             </div>
         </div>

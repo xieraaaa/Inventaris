@@ -9,7 +9,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="barangModal"></h4>
+				<h4 class="modal-title" id="barangModal">Keterangan</h4>
 			</div>
 			<div class="modal-body">
 				<form action="javascript:void(0)" id="barangForm" name="barangForm" class="form-horizontal"

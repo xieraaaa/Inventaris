@@ -137,9 +137,20 @@
         });
 
         peminjamanTable.on('click', '.btn-accept', function() {
-            const id = $(this).data('id'); // Ambil ID peminjaman
-            const newStatus = 'di pinjam'; // Status baru
+    const id = $(this).data('id'); // Ambil ID peminjaman
+    const newStatus = 'di pinjam'; // Status baru
 
+    // Tampilkan SweetAlert untuk konfirmasi
+    Swal.fire({
+        title: 'Konfirmasi Peminjaman',
+        text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Pinjamkan!',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Lanjutkan proses jika pengguna menyetujui
             $.ajax({
                 type: 'POST',
                 url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
@@ -148,19 +159,32 @@
                     status: newStatus // Status baru yang akan dikirim
                 },
                 success: (response) => {
-                    Swal.fire("Success!", response.message, "success");
+                    Swal.fire("Berhasil!", response.message, "success");
                     peminjamanTable.ajax.reload(null, false); // Reload tabel
                 },
                 error: (xhr) => {
-                    Swal.fire("Error!", xhr.responseJSON.error || "Failed to update status.", "error");
+                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
                 }
             });
-        });
+        }
+    });
+});
 
-        peminjamanTable.on('click', '.btn-kembali', function() {
-            const id = $(this).data('id'); // Ambil ID peminjaman
-            const newStatus = 'di kembalikan'; // Status baru
+peminjamanTable.on('click', '.btn-kembali', function() {
+    const id = $(this).data('id'); // Ambil ID peminjaman
+    const newStatus = 'di kembalikan'; // Status baru
 
+    // Tampilkan SweetAlert untuk konfirmasi
+    Swal.fire({
+        title: 'Konfirmasi Pengembalian',
+        text: "Apakah Anda yakin barang telah dikembalikan?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Kembalikan!',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Lanjutkan proses jika pengguna menyetujui
             $.ajax({
                 type: 'POST',
                 url: `/peminjaman/kembali-status/${id}`, // Endpoint Laravel
@@ -169,13 +193,16 @@
                     status: newStatus // Status baru yang akan dikirim
                 },
                 success: (response) => {
-                    Swal.fire("Success!", response.message, "success");
+                    Swal.fire("Berhasil!", response.message, "success");
                     peminjamanTable.ajax.reload(null, false); // Reload tabel
                 },
                 error: (xhr) => {
-                    Swal.fire("Error!", xhr.responseJSON.error || "Failed to update status.", "error");
+                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
                 }
             });
-        });
+        }
+    });
+});
+
     </script>
 @endpush

@@ -19,8 +19,8 @@
             <div class="row mt-2">
                 <div class="col-md-12">
                     <div class="mb-3">
-                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create Barang</a>
-                        <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Data</a>
+                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Buat Barang</a>
+                        <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Barang</a>
                     </div>
                 </div>
             </div>
