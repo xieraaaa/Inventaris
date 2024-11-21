@@ -48,15 +48,18 @@ Route::middleware('auth')->group(function () {
                 Route::get('peminjaman/riwayat','history');
                 Route::post('tambah-peminjaman', 'add');
             });
-
+            
             Route::middleware('role:admin')->group(function() {
                 Route::get('peminjaman', 'index')->name('peminjaman');
-                Route::get('peminjaman/detail', 'getDetails');
 				Route::get('detal/Admin/{id}', 'detailAdmin');
                 Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
                 Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
                 Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
                 Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
+            });
+
+            Route::middleware('role:admin|superadmin')->group(function() {
+                Route::get('peminjaman/detail', 'getDetails');
             });
         });
 
