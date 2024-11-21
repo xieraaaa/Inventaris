@@ -87,7 +87,8 @@ Route::middleware('auth')->group(function () {
 	Route::post('detail-barang', [BarangController::class, 'detail'])->name('barang.detail');
 	Route::post('import-barang', [BarangController::class, 'import'])->name('barang.import');
 
-    Route::get('pemindahan', [PemindahanController::class, 'index']);
+    Route::get('pemindahan', [PemindahanController::class, 'index'])->name( 'pemindahan');
+    Route::post('store-pemindahan', [PemindahanController::class, 'store']);
 });
 
 Route::controller(SocialLoginController::class)->group(function() {

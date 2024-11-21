@@ -329,4 +329,8 @@ class PeminjamanController extends Controller
             return response()->json(['error' => 'Peminjaman gagal ditemukan!'], 404);
         }
     }
+
+    public function coba(){
+        return 'hello world';
+    }
 }
