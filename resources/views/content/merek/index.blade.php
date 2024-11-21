@@ -22,17 +22,11 @@
             <div class="row mt-2">
                 <div class="col-md-12">
                     <div class="mb-3">
-                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Create merek</a>
+                        <a class="btn btn-success" onClick="add()" href="javascript:void(0)">Buat Merek</a>
+                        <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">Import Merek</a>
+
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <a class="btn btn-success" onClick="importData()" href="javascript:void(0)">import</a>
-                    </div>
-                </div>
-
-
-                
             </div>
             @if ($message = Session::get('success'))
                 <div class="alert alert-success">
