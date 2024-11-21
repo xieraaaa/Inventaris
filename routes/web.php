@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
 
             Route::middleware('role:admin|superadmin')->group(function() {
                 Route::get('peminjaman/detail', 'getDetails');
+                Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
+                Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
             });
         });
 
