@@ -81,59 +81,70 @@
 @endsection
 
 @push('scripts')
-<script>
-    var count = 0;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    function addDynamicFormFields() {
-        count++;
-        var html = `
-            <div id="row${count}" class="row mt-2">
-                <div class="col-sm-6">
-                    <label for="barang${count}" class="form-label">Barang</label>
-                    <select class="form-select" id="barang${count}" name="barang[]">
-                        <option value="">-- Select Barang --</option>
-                        @foreach ($koleksiBarang as $barang)
-                            <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
-                        @endforeach
-                    </select>
+    <script>
+        var count = 0;
+
+        function addDynamicFormFields() {
+            count++;
+            var html = `
+                <div id="row${count}" class="row mt-2">
+                    <div class="col-sm-6">
+                        <label for="barang${count}" class="form-label">Barang</label>
+                        <select class="form-select" id="barang${count}" name="barang[]">
+                            <option value="">-- Select Barang --</option>
+                            @foreach ($koleksiBarang as $barang)
+                                <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="jumlah${count}" class="form-label">Jumlah</label>
+                        <input type="number" class="form-control" id="jumlah${count}" name="jumlah[]" placeholder="Jumlah">
+                    </div>
+                    <div class="col-sm-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger" onclick="removeDynamicFormFields(${count});">Remove</button>
+                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <label for="jumlah${count}" class="form-label">Jumlah</label>
-                    <input type="number" class="form-control" id="jumlah${count}" name="jumlah[]" placeholder="Jumlah">
-                </div>
-                <div class="col-sm-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger" onclick="removeDynamicFormFields(${count});">Remove</button>
-                </div>
-            </div>
-        `;
-        $('#dynamic_form_fields').append(html);
-    }
+            `;
+            $('#dynamic_form_fields').append(html);
+        }
 
-    function removeDynamicFormFields(row) {
-        $('#row' + row).remove();
-    }
+        function removeDynamicFormFields(row) {
+            $('#row' + row).remove();
+        }
 
-    // Handle form submission with AJAX
-    $('#submit-btn').on('click', function () {
-        var formData = $('#form-pemindahan').serialize(); // Serialize form data
+        // Handle form submission with AJAX
+        $('#submit-btn').on('click', function () {
+            var formData = $('#form-pemindahan').serialize(); // Serialize form data
 
-        $.ajax({
-            url: '{{ url("store-pemindahan") }}', // Target URL
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                alert(response.message); // Show success message
-                location.reload(); // Reload page
-            },
-            error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    // Handle validation errors
-                    alert(JSON.stringify(xhr.responseJSON.errors));
-                } else {
-                    alert('An error occurred. Please try again.');
+            $.ajax({
+                url: '{{ url("store-pemindahan") }}', // Target URL
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        'title': 'Sukses!',
+                        'icon' : 'success'
+                    });
+
+                    for (let idx = 1; idx < count; ++idx) {
+                        removeDynamicFormFields(idx);
+                    }
+
+                    $('#jumlah').val('');
+                    document.getElementById('barang').selectedIndex = 0;
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        // Handle validation errors
+                        alert(JSON.stringify(xhr.responseJSON.errors));
+                    } else {
+                        alert('An error occurred. Please try again.');
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

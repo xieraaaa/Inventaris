@@ -90,7 +90,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('profile', 'destroy')->name('profile.destroy');
     });
 
-    Route::get('pemindahan', [PemindahanController::class, 'index'])->name('pemindahan');
+    Route::controller(PemindahanController::class)->group(function() {
+        Route::get('pemindahan', 'index')->name('pemindahan');
+        Route::post('store-pemindahan', 'store');
+    });
 });
 
 Route::controller(SocialLoginController::class)->group(function() {
