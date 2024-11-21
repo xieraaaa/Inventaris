@@ -336,7 +336,7 @@ function updatePagination() {
         // Show confirmation alert when quantity is 1
         Swal.fire({
             title: 'Hapus Item',
-            text: `Apakah Anda yakin ingin menghapus ${item.name} dari keranjang?`,
+            html: `Apakah Anda yakin ingin menghapus<br /><b>${item.name}</b><br />dari keranjang?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
