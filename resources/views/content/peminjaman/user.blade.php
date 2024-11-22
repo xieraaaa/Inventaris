@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table" id="peminjaman">
+                <table class="table table-striped" id="peminjaman">
                 </table>
             </div>
         </div>
@@ -71,11 +71,18 @@
                 },
                 {
                     data : 'keterangan',
-                    title: 'Keterangan'
+                    title: 'Keterangan',
+                    type : 'string'
                 },
                 {
                     data : 'tgl_pinjam',
-                    title: 'Tanggal Pinjam'
+                    title: 'Tanggal Peminjaman',
+                    type : 'string'
+                },
+                {
+                    data : 'tgl_kembali',
+                    title: 'Tanggal Pengembalian',
+                    type:  'string'
                 }
             ],
             order: [1, 'asc']
