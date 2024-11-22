@@ -379,10 +379,14 @@
             })
             .then(result => {
                 if (result.isConfirmed) {
-                    cart = [];
-                    renderCart();
+                    emptyCart();
                 }
             });
+        }
+
+        function emptyCart() {
+            cart = [];
+            renderCart();
         }
 
         function handleClickSubmit() {
@@ -443,7 +447,7 @@
             }
         });
 
-                // Filter and render products based on search query
+        // Filter and render products based on search query
         function filterAndRenderProducts() {
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const filteredProducts = allProducts.filter(product =>

@@ -111,9 +111,7 @@
 					Swal.fire("Success!", "Peminjaman berhasil diajukan", "success");
 					$('#barang-modal').modal('hide');
 
-					// FIXME
-					// Kosongkan cart untuk pengajuan berikutnya
-					handleEmptyCart();
+					emptyCart();
 				}
 			});
 		});
