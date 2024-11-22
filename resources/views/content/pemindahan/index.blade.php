@@ -129,34 +129,47 @@
 
         // Handle form submission with AJAX
         $('#submit-btn').on('click', function () {
-            var formData = $('#form-pemindahan').serialize(); // Serialize form data
+    var formData = $('#form-pemindahan').serialize(); // Serialize form data
 
-            $.ajax({
-                url: '{{ url("store-pemindahan") }}', // Target URL
-                type: 'POST',
-                data: formData,
-                success: function (response) {
-                    Swal.fire({
-                        'title': 'Sukses!',
-                        'icon' : 'success'
-                    });
-
-                    for (let idx = 1; idx < count; ++idx) {
-                        removeDynamicFormFields(idx);
-                    }
-
-                    $('#jumlah').val('');
-                    document.getElementById('barang-select').selectedIndex =01;
-                },
-                error: function (xhr) {
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        // Handle validation errors
-                        alert(JSON.stringify(xhr.responseJSON.errors));
-                    } else {
-                        alert('An error occurred. Please try again.');
-                    }
-                }
+    $.ajax({
+        url: '{{ url("store-pemindahan") }}', // Target URL
+        type: 'POST',
+        data: formData,
+        success: function (response) {
+            Swal.fire({
+                'title': 'Sukses!',
+                'icon' : 'success'
             });
-        });
+
+            // Reset dynamic form fields
+            for (let idx = 1; idx <= count; ++idx) {
+                removeDynamicFormFields(idx);
+            }
+
+            // Reset select2 field
+            $('#barang-select').val('').trigger('change');
+            
+            // Reset other input fields
+            $('#tanggal').val('');
+            $('#asal').val('');
+            $('#tujuan').val('');
+            $('#deskripsi').val('');
+            $('#jumlah').val('');
+            
+            // Optionally, reset select field of the first row if it's dynamic
+            $(".select2").val(null).trigger('change');
+            count = 0; // Reset counter for dynamic fields
+        },
+        error: function (xhr) {
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                // Handle validation errors
+                alert(JSON.stringify(xhr.responseJSON.errors));
+            } else {
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+});
+
     </script>
 @endpush
