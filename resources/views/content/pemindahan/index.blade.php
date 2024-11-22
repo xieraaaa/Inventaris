@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @push('styles')
+    {{-- select2 css --}}
     <link href="../assets/node_modules/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
 @endpush
 
@@ -20,8 +21,8 @@
         </div>
     </div>
     <div class="card p-5 rounded">
-            <form action="javascript:void(0)" id="form-pemindahan" name="form-pemindahan" class="form-horizontal"
-                        method="POST" enctype="multipart/form-data">
+        <form action="javascript:void(0)" id="form-pemindahan" name="form-pemindahan" class="form-horizontal"
+              method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row mb-3">
                 <div class="col-md-6">
@@ -127,49 +128,67 @@
             $('#row' + row).remove();
         }
 
+        function isFormComplete() {
+            return (
+                   $('#tanggal').val()   !== ''
+                && $('#asal').val()      !== ''
+                && $('#tujuan') .val()   !== ''
+                && $('#deskripsi').val() !== ''
+            );
+        }
+
         // Handle form submission with AJAX
         $('#submit-btn').on('click', function () {
-    var formData = $('#form-pemindahan').serialize(); // Serialize form data
+            if (!isFormComplete()) {
+                Swal.fire({
+                    icon : 'error',
+                    title: 'Gagal mengirim!',
+                    text : 'Pastikan data sudah lengkap!'
+                });
 
-    $.ajax({
-        url: '{{ url("store-pemindahan") }}', // Target URL
-        type: 'POST',
-        data: formData,
-        success: function (response) {
-            Swal.fire({
-                'title': 'Sukses!',
-                'icon' : 'success'
+                return;
+            }
+            
+            var formData = $('#form-pemindahan').serialize(); // Serialize form data
+
+            $.ajax({
+                url: '{{ url("store-pemindahan") }}', // Target URL
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        'title': 'Sukses!',
+                        'icon' : 'success'
+                    });
+
+                    // Reset dynamic form fields
+                    for (let idx = 1; idx <= count; ++idx) {
+                        removeDynamicFormFields(idx);
+                    }
+
+                    // Reset select2 field
+                    $('#barang-select').val('').trigger('change');
+                    
+                    // Reset other input fields
+                    $('#tanggal').val('');
+                    $('#asal').val('');
+                    $('#tujuan').val('');
+                    $('#deskripsi').val('');
+                    $('#jumlah').val('');
+                    
+                    // Optionally, reset select field of the first row if it's dynamic
+                    $(".select2").val(null).trigger('change');
+                    count = 0; // Reset counter for dynamic fields
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        alert(JSON.stringify(xhr.responseJSON.errors));
+                    } else {
+                        alert('An error occurred. Please try again.');
+                    }
+                }
             });
-
-            // Reset dynamic form fields
-            for (let idx = 1; idx <= count; ++idx) {
-                removeDynamicFormFields(idx);
-            }
-
-            // Reset select2 field
-            $('#barang-select').val('').trigger('change');
-            
-            // Reset other input fields
-            $('#tanggal').val('');
-            $('#asal').val('');
-            $('#tujuan').val('');
-            $('#deskripsi').val('');
-            $('#jumlah').val('');
-            
-            // Optionally, reset select field of the first row if it's dynamic
-            $(".select2").val(null).trigger('change');
-            count = 0; // Reset counter for dynamic fields
-        },
-        error: function (xhr) {
-            if (xhr.responseJSON && xhr.responseJSON.errors) {
-                // Handle validation errors
-                alert(JSON.stringify(xhr.responseJSON.errors));
-            } else {
-                alert('An error occurred. Please try again.');
-            }
-        }
-    });
-});
+        });
 
     </script>
 @endpush
