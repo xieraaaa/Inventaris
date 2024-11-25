@@ -21,6 +21,18 @@ class PemindahanController extends Controller
         return view('content.pemindahan.index', compact('koleksiBarang'));
     }
 
+    public function viewriwayat()
+    {
+        return view('content.pemindahan.riwayat');
+    }
+
+
+    public function riwayat()
+    {
+        $pemindahan = Pemindahan::all(); // Ambil semua data dari model Pemindahan
+        return response()->json($pemindahan);
+    }
+
     public function store(Request $request)
     {
         $pemindahan = Pemindahan::create([
@@ -40,5 +52,5 @@ class PemindahanController extends Controller
                 'jumlah'        => $jumlahArray[$idx]
             ]);
         }
-    }
+    } 
 }

@@ -18,7 +18,7 @@ use App\Http\Controllers\ {
 Route::get('/', function () {
     return view('auth.login');
 });
-
+ 
 Route::get('dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -93,6 +93,8 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(PemindahanController::class)->group(function() {
         Route::get('pemindahan', 'index')->name('pemindahan');
+        Route::get('pemindahan/riwayat', 'viewriwayat')->name('pemindahan.riwayat');
+        route::get('pemindahan/datariwayat','riwayat');
         Route::post('store-pemindahan', 'store');
     });
 });
