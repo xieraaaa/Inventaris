@@ -53,4 +53,33 @@ class PemindahanController extends Controller
             ]);
         }
     } 
+
+    public function getDetails()
+    {
+        $data = [];
+
+        $PemindahanData = Pemindahan::with(['detail', 'user'])->get();
+        foreach ($PemindahanData as $Pemindahan) {
+            $buffer = [];
+
+            $buffer['id']          = $Pemindahan['id'];
+            $buffer['tanggal']  = $Pemindahan['tanggal'];
+            $buffer['asal'] = $Pemindahan['asal'];
+            $buffer['tujuan']  = $Pemindahan['tujuan'];
+            $buffer['deskripsi']      = $Pemindahan['deskripsi'];
+            $buffer['barang']      = $Pemindahan->detail->map(function ($item) {
+                $item->barang->setVisible(['nama_barang']);
+                
+                $barang = $item->barang->toArray();
+
+                $barang['jumlah'] = $item->jumlah;
+
+                return $barang;
+            });
+
+            array_push($data, $buffer);
+        }
+
+        return $data;
+    }
 }
