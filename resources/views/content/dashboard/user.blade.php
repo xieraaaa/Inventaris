@@ -450,33 +450,66 @@
         // Filter and render products based on search query
         function filterAndRenderProducts() {
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            const filteredProducts = allProducts.filter(product =>
-                product.nama_barang.toLowerCase().includes(searchQuery)
-            );
 
-            const listProductContainer = document.getElementById('list-product');
-            listProductContainer.innerHTML = ''; // Bersihkan produk saat ini
+            if (searchQuery !== '') {
+                $.ajax({
+                    url : '/get-barang-filtered',
+                    data: {
+                        query: searchQuery
+                    },
 
-            filteredProducts.forEach(product => {
-                const html = productTemplate.cloneNode(true);
-                html.dataset.id = product.kode_barang;
+                    success: data => {
+                        console.log('Successfully fetched filtered data regarding products!');
+                        
+                        $('#list-product').empty();
+                        data.forEach(product => {
+                            const html = productTemplate.cloneNode(true);
+                            html.dataset.id = product.kode_barang;
 
-                // Tambahkan data produk
-                html.querySelector('[data-role="name"]').innerText = product.nama_barang;
-                html.querySelector('[data-role="name"]').title = product.nama_barang;
-                html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
+                            // Tambahkan data produk
+                            html.querySelector('[data-role="name"]').title       = product.nama_barang;
+                            html.querySelector('[data-role="name"]').innerText   = product.nama_barang;
+                            html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
 
-                // Tambahkan gambar produk
-                const imageElement = html.querySelector('[data-role="image"]');
-                imageElement.src = product.image_url || "{{ asset('assets/images/imac.png') }}"; 
-                imageElement.alt = product.nama_barang;
+                            // Tambahkan gambar produk
+                            const imageElement = html.querySelector('[data-role="image"]');
+                            imageElement.src = product.image_url || "{{ asset('assets/images/imac.png') }}"; 
+                            imageElement.alt = product.nama_barang;
 
-                listProductContainer.appendChild(html);
-            });
+                            $(html).appendTo('#list-product');
+                        });
+                    }
+                });
+            }
+            else {
+                const filteredProducts = allProducts.filter(product =>
+                    product.nama_barang.toLowerCase().includes(searchQuery)
+                );
+
+                const listProductContainer = document.getElementById('list-product');
+                listProductContainer.innerHTML = ''; // Bersihkan produk saat ini
+
+                filteredProducts.forEach(product => {
+                    const html = productTemplate.cloneNode(true);
+                    html.dataset.id = product.kode_barang;
+
+                    // Tambahkan data produk
+                    html.querySelector('[data-role="name"]').innerText = product.nama_barang;
+                    html.querySelector('[data-role="name"]').title = product.nama_barang;
+                    html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
+
+                    // Tambahkan gambar produk
+                    const imageElement = html.querySelector('[data-role="image"]');
+                    imageElement.src = product.image_url || "{{ asset('assets/images/imac.png') }}"; 
+                    imageElement.alt = product.nama_barang;
+
+                    listProductContainer.appendChild(html);
+                });
+            }
         }
 
         // Event listener for search input
-        document.getElementById('searchInput').addEventListener('keyup', filterAndRenderProducts);
+        document.getElementById('searchInput').addEventListener('change', filterAndRenderProducts);
 
         updatePagination();
         changePage(1); // Start on page 1

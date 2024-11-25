@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\barang;
 use App\Models\kategori;
 use App\Models\merek;
@@ -10,12 +9,12 @@ use App\Models\Unit;
 use Illuminate\Http\Request;
 use Milon\Barcode\DNS1D;
 
-
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
 use App\Imports\ExcelData;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BarangController extends Controller
 {
@@ -80,6 +79,16 @@ class BarangController extends Controller
     {
         $itemsToSkip = $request->page * 5;
         return Barang::where('jumlah', '>', 0)->skip($itemsToSkip)->take(20)->orderBy('nama_barang', 'asc')->get();
+    }
+    
+    public function filtered_get(Request $request) {
+        Log::info($request['query']);
+        
+        $data = Barang::where('nama_barang', 'like', $request['query'] . '%')->get();
+
+        Log::info($data);
+
+        return $data;
     }
     
     /**
