@@ -95,6 +95,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pemindahan', 'index')->name('pemindahan');
         Route::get('pemindahan/riwayat', 'viewriwayat')->name('pemindahan.riwayat');
         route::get('pemindahan/datariwayat','riwayat');
+        Route::get('pemindahan/detail', 'getDetails');
         Route::post('store-pemindahan', 'store');
     });
 });

@@ -15,10 +15,13 @@ class DetailPemindahan extends Model
 
     ];
 
-    public function pemindahan(){
+    public function pemindahan()
+    {
         return $this->belongsTo(Pemindahan::class, 'id_pemindahan');
     }
-    public function barang(){
+
+    public function barang()
+    {
         return $this->belongsTo(Barang::class, 'id_barang');
     }
 }

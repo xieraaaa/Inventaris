@@ -330,7 +330,5 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function coba(){
-        return 'hello world';
-    }
+    
 }

@@ -49,7 +49,7 @@
     
         const table = $('#pemindahan').DataTable({
             ajax: {
-                url    : `/pemindahan/datariwayat`, // Endpoint API untuk data pemindahan
+                url    : `/pemindahan/detail`, // Endpoint API untuk data pemindahan
                 dataSrc: ''
             },
             columns: [
@@ -92,6 +92,7 @@
             ],
             order: [1, 'asc'] // Mengurutkan berdasarkan kolom No.
         });
+        
         table.on('click', 'td.dt-control', evt => {
             const rowElement = evt.target.closest('tr');
             const row        = table.row(rowElement);
