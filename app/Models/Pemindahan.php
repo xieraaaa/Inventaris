@@ -14,4 +14,9 @@ class Pemindahan extends Model
         'tujuan',
         'deskripsi',
     ];
+
+    public function detail()
+    {
+        return $this->hasMany(DetailPemindahan::class, 'id_pemindahan');
+    }
 }

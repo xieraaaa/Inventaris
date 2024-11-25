@@ -49,7 +49,7 @@
     
         const table = $('#pemindahan').DataTable({
             ajax: {
-                url    : `/pemindahan/datariwayat`, // Endpoint API untuk data pemindahan
+                url    : `/pemindahan/detail`, // Endpoint API untuk data pemindahan
                 dataSrc: ''
             },
             columns: [

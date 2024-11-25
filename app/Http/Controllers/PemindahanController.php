@@ -58,16 +58,16 @@ class PemindahanController extends Controller
     {
         $data = [];
 
-        $PemindahanData = Pemindahan::with(['detail', 'user'])->get();
+        $PemindahanData = Pemindahan::with(['detail'])->get();
         foreach ($PemindahanData as $Pemindahan) {
             $buffer = [];
 
-            $buffer['id']          = $Pemindahan['id'];
-            $buffer['tanggal']  = $Pemindahan['tanggal'];
-            $buffer['asal'] = $Pemindahan['asal'];
-            $buffer['tujuan']  = $Pemindahan['tujuan'];
-            $buffer['deskripsi']      = $Pemindahan['deskripsi'];
-            $buffer['barang']      = $Pemindahan->detail->map(function ($item) {
+            $buffer['id']        = $Pemindahan['id'];
+            $buffer['tanggal']   = $Pemindahan['tanggal'];
+            $buffer['asal']      = $Pemindahan['asal'];
+            $buffer['tujuan']    = $Pemindahan['tujuan'];
+            $buffer['deskripsi'] = $Pemindahan['deskripsi'];
+            $buffer['barang']    = $Pemindahan->detail->map(function ($item) {
                 $item->barang->setVisible(['nama_barang']);
                 
                 $barang = $item->barang->toArray();
