@@ -33,6 +33,40 @@
             </table>
         </div>
     </div>
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Peminjaman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="updateForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="updateNamaBarang" class="form-label">Nama Barang</label>
+                            <select class="form-select" id="updateNamaBarang" name="nama_barang" required>
+                                <option value="">Barang 1</option>
+                                <option value="Barang 2">Barang 2</option>
+                                <option value="Barang 3">Barang 3</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateKondisi" class="form-label">Kondisi</label>
+                            <select class="form-select" id="updateKondisi" name="kondisi" required>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="updateId" name="id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -99,6 +133,9 @@
                         return `
             <button class="btn btn-success btn-accept" data-id="${row.id}">
                 <i class="fas fa-check"></i> Accept
+            </button>
+            <button class="btn btn-warning btn-update" data-id="${row.id}">
+                <i class="fas fa-rotate "></i> update
             </button>
             <button class="btn btn-success btn-kembali" data-id="${row.id}">
                 <i class="fas fa-check"></i> kembali
@@ -203,6 +240,36 @@ peminjamanTable.on('click', '.btn-kembali', function() {
         }
     });
 });
+peminjamanTable.on('click', '.btn-update', function() {
+    const id = $(this).data('id'); // Ambil ID peminjaman
+    $('#updateId').val(id); // Set ID ke input hidden
+    $('#updateModal').modal('show'); // Tampilkan modal
+});
+
+// Form submission
+$('#updateForm').on('submit', function(e) {
+    e.preventDefault(); // Prevent default form submission
+    const id = $('#updateId').val();
+    const status = $('#updateStatus').val();
+
+    $.ajax({
+        type: 'POST',
+        url: `/peminjaman/update-status/${id}`, // Endpoint Laravel untuk update
+        data: {
+            _token: '{{ csrf_token() }}', // Token CSRF
+            status: status
+        },
+        success: (response) => {
+            Swal.fire("Berhasil!", response.message, "success");
+            $('#updateModal').modal('hide'); // Tutup modal
+            peminjamanTable.ajax.reload(null, false); // Reload tabel
+        },
+        error: (xhr) => {
+            Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengupdate data.", "error");
+        }
+    });
+});
+
 
     </script>
 @endpush

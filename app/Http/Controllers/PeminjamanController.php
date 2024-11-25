@@ -81,7 +81,9 @@ class PeminjamanController extends Controller
 
     public function index()
     {
-        return view('content.peminjaman.index');
+        $peminjaman = Peminjaman::with('detail')->get();
+        
+        return view('content.peminjaman.index', compact('peminjaman'));
     }
 
     public function superadmin()
@@ -229,6 +231,18 @@ class PeminjamanController extends Controller
         return $data;
     }
 
+    public function updateStatus(Request $request, $id)
+{
+    $validated = $request->validate([
+        'status' => 'required|string',
+    ]);
+
+    $peminjaman = Peminjaman::findOrFail($id); // Pastikan model Peminjaman sudah ada
+    $peminjaman->status = $validated['status'];
+    $peminjaman->save();
+
+    return response()->json(['message' => 'Status peminjaman berhasil diperbarui.']);
+}
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
      * Diakses dari rute 'peminjaman/detail/{id}/'
@@ -335,5 +349,5 @@ class PeminjamanController extends Controller
         }
     }
 
-    
+
 }
