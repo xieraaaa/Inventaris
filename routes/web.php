@@ -52,15 +52,16 @@ Route::middleware('auth')->group(function () {
             Route::middleware('role:admin')->group(function() {
                 Route::get('peminjaman', 'index')->name('peminjaman');
 				Route::get('detal/Admin/{id}', 'detailAdmin');
-                Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
                 Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
                 Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
                 Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
+                Route::post('/peminjaman/update-status/{id}',  'updateStatus');
+
             });
 
             Route::middleware('role:admin|superadmin')->group(function() {
                 Route::get('peminjaman/detail', 'getDetails');
-                Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
+                Route::post('/peminjaman/accept-status/{id}', 'acceptPeminjaman');
                 Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
             });
         });

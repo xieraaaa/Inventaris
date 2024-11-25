@@ -4,13 +4,13 @@
 <div class="container-fluid">
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h4 class="text-themecolor">Barang</h4>
+            <h4 class="text-themecolor">Dashboard</h4>
         </div>
         <div class="col-md-7 align-self-center text-end">
             <div class="d-flex justify-content-end align-items-center">
                 <ol class="breadcrumb justify-content-end">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active">Barang</li>
+                    <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
             </div>
         </div>
@@ -135,14 +135,14 @@
         showCancelButton: true,
         confirmButtonText: 'Ya, Setujui!',
         cancelButtonText: 'Batal',
-    }).then((result) => {
+    }).then((result) => {           
         if (result.isConfirmed) {
             // Jika admin mengonfirmasi, kirimkan data ke server
             const newStatus = 'Approved'; // Status baru
-            
+
             $.ajax({
                 type: 'POST',
-                url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
+                url: `/peminjaman/accept-status/${id}`, // Endpoint Laravel
                 data: {
                     _token: '{{ csrf_token() }}', // Token CSRF
                     status: newStatus // Status baru yang akan dikirim
@@ -169,7 +169,7 @@ peminjamanTable.on('click', '.btn-reject', function() {
         url: `/peminjaman/reject/${id}`, // Endpoint Laravel
         data: {
             _token: '{{ csrf_token() }}' // Token CSRF
-        },
+        },  
         success: (response) => {
             Swal.fire("Success!", response.message, "success");
             peminjamanTable.ajax.reload(null, false); // Reload tabel
