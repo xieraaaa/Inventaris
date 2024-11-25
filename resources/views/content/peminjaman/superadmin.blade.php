@@ -507,7 +507,7 @@
                 });
             }
         }
-
+ 
         // Event listener for search input
         document.getElementById('searchInput').addEventListener('change', filterAndRenderProducts);
 

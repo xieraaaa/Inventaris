@@ -56,6 +56,11 @@
 					</ul>
 				</li>
 
+				@elseif (Auth::user()->hasRole('superadmin'))
+
+				<li><a class="waves-effect waves-dark" href="{{route('peminjaman')}}"><i class="fa-solid fa-handshake"></i><span class="hide-menu">Peminjaman</span></a>
+				</li>
+
 				@endif
 		</nav>
 	</div>

@@ -84,6 +84,11 @@ class PeminjamanController extends Controller
         return view('content.peminjaman.index');
     }
 
+    public function superadmin()
+    {
+        return view('content.peminjaman.superadmin');
+    } 
+
     /**
      * Mengambil detail sebuah barang dari kode barang
      */
