@@ -39,6 +39,8 @@
 				<li><a class="waves-effect waves-dark" href="{{ route('barang') }}"><i class="fa-solid fa-box-open"></i><span class="hide-menu">Barang</span></a>
 				<li><a class="waves-effect waves-dark" href="{{route('peminjaman')}}"><i class="fa-solid fa-handshake"></i><span class="hide-menu">Peminjaman</span></a>
 				</li>
+				<li><a class="waves-effect waves-dark" href="{{route('peminjaman.admin')}}"><i class="fa-solid fa-handshake"></i><span class="hide-menu">pinjam barang</span></a>
+				</li>
 				<li> 
 					<a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
 						<i class="fa-solid fa-arrow-right-arrow-left"></i><span class="hide-menu">Pemindahan</span>
@@ -54,6 +56,11 @@
 						<li><a href="{{ route('merek') }}">Merek</a></li>
 						<li><a href="{{ route('unit') }}">Unit</a></li>
 					</ul>
+				</li>
+
+				@elseif (Auth::user()->hasRole('superadmin'))
+
+				<li><a class="waves-effect waves-dark" href="{{route('peminjaman.superadmin')}}"><i class="fa-solid fa-handshake"></i><span class="hide-menu">Peminjaman</span></a>
 				</li>
 
 				@endif

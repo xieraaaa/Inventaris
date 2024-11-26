@@ -82,4 +82,49 @@ class PemindahanController extends Controller
 
         return $data;
     }
+
+    public function edit($id)
+{
+    $pemindahan = Pemindahan::with('detail.barang')->find($id);
+    if (!$pemindahan) {
+        return response()->json(['message' => 'Data tidak ditemukan'], 404);
+    }
+    return response()->json($pemindahan);
+}
+
+public function destroy($id)
+{
+    $pemindahan = Pemindahan::find($id);
+
+    if (!$pemindahan) {
+        return response()->json(['error' => 'Data tidak ditemukan'], 404);
+    }
+
+    // Hapus data pemindahan
+    $pemindahan->delete();
+
+    return response()->json(['message' => 'Data berhasil dihapus']);
+}
+
+public function update(Request $request, $id)
+{
+    $pemindahan = Pemindahan::find($id);
+
+    if (!$pemindahan) {
+        return response()->json(['error' => 'Data tidak ditemukan'], 404);
+    }
+
+    // Update data pemindahan
+    $pemindahan->tanggal = $request->tanggal;
+    $pemindahan->asal = $request->asal;
+    $pemindahan->tujuan = $request->tujuan;
+    $pemindahan->deskripsi = $request->deskripsi;
+
+    // Simpan perubahan
+    $pemindahan->save();
+
+    return response()->json(['message' => 'Data berhasil diperbarui']);
+}
+
+
 }

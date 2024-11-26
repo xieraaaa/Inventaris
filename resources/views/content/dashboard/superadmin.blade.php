@@ -142,7 +142,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: `/peminjaman/accept-status/${id}`, // Endpoint Laravel
+                url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
                 data: {
                     _token: '{{ csrf_token() }}', // Token CSRF
                     status: newStatus // Status baru yang akan dikirim

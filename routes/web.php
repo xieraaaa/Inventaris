@@ -44,29 +44,34 @@ Route::middleware('auth')->group(function () {
         Route::post('merek/import', 'import')->name('merek.import');
     });
 
-        Route::controller(PeminjamanController::class)->group(function() {
-            Route::middleware('role:user')->group(function() {
-                Route::get('riwayat', 'riwayat')->name('riwayat');
-                Route::get('peminjaman/riwayat','history');
-                Route::post('tambah-peminjaman', 'add');
-            });
-            
-            Route::middleware('role:admin')->group(function() {
-                Route::get('peminjaman', 'index')->name('peminjaman');
-				Route::get('detal/Admin/{id}', 'detailAdmin');
-                Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
-                Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
-                Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
-                Route::post('/peminjaman/update-status/{id}',  'updateStatus');
-
-            });
-
-            Route::middleware('role:admin|superadmin')->group(function() {
-                Route::get('peminjaman/detail', 'getDetails');
-                Route::post('/peminjaman/accept-status/{id}', 'acceptPeminjaman');
-                Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
-            });
+    Route::controller(PeminjamanController::class)->group(function() {
+        Route::post('tambah-peminjaman', 'add');
+        Route::middleware('role:user')->group(function() {
+            Route::get('riwayat', 'riwayat')->name('riwayat');
+            Route::get('peminjaman/riwayat','history');
         });
+        
+        Route::middleware('role:admin')->group(function() {
+            Route::get('admin', 'admin')->name('peminjaman.admin');
+            Route::get('peminjaman', 'index')->name('peminjaman');
+            Route::get('detal/Admin/{id}', 'detailAdmin');
+            Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
+            Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
+            Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
+            Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
+        });
+
+        Route::middleware('role:admin|superadmin')->group(function() {
+            Route::get('peminjaman/detail', 'getDetails');
+            Route::post('/peminjaman/update-status/{id}', 'acceptPeminjaman');
+            Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
+        });
+
+        Route::middleware('role:superadmin')->group(function() {
+            Route::get('superadmin', 'superadmin')->name('peminjaman.superadmin');
+            
+        });
+    });
 
     Route::controller(UnitController::class)->group(function() {
         Route::middleware('role:admin')->group(function() {
@@ -98,6 +103,11 @@ Route::middleware('auth')->group(function () {
         route::get('pemindahan/datariwayat','riwayat');
         Route::get('pemindahan/detail', 'getDetails');
         Route::post('store-pemindahan', 'store');
+        Route::get('pemindahan/edit/{id}',  'edit');
+        Route::put('pemindahan/update/{id}' ,'update');
+        Route::delete('pemindahan/delete/{id}','destroy');
+
+
     });
 });
 
