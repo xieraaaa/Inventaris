@@ -21,10 +21,7 @@ return new class extends Migration
             $table->foreign('id_pemindahan')->references('id')->on('pemindahan')->onDelete('cascade');
             $table->foreign('id_barang')->references('id')->on('barang')->onDelete('cascade');
         });
-
-       
     }
-
 
     /**
      * Reverse the migrations.
