@@ -45,35 +45,35 @@
                 <!-- Product items will be rendered here -->
             </div>
             <nav class="mt-3">
-    @php
-        $paginationLength =30;
-    @endphp
-   <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
-    <li data-role="pagination-direction" data-direction="left" class="page-item" onclick="changePage(currentPage - paginationLength)">
-        <a class="page-link" href="#">&laquo;</a>
-    </li>
-    @for ($idx = 1; $idx <= $paginationLength; ++$idx)
-        <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item">
-            <a class="page-link" href="#">{{ $idx }}</a>
-        </li>
-    @endfor
-    <li data-role="pagination-direction" data-direction="right" class="page-item" onclick="changePage(currentPage + paginationLength)">
-        <a class="page-link" href="#">&raquo;</a>
-    </li>
-</ul>
-
-</nav>
-    <template id="product-item">
-    <div
-        class="product-card d-flex flex-column justify-content-between align-items-center p-3 rounded shadow-sm"
-        onClick="addToCart(this)">
-        <img src="" alt="Product Image" data-role="image" class="product-image rounded mb-2" />
-        <div class="product-info text-center">
-            <h6 class="product-name font-weight-bold mb-1 clamp-lines" data-role="name"></h6>
-            <p class="product-quantity text-muted mb-0">Jumlah: <span data-role="jumlah"></span></p>
+                    @php
+                        $paginationLength =30;
+                    @endphp
+                <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
+                        <li data-role="pagination-direction" data-direction="left" class="page-item" onclick="changePage(currentPage - paginationLength)">
+                            <a class="page-link" href="#">&laquo;</a>
+                        </li>
+                        @for ($idx = 1; $idx <= $paginationLength; ++$idx)
+                            <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item">
+                                <a class="page-link" href="#">{{ $idx }}</a>
+                            </li>
+                        @endfor
+                        <li data-role="pagination-direction" data-direction="right" class="page-item" onclick="changePage(currentPage + paginationLength)">
+                            <a class="page-link" href="#">&raquo;</a>
+                        </li>
+                    </ul>
+            </nav>
+            <template id="product-item">
+                <div
+                    class="product-card d-flex flex-column justify-content-between align-items-center p-3 rounded shadow-sm"
+                    onClick="addToCart(this)">
+                    <img src="" alt="Product Image" data-role="image" class="product-image rounded mb-2" />
+                    <div class="product-info text-center">
+                        <h6 class="product-name font-weight-bold mb-1 clamp-lines" data-role="name"></h6>
+                        <p class="product-quantity text-muted mb-0">Jumlah: <span data-role="jumlah"></span></p>
+                    </div>
+                </div>
+            </template>
         </div>
-    </div>
-</template>
 
 
     <!-- Modal for QR Code Scanner -->

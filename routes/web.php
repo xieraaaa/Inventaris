@@ -60,6 +60,29 @@ Route::middleware('auth')->group(function () {
             Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
             Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
         });
+    
+        // TODO Review untuk dirapikan
+        Route::prefix('/peminjaman')->group(function() {
+            Route::name('peminjaman')->group(function() {
+                Route::get('/fetch', 'fetch')->name('.fetch');
+                Route::get('/barang', 'fetchBarang')->name('.fetchBarang');
+            });
+        });
+        
+        Route::middleware('role:user')->group(function() {
+            Route::get('riwayat', 'riwayat')->name('riwayat');
+            Route::get('peminjaman/riwayat','history');
+        });
+        
+        Route::middleware('role:admin')->group(function() {
+            Route::get('peminjaman', 'index')->name('peminjaman');
+            Route::get('detal/Admin/{id}', 'detailAdmin');
+            Route::post('/peminjaman/admin-status/{id}', 'acceptStatus');
+            Route::post('/peminjaman/kembali-status/{id}', 'peminjamanKembali');
+            Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
+            Route::post('/peminjaman/update-status/{id}',  'updateStatus');
+
+        });
 
         Route::middleware('role:admin|superadmin')->group(function() {
             Route::get('peminjaman/detail', 'getDetails');

@@ -8,7 +8,7 @@ class UnitFactory extends Factory {
     public function definition()
     {
         return [
-            'unit' => fake()->word()
+            'unit' => fake()->unique()->word()
         ];
     }
 }

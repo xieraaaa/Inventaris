@@ -253,7 +253,8 @@
                 },
                 responsive: true,
                 autoWidth: true, // Allow automatic column width adjustments
-                columns: [{
+                columns: [
+                    {
                         data      : null,
                         name      : 'id',
                         title     : 'ID',
@@ -264,44 +265,24 @@
                         }
                     },
                     {
-                        data : 'kode_barang',
-                        name : 'kode_barang',
-                        title: 'Kode Barang',
-                    },
-                    {
                         data : 'nama_barang',
-                        name : 'nama_barang',
                         title: 'Nama Barang',
                     },
                     {
                         data : 'kategori',
-                        name : 'kategori',
                         title: 'Kategori',
                     },
                     {
                         data : 'unit',
-                        name : 'unit',
                         title: 'Unit',
                     },
                     {
                         data : 'merek',
-                        name : 'merek',
                         title: 'Merek',
                     },
                     {
-                        data : 'kondisi_label',
-                        name : 'kondisi_label',
-                        title: 'Kondisi Label',
-                    },
-                    {
                         data : 'jumlah',
-                        name : 'jumlah',
                         title: 'Jumlah',
-                    },
-                    {
-                        data : 'keterangan',
-                        name : 'keterangan',
-                        title: 'Keterangan',
                     },
                     {
                         data     : 'action',
@@ -312,9 +293,7 @@
                     }
 
                 ],
-                order: [
-                    [2, 'asc']
-                ],
+                order: [[0, 'asc']],
                 scrollX: true
             });
         });

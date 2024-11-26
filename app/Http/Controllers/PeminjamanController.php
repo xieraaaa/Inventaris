@@ -37,13 +37,15 @@ class PeminjamanController extends Controller
         // Ensure the 'data' key exists and is an array
         if (isset($data['data']) && is_array($data['data'])) {
             DB::transaction(function () use ($data, $request) {
-                $idPeminjaman = Peminjaman::create([
-                    'id_user' => Auth::user()->id,
-                    'tgl_pinjam' => $data['tgl_pinjam'],
+                $peminjaman = Peminjaman::create([
+                    'id_user'     => Auth::user()->id,
+                    'tgl_pinjam'  => $data['tgl_pinjam'],
                     'tgl_kembali' => $data['tgl_kembali'],
-                    'status' => 'pending',
-                    'keterangan' => $data['keterangan'],
-                ])->id;
+                    'status'      => 0,
+                    'keterangan'  => $data['keterangan'],
+                ]);
+
+                $idPeminjaman = $peminjaman['id'];
 
                 foreach ($data['data'] as $datum) {
                     $id = $datum['id'];
@@ -288,8 +290,9 @@ class PeminjamanController extends Controller
         $data = [];
 
         $peminjamanData = Peminjaman::with(['detail', 'user'])
-            ->whereIn('status', ['Approved', 'di pinjam'])
+            ->where('status', 'Approved')
             ->get();
+
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
@@ -354,5 +357,15 @@ class PeminjamanController extends Controller
         }
     }
 
+    public function fetch(Request $request) {
+        return Peminjaman::where('id', $request['id'])->get();
+    }
 
+    public function fetchBarang(Request $request) {
+        $data = Peminjaman::firstWhere('id', $request['id'])->barang;
+
+        $data->setVisible(explode(',', $request['filter']));
+
+        return $data;
+    }
 }

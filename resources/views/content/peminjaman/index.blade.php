@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateModalLabel">Update Peminjaman</h5>
@@ -42,26 +42,39 @@
                 </div>
                 <form id="updateForm">
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="updateNamaBarang" class="form-label">Nama Barang</label>
-                            <select class="form-select" id="updateNamaBarang" name="nama_barang" required>
-                                <option value="">Barang 1</option>
-                                <option value="Barang 2">Barang 2</option>
-                                <option value="Barang 3">Barang 3</option>
-                            </select>
+                        <div id="education_fields"></div>
+                        <div class="row">
+                            <div class="col-sm-3 nopadding">
+                                <div class="form-group">
+                                    <select id="updateModal__selectBarang" class="form-control" name="barang">
+                                        <option>-- Nama Barang --</option>
+                                        {{-- Diisi secara dinamis --}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 nopadding">
+                                <div class="form-group">
+                                    <input type="number" class="form-control" id="Major" name="number[]" value="" placeholder="Jumlah" />
+                                </div>
+                            </div>
+                            <div class="col-sm-3 nopadding">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Keterangan" />
+                                </div>
+                            </div>
+                            <div class="col-sm-3 nopadding">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success text-white" type="button" onclick="education_fields();"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="updateKondisi" class="form-label">Kondisi</label>
-                            <select class="form-select" id="updateKondisi" name="kondisi" required>
-                                <option value="Baik">Baik</option>
-                                <option value="Rusak">Rusak</option>
-                            </select>
-                        </div>
-                        <input type="hidden" id="updateId" name="id">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit">Submit</button>
                     </div>
                 </form>
             </div>
@@ -70,6 +83,23 @@
 @endsection
 
 @push('scripts')
+    <script type="text/javascript" src="dff.js"></script>
+    <script type="text/javascript" src="assets/node_modules/multiselect/js/jquery.multi-select.js"></script>
+
+    {{-- Skrip untuk mengisi data modal --}}
+    <script>
+        function populateUpdateModal(data) {
+            {{-- Reset list barang --}}
+            $('#updateModal__selectBarang').html('<option>-- Nama Barang --</option>');
+            
+            for (const name of data) {
+                const htmlString = `<option>${ name }</option>`;
+
+                $(htmlString).appendTo('#updateModal__selectBarang');
+            }
+        }
+    </script>
+
     <script>
         function createChild(data) {
             return `<span><b>${data.nama_barang}</b>: ${data.jumlah}</span>`;
@@ -91,7 +121,8 @@
                 dataSrc: ''
 
             },
-            columns: [{
+            columns: [
+                {
                     className: 'dt-control',
                     data: null,
                     orderable: false,
@@ -131,15 +162,16 @@
                     orderable: false,
                     render: function(data, type, row) {
                         return `
-            <button class="btn btn-success btn-accept" data-id="${row.id}">
-                <i class="fas fa-check"></i> Accept
-            </button>
-            <button class="btn btn-warning btn-update" data-id="${row.id}">
-                <i class="fas fa-rotate "></i> update
-            </button>
-            <button class="btn btn-success btn-kembali" data-id="${row.id}">
-                <i class="fas fa-check"></i> kembali
-            </button>`
+                            <button class="btn btn-success btn-accept" data-id="${row.id}">
+                                <i class="fas fa-check"></i> Accept
+                            </button>
+                            <button class="btn btn-danger btn-update" data-id="${row.id}">
+                                <i class="fas fa-trash-can"></i> Perbarui
+                            </button>
+                            <button class="btn btn-success btn-kembali" data-id="${row.id}">
+                                <i class="fas fa-check"></i> kembali
+                            </button>
+                        `
                     }
                 }
 
@@ -174,102 +206,118 @@
         });
 
         peminjamanTable.on('click', '.btn-accept', function() {
-    const id = $(this).data('id'); // Ambil ID peminjaman
-    const newStatus = 'di pinjam'; // Status baru
+        const id = $(this).data('id'); // Ambil ID peminjaman
+        const newStatus = 'di pinjam'; // Status baru
 
-    // Tampilkan SweetAlert untuk konfirmasi
-    Swal.fire({
-        title: 'Konfirmasi Peminjaman',
-        text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Pinjamkan!',
-        cancelButtonText: 'Batal',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Lanjutkan proses jika pengguna menyetujui
-            $.ajax({
-                type: 'POST',
-                url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
-                data: {
-                    _token: '{{ csrf_token() }}', // Token CSRF
-                    status: newStatus // Status baru yang akan dikirim
-                },
-                success: (response) => {
-                    Swal.fire("Berhasil!", response.message, "success");
-                    peminjamanTable.ajax.reload(null, false); // Reload tabel
-                },
-                error: (xhr) => {
-                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
+        // Tampilkan SweetAlert untuk konfirmasi
+        Swal.fire({
+            title: 'Konfirmasi Peminjaman',
+            text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Pinjamkan!',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Lanjutkan proses jika pengguna menyetujui
+                $.ajax({
+                    type: 'POST',
+                    url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
+                    data: {
+                        _token: '{{ csrf_token() }}', // Token CSRF
+                        status: newStatus // Status baru yang akan dikirim
+                    },
+                    success: (response) => {
+                        Swal.fire("Berhasil!", response.message, "success");
+                        peminjamanTable.ajax.reload(null, false); // Reload tabel
+                    },
+                    error: (xhr) => {
+                        Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
+                    }
+                });
+            }
+        });
+        });
+
+        peminjamanTable.on('click', '.btn-kembali', function() {
+            const id = $(this).data('id'); // Ambil ID peminjaman
+            const newStatus = 'di kembalikan'; // Status baru
+
+            // Tampilkan SweetAlert untuk konfirmasi
+            Swal.fire({
+                title: 'Konfirmasi Pengembalian',
+                text: "Apakah Anda yakin barang telah dikembalikan?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Kembalikan!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Lanjutkan proses jika pengguna menyetujui
+                    $.ajax({
+                        type: 'POST',
+                        url: `/peminjaman/kembali-status/${id}`, // Endpoint Laravel
+                        data: {
+                            _token: '{{ csrf_token() }}', // Token CSRF
+                            status: newStatus // Status baru yang akan dikirim
+                        },
+                        success: (response) => {
+                            Swal.fire("Berhasil!", response.message, "success");
+                            peminjamanTable.ajax.reload(null, false); // Reload tabel
+                        },
+                        error: (xhr) => {
+                            Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
+                        }
+                    });
                 }
             });
+        });
+
+        function showUpdateModal(id) {
+            $('#updateModal').modal('show');
         }
-    });
-});
 
-peminjamanTable.on('click', '.btn-kembali', function() {
-    const id = $(this).data('id'); // Ambil ID peminjaman
-    const newStatus = 'di kembalikan'; // Status baru
+        peminjamanTable.on('click', '.btn-update', function() {
+            const id = $(this).data('id'); // Ambil ID peminjaman
+            $('#updateId').val(id); // Set ID ke input hidden
 
-    // Tampilkan SweetAlert untuk konfirmasi
-    Swal.fire({
-        title: 'Konfirmasi Pengembalian',
-        text: "Apakah Anda yakin barang telah dikembalikan?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Kembalikan!',
-        cancelButtonText: 'Batal',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Lanjutkan proses jika pengguna menyetujui
             $.ajax({
-                type: 'POST',
-                url: `/peminjaman/kembali-status/${id}`, // Endpoint Laravel
+                url: '{{ route("peminjaman.fetchBarang") }}',
                 data: {
-                    _token: '{{ csrf_token() }}', // Token CSRF
-                    status: newStatus // Status baru yang akan dikirim
+                    id: id,
+                    filter: 'nama_barang'
                 },
-                success: (response) => {
-                    Swal.fire("Berhasil!", response.message, "success");
-                    peminjamanTable.ajax.reload(null, false); // Reload tabel
-                },
-                error: (xhr) => {
-                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
+
+                success: data => {
+                    populateUpdateModal(data.map(Object.values))
                 }
             });
-        }
-    });
-});
-peminjamanTable.on('click', '.btn-update', function() {
-    const id = $(this).data('id'); // Ambil ID peminjaman
-    $('#updateId').val(id); // Set ID ke input hidden
-    $('#updateModal').modal('show'); // Tampilkan modal
-});
 
-// Form submission
-$('#updateForm').on('submit', function(e) {
-    e.preventDefault(); // Prevent default form submission
-    const id = $('#updateId').val();
-    const status = $('#updateStatus').val();
+            showUpdateModal(id);
+        });
 
-    $.ajax({
-        type: 'POST',
-        url: `/peminjaman/update-status/${id}`, // Endpoint Laravel untuk update
-        data: {
-            _token: '{{ csrf_token() }}', // Token CSRF
-            status: status
-        },
-        success: (response) => {
-            Swal.fire("Berhasil!", response.message, "success");
-            $('#updateModal').modal('hide'); // Tutup modal
-            peminjamanTable.ajax.reload(null, false); // Reload tabel
-        },
-        error: (xhr) => {
-            Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengupdate data.", "error");
-        }
-    });
-});
+        // Form submission
+        $('#updateForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        const id = $('#updateId').val();
+        const status = $('#updateStatus').val();
 
-
+        $.ajax({
+            type: 'POST',
+            url: `/peminjaman/update-status/${id}`, // Endpoint Laravel untuk update
+            data: {
+                _token: '{{ csrf_token() }}', // Token CSRF
+                status: status
+            },
+            success: (response) => {
+                Swal.fire("Berhasil!", response.message, "success");
+                $('#updateModal').modal('hide'); // Tutup modal
+                peminjamanTable.ajax.reload(null, false); // Reload tabel
+            },
+            error: (xhr) => {
+                Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengupdate data.", "error");
+            }
+        });
+        });
     </script>
 @endpush

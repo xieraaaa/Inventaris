@@ -8,7 +8,7 @@ class KategoriFactory extends Factory {
     public function definition()
     {
         return [
-            'kategori' => fake()->word()
+            'kategori' => fake()->unique()->word()
         ];
     }
 }

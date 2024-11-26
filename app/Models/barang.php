@@ -14,7 +14,6 @@ class Barang extends Model
     protected $table = 'barang';
 
     protected $fillable = [
-        
         'kode_barang',
         'nama_barang',
         'id_kategori',
@@ -25,19 +24,16 @@ class Barang extends Model
         'keterangan'
         
     ];
-
    
-public function kategori() {
-    return $this->belongsTo(kategori::class, 'id_kategori');
-}
+    public function kategori() {
+        return $this->belongsTo(kategori::class, 'id_kategori');
+    }
 
+    public function unit() {
+        return $this->belongsTo(Unit::class, 'id_unit');
+    }
 
-
-public function unit() {
-    return $this->belongsTo(Unit::class, 'id_unit');
-}
-
-public function merek() {
-    return $this->belongsTo(merek::class, 'id_merek');
-}
+    public function merek() {
+        return $this->belongsTo(merek::class, 'id_merek');
+    }
 }
