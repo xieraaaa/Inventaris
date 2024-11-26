@@ -13,7 +13,10 @@
                             </tr>
                         </thead>
                         <tbody id="cart">
-                            <!-- Cart items will be rendered here -->
+                            {{-- Cart items will be rendered here --}}
+                            <tr>
+                                <td class="text-center" colspan="2">Keranjang kosong!<br />Silahkan menaruh barang di keranjang melalui interface yang berada di sebelah kanan Anda.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -27,7 +30,7 @@
                 </div>
                 <div class="col">
                     <button type="button" class="btn btn-primary btn-block" disabled id="checkoutButton" onClick="handleClickSubmit()">
-                        Check Out
+                        Pinjam
                     </button>
                 </div>
             </div>
@@ -36,11 +39,13 @@
             <div class="mb-2">
                 <input type="text" id="searchInput" class="form-control" placeholder="Cari produk" />
             </div>
+            {{--
             <div class="col">
                 <button type="button" class="btn btn-secondary btn-block" onClick="openQrModal()">
                     Scan barcode
                 </button>
             </div>
+            --}}
             <div id="list-product" class="order-product d-flex flex-wrap justify-content-between" style="row-gap: 8px; column-gap: 8px">
                 <!-- Product items will be rendered here -->
             </div>
@@ -181,9 +186,9 @@
         const paginationRoot  = document.getElementById('pagination');
 
         /**
-        * Memunculkan popup menandakan bahwa user baru saja mencoba untuk meminjam
-        * produk dengan jumlah melebihi stok yang ada
-        */
+         * Memunculkan popup menandakan bahwa user baru saja mencoba untuk meminjam
+         * produk dengan jumlah melebihi stok yang ada
+         */
         function loadStockAlert() {
             Swal.fire({
                 icon: 'error',
@@ -239,9 +244,10 @@
             nextButton.style.display = currentPage < totalPages ? 'block' : 'none';
         }
 
-        // untuk menampilkan swal konfirmasi
+        // TODO Refaktor agar lebih mudah untuk dipahami dan dimodifikasi
+        // Untuk menampilkan dialog konfirmasi
         function confirmCartSubmission() {
-            let cartSummary = '<ul>'; // Start a list for better formatting
+            let cartSummary = '<ul style="list-style-type: none">'; // Start a list for better formatting
             cart.forEach(item => {
                 cartSummary += `
                     <li><strong>Nama Barang:</strong> ${item.name} <br>
@@ -296,6 +302,16 @@
         // Render the cart items in the table
         function renderCart() {
             const cartTable = document.getElementById('cart');
+
+            if (cart.length === 0) {
+                cartTable.innerHTML =
+                `<tr>
+                    <td class="text-center" colspan="2">Keranjang kosong!<br />Silahkan menaruh barang di keranjang melalui interface yang berada di sebelah kanan Anda.</td>
+                </tr>`;
+
+                return;
+            }
+            
             cartTable.innerHTML = '';
 
             cart.forEach(item => {
