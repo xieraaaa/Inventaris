@@ -103,6 +103,11 @@ Route::middleware('auth')->group(function () {
         route::get('pemindahan/datariwayat','riwayat');
         Route::get('pemindahan/detail', 'getDetails');
         Route::post('store-pemindahan', 'store');
+        Route::get('pemindahan/edit/{id}',  'edit');
+        Route::put('pemindahan/update/{id}' ,'update');
+        Route::delete('pemindahan/delete/{id}','destroy');
+
+
     });
 });
 
