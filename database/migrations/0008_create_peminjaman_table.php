@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->date('tgl_kembali');
             $table->date('tgl_pinjam');
-            $table->string('status');
+            $table->tinyInteger('status');
             $table->string('keterangan');
             $table->timestamps();
 

@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{
+    Model,
+    Factories\HasFactory   
+};
 
 class Barang extends Model
 {
+    use HasFactory;
+    
     protected $table = 'barang';
 
     protected $fillable = [
