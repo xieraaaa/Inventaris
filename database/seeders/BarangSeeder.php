@@ -3,13 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\Barang;
+use App\Models\UnitBarang;
 use Illuminate\Database\Seeder;
-
-require_once 'vendor/autoload.php';
 
 class BarangSeeder extends Seeder {
     public function run()
     {
-        Barang::factory()->count(200)->create();
+        Barang::factory()
+            ->has(UnitBarang::factory()->count(50), 'unitBarang')
+            ->count(50)
+            ->create();
     }
 }

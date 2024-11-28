@@ -7,7 +7,9 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-				'resources/js/dashboard/user/pagination.js'
+                'resources/js/dashboard/user/pagination.js',
+                'public/assets/node_modules/morrisjs/morris.css',
+                'public/dist/css/style.min.css'
             ],
             refresh: true,
         }),

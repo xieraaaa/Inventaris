@@ -36,4 +36,9 @@ class Barang extends Model
     public function merek() {
         return $this->belongsTo(merek::class, 'id_merek');
     }
+
+    public function unitBarang()
+    {
+        return $this->hasMany(UnitBarang::class, 'id_barang');
+    }
 }

@@ -8,41 +8,52 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Isi tabel 'user' dengan data
-     */
     public function run(): void
     {
-        // superadmin memang hanya 1!
-        User::create([
+        $userCredentials = [
+            'name'          => 'user',
+            'email'         => 'user@wbi.ac.id',
+            'profile_photo' => null,
+            'password'      => Hash::make('userpassword')
+        ];
+    
+        $adminCredentials = [
+            'name'          => 'admin',
+            'email'         => 'admin@wbi.ac.id',
+            'profile_photo' => null,
+            'password'      => Hash::make('adminadmin')
+        ];
+        
+        $superadminCredentials = [
             'name'          => 'superadmin',
             'email'         => 'superadmin@wbi.ac.id',
             'profile_photo' => null,
             'password'      => Hash::make('superadminsecure')
-        ])->removeRole('user')->assignRole('superadmin');
+        ];
         
-        if (is_null(User::where('name', 'admin')->first()))
-        {
-            \Illuminate\Support\Facades\Log::info('UserSeeder.php\n\tUser dengan nama \'admin\' sudah dibuat');
+        $user       = User::firstWhere('name', 'user');
+        $admin      = User::firstWhere('name', 'admin');
+        $superadmin = User::firstWhere('name', 'superadmin');
 
-            User::create([
-                'name'          => 'admin',
-                'email'         => 'admin@wbi.ac.id',
-                'profile_photo' => null,
-                'password'      => Hash::make('adminadmin')
-            ])->removeRole('user')->assignRole('admin');
+        if (is_null($user))
+        {
+            User::create($userCredentials);
         }
 
-        if (is_null(User::firstWhere('name', 'user')))
+        if (is_null($admin))
         {
-            \Illuminate\Support\Facades\Log::info('UserSeeder.php\n\tUser dengan nama \'user\' sudah dibuat');
-            
-            User::create([
-                'name'          => 'user',
-                'email'         => 'user@wbi.ac.id',
-                'profile_photo' => null,
-                'password'      => Hash::make('userpassword')
-            ]);
+            $admin = User::create($adminCredentials);
+
+            $admin->removeRole('user');
+            $admin->assignRole('admin');
+        }
+
+        if (is_null($superadmin))
+        {
+            $superadmin = User::create($superadminCredentials);
+
+            $admin->removeRole('user');
+            $admin->assignRole('superadmin');
         }
     }
 }

@@ -25,16 +25,13 @@
 
 	@stack('styles')
 
-	<link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
+	{{-- <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet"> --}}
 
 	<!-- Morris CSS -->
-	<link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet">
+	{{-- <link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet"> --}}
 
 	<!-- Toaster Popup message CSS -->
 	<link href="{{ asset('../assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet">
-
-	<!-- Morris CSS -->
-	<link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet">
 
 	<!-- Dashboard 1 Page CSS -->
 	<link href="{{asset('dist/css/pages/dashboard1.css')}}" rel="stylesheet">
@@ -42,6 +39,7 @@
 	@vite(['resources/js/app.js'])
 </head>
 
+<!-- TODO Rapikan kode -->
 <body class="skin-blue fixed-layout">
 	<!-- ============================================================== -->
 	<!-- Preloader - style you can find in spinners.css -->
@@ -49,7 +47,7 @@
 	<div class="preloader">
 		<div class="loader">
 			<div class="loader__figure"></div>
-			<p class="loader__label">Elite admin</p>
+			<p class="text-center loader__label">Inventaris<br />Wilmar Business Indonesia</p>
 		</div>
 	</div>
 	<!-- ============================================================== -->

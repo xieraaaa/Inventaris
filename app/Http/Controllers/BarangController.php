@@ -40,34 +40,23 @@ class BarangController extends Controller
      */
     public function getDatatables()
     {
-        return datatables()
-            ->of(Barang::with(['kategori', 'unit', 'merek'])
-            ->select('id', 'kode_barang','nama_barang','id_kategori','id_unit','id_merek','jumlah','kondisi','keterangan',))
-            ->addColumn('kategori', function ($barang) {
-                return $barang->kategori ? $barang->kategori->kategori : '-';
-            })
-            ->addColumn('unit', function ($barang) {
-                return $barang->unit ? $barang->unit->unit : '-';
-            })
-            ->addColumn('merek', function ($barang) {
-                return $barang->merek ? $barang->merek->merek : '-';
-            })
-            ->addColumn('kondisi_label', function ($barang) {
-                
-                return $barang->kondisi == 1 ? 'Baik' : 'Rusak';
-            })
-            ->addColumn('barcode', function ($barang) {
-                return $barang->barcode;
-            })
-            ->addColumn('barcode', function ($barang) {
-                return '<img src=' . asset('storage/barcodes/' . $barang->kode_barang . '.png') . ' alt="Barcode" style="max-width: 150px;" />';
-            })
-            ->addColumn('action', 'content.barang.barang-action')
-            ->rawColumns(['action','barcode'])
-            ->addColumn('action', 'content.barang.action.admin')
-            ->rawColumns(['action'])
-            ->addIndexColumn()
-            ->make(true);
+        $rootData   = [];
+        $barangData = Barang::with(['unit', 'kategori', 'merek', 'unitBarang'])->get();
+
+        foreach ($barangData as $datum) {
+            $tmpDatum = [];
+            
+            $tmpDatum['id']          = $datum['id'];
+            $tmpDatum['nama_barang'] = $datum['nama_barang'];
+            $tmpDatum['unit']        = $datum->unit['unit'];
+            $tmpDatum['merek']       = $datum->merek['merek'];
+            $tmpDatum['kategori']    = $datum->kategori['kategori'];
+            $tmpDatum['unitBarang']  = $datum->unitBarang;
+
+            array_push($rootData, $tmpDatum);
+        }
+        
+        return $rootData;
     }
 
     /**

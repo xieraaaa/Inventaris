@@ -18,13 +18,10 @@ class BarangFactory extends Factory
         $merekMaxIndex    = Merek::orderBy('id', 'desc')->first()['id'];
         
         return [
-            'kode_barang' => fake()->unique()->numberBetween(100000, 999999),
-            'nama_barang' => fake()->unique()->sentence(2),
+            'nama_barang' => fake()->unique()->words(3, true),
             'id_kategori' => fake()->numberBetween(Kategori::first()['id'], $categoryMaxIndex),
             'id_unit'     => fake()->numberBetween(Unit::first()['id'], $unitMaxIndex),
             'id_merek'    => fake()->numberBetween(Merek::first()['id'], $merekMaxIndex),
-            'jumlah'      => fake()->numberBetween(0, 500),
-            'kondisi'     => fake()->boolean(),
             'keterangan'  => fake()->sentence(5)
         ];
     }

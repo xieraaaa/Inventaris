@@ -247,7 +247,7 @@
         // TODO Refaktor agar lebih mudah untuk dipahami dan dimodifikasi
         // Untuk menampilkan dialog konfirmasi
         function confirmCartSubmission() {
-            let cartSummary = '<ul style="list-style-type: none">'; // Start a list for better formatting
+            let cartSummary = '<ul style="list-style-type: none; padding: 0;">'; // Start a list for better formatting
             cart.forEach(item => {
                 cartSummary += `
                     <li><strong>Nama Barang:</strong> ${item.name} <br>

@@ -226,6 +226,19 @@
             </div>
         </div>
     </div>
+
+    <template id="detail-barang-template">
+        <table class="table">
+            <thead>
+                <th>Kode Inventaris</th>
+                <th>Lokasi</th>
+                <th>Kondisi</th>
+                <th>Tanggal Inventaris</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </template>
 @endsection
 
 @push('scripts')
@@ -233,6 +246,37 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
+        function format(data) {
+			console.log(data);
+
+            const table = document.getElementById('detail-barang-template').content.cloneNode(true);
+            const body = table.querySelector('tbody');
+
+            for (const unitBarang of data['unitBarang']) {
+                const row = document.createElement('tr');
+
+                const inventory_code = document.createElement('td');
+                inventory_code.innerText = unitBarang.kode_inventaris;
+
+                const location = document.createElement('td');
+                location.innerText = unitBarang.lokasi;
+
+                const condition = document.createElement('td');
+                condition.innerText = unitBarang.kondisi;
+
+                const inventory_date = document.createElement('td');
+                inventory_date.innerText = unitBarang.tanggal_inventaris;
+
+                row.appendChild(inventory_code);
+                row.appendChild(location);
+                row.appendChild(condition);
+                row.appendChild(inventory_date);
+
+                body.appendChild(row);
+            }
+            return table;
+        }
+
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -240,23 +284,23 @@
                 }
             });
 
-            $('#barang').DataTable({
-                processing: true,
-                serverSide: true,
+            const peminjamanTable = $('#barang').DataTable({
                 ajax: {
                     url: "{{ url('barang') }}",
-                    type: 'GET',
-                    dataSrc: function(json) {
-                        console.log(json); // Inspect JSON structure to confirm data mapping
-                        return json.data || []; // Ensure the data source path is correct
+                    dataSrc: function(data) {
+                        return data;
                     }
                 },
-                responsive: true,
-                autoWidth: true, // Allow automatic column width adjustments
                 columns: [
                     {
+                        data          : null,
+                        class         : 'dt-control',
+                        defaultContent: '',
+                        orderable     : false,
+                        searchable    : false
+                    },
+                    {
                         data      : null,
-                        name      : 'id',
                         title     : 'ID',
                         orderable : false,
                         searchable: false,
@@ -280,21 +324,21 @@
                         data : 'merek',
                         title: 'Merek',
                     },
-                    {
-                        data : 'jumlah',
-                        title: 'Jumlah',
-                    },
-                    {
-                        data     : 'action',
-                        name     : 'action',
-                        title    : 'Action',
-                        className: 'action',
-                        orderable: false
-                    }
-
                 ],
-                order: [[0, 'asc']],
-                scrollX: true
+                order: [[1, 'asc']],
+            });
+
+            peminjamanTable.on('click', 'td.dt-control', ({ target }) => {
+                const rowElement = target.closest('tr');
+                const row        = peminjamanTable.row(rowElement);
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                }
+                else {
+                    row.child(format(row.data()));
+                    row.child.show();
+                }
             });
         });
 
@@ -376,31 +420,33 @@
             });
         });
 
-        $(document).on('click', '#barang tbody tr', function(event) {
-            console.log('Clicked');
-            
-            // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
-            if ($(event.target).closest('td').hasClass('action')) {
-                return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
-            }
+        {{--
+            $(document).on('click', '#barang tbody tr', function(event) {
+                console.log('Clicked');
 
-            var data = $('#barang').DataTable().row(this).data();
+                // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
+                if ($(event.target).closest('td').hasClass('action')) {
+                    return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
+                }
 
-            if (data) {
-                // Isi detail modal dengan data yang sesuai
-                $('#barcode').html(data.barcode.replace('&gt;', '>').replace('&lt;', '<'));
-                $('#detail_kode_barang').text(data.kode_barang);
-                $('#detail_nama_barang').text(data.nama_barang);
-                $('#detail_kategori').text(data.kategori);
-                $('#detail_unit').text(data.unit);
-                $('#detail_merek').text(data.merek);
-                $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
-                $('#detail_jumlah').text(data.jumlah);
-                $('#detail_keterangan').text(data.keterangan);
+                var data = $('#barang').DataTable().row(this).data();
 
-                // Tampilkan modal detail
-                $('#detail-modal').modal('show');
-            }
-        });
+                if (data) {
+                    // Isi detail modal dengan data yang sesuai
+                    $('#barcode').html(data.barcode.replace('&gt;', '>').replace('&lt;', '<'));
+                    $('#detail_kode_barang').text(data.kode_barang);
+                    $('#detail_nama_barang').text(data.nama_barang);
+                    $('#detail_kategori').text(data.kategori);
+                    $('#detail_unit').text(data.unit);
+                    $('#detail_merek').text(data.merek);
+                    $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
+                    $('#detail_jumlah').text(data.jumlah);
+                    $('#detail_keterangan').text(data.keterangan);
+
+                    // Tampilkan modal detail
+                    $('#detail-modal').modal('show');
+                }
+            });
+        --}}
     </script>
 @endpush

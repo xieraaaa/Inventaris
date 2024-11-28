@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
             KategoriSeeder::class,
             MerekSeeder::class,
             BarangSeeder::class,
-            StatusSeeder::class
+            StatusSeeder::class,
         ]);
     }
 }
