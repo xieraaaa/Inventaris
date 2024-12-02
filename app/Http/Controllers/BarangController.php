@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
 use App\Imports\ExcelData;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -35,7 +36,7 @@ class BarangController extends Controller
 
     /**
      * Mengambil data untuk AJAX Datatable
-     * 
+     *
      * @return Illuminate\Http\JsonResponse
      */
     public function getDatatables()
@@ -45,41 +46,56 @@ class BarangController extends Controller
 
         foreach ($barangData as $datum) {
             $tmpDatum = [];
-            
+
             $tmpDatum['id']          = $datum['id'];
             $tmpDatum['nama_barang'] = $datum['nama_barang'];
             $tmpDatum['unit']        = $datum->unit['unit'];
             $tmpDatum['merek']       = $datum->merek['merek'];
             $tmpDatum['kategori']    = $datum->kategori['kategori'];
             $tmpDatum['unitBarang']  = $datum->unitBarang;
+            $tmpDatum['jumlah']      = count($tmpDatum['unitBarang']);
 
             array_push($rootData, $tmpDatum);
         }
-        
+
         return $rootData;
     }
 
     /**
-     * Mengembalikan data barang melalui format JSON
-     * 
+     * Mengembalikan data barang melalui format JSON berikut:
+     *
      * @return Illuminate\Http\JsonResponse
      */
-    public function get(Request $request)
+    public function get()
     {
-        $itemsToSkip = $request->page * 5;
-        return Barang::where('jumlah', '>', 0)->skip($itemsToSkip)->take(20)->orderBy('nama_barang', 'asc')->get();
+        $data = [];
+        $rawData = Barang::withCount(['unitBarang' => function(Builder $query) {
+            $query->where('kondisi', 'Tersedia');
+        }])->get();
+
+        foreach ($rawData as $datum) {
+            $tmpDatum = [];
+
+            $tmpDatum['id']          = $datum['id'];
+            $tmpDatum['nama_barang'] = $datum['nama_barang'];
+            $tmpDatum['jumlah']      = $datum['unit_barang_count'];
+
+            array_push($data, $tmpDatum);
+        }
+
+        return $data;
     }
-    
+
     public function filtered_get(Request $request) {
         Log::info($request['query']);
-        
+
         $data = Barang::where('nama_barang', 'like', $request['query'] . '%')->get();
 
         Log::info($data);
 
         return $data;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -99,7 +115,7 @@ class BarangController extends Controller
             'jumlah' => 'required',
             'kondisi' => 'required',
             'keterangan' => 'required',
-            
+
         ]);
 
         $barang = barang::updateOrCreate(
@@ -155,7 +171,7 @@ class BarangController extends Controller
     {
         // Ambil data barang berdasarkan ID yang diberikan
         $barang = barang::find($request->id);
-    
+
         // Pastikan data barang ada sebelum menghapusnya
         if (!$barang) {
             return response()->json([
@@ -163,22 +179,22 @@ class BarangController extends Controller
                 "msg" => "Barang tidak ditemukan!"
             ], 404);
         }
-    
+
         // Hapus barcode jika ada
         $barcodePath = 'barcodes/' . $barang->kode_barang . '.png'; // Path ke barcode
         if (Storage::disk('public')->exists($barcodePath)) {
             Storage::disk('public')->delete($barcodePath); // Menghapus barcode
         }
-    
+
         // Hapus barang
         $barang->delete();
-    
+
         return response()->json([
             "status" => "success",
             "msg" => "Barang berhasil dihapus"
         ], 201);
     }
-    
+
     public function import(Request $request)
     {
         $request->validate([

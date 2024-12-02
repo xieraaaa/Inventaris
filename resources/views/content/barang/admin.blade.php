@@ -304,6 +304,7 @@
                         title     : 'ID',
                         orderable : false,
                         searchable: false,
+                        type      : 'string',
                         render    : function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
                         }
@@ -323,6 +324,11 @@
                     {
                         data : 'merek',
                         title: 'Merek',
+                    },
+                    {
+                        data : 'jumlah',
+                        title: 'Jumlah',
+                        type : 'string'
                     },
                 ],
                 order: [[1, 'asc']],

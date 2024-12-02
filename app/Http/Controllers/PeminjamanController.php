@@ -49,7 +49,7 @@ class PeminjamanController extends Controller
 
                 foreach ($data['data'] as $datum) {
                     $id = $datum['id'];
-                    $barang = Barang::firstWhere('kode_barang', $id);
+                    $barang = Barang::firstWhere('id', $id);
 
                     // Pastikan barang ada di database
                     if ($barang) {
@@ -325,7 +325,7 @@ class PeminjamanController extends Controller
 
         if ($peminjaman && $peminjaman->status !== 'di pinjam') {
             // Update the status to 'di pinjam'
-            $peminjaman->status = 'di pinjam';
+            $peminjaman->status = 4;
             $peminjaman->save();
 
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
@@ -340,7 +340,7 @@ class PeminjamanController extends Controller
 
         if ($peminjaman) {
             // Update the status to 'di pinjam'
-            $peminjaman->status = 'di kembalikan';
+            $peminjaman->status = 5;
             $peminjaman->save();
 
             $details = $peminjaman->detail;
@@ -351,7 +351,7 @@ class PeminjamanController extends Controller
                 $barang->save(); 
             }
 
-            return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
+            return response()->json(['message' => 'Status peminjaman telah diperbarui menjadi "dipinjam"!']);
         } else {
             return response()->json(['error' => 'Peminjaman gagal ditemukan!'], 404);
         }

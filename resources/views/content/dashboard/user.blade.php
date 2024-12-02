@@ -80,7 +80,6 @@
             </template>
         </div>
 
-
     <!-- Modal for QR Code Scanner -->
     <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -507,11 +506,10 @@
 
                 filteredProducts.forEach(product => {
                     const html = productTemplate.cloneNode(true);
-                    html.dataset.id = product.kode_barang;
+                    html.dataset.id = product.id;
 
                     // Tambahkan data produk
-                    html.querySelector('[data-role="name"]').innerText = product.nama_barang;
-                    html.querySelector('[data-role="name"]').title = product.nama_barang;
+                    html.querySelector('[data-role="name"]').innerText   = product.nama_barang;
                     html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
 
                     // Tambahkan gambar produk

@@ -1,11 +1,12 @@
 @extends('layouts.admin')
 
 @push('styles')
-<link href="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet">
+    <link href="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet">
 
-<!-- Custom CSS -->
-<link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
 @endpush
+
 @section('content')
 <div class="container-fluid">
     <div class="row page-titles">
@@ -111,7 +112,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="jumlah" class="col-sm-8 mb-2 control-label">jumlah</label>
+                        <label for="jumlah" class="col-sm-8 mb-2 control-label">Jumlah</label>
                         <div class="col-sm-12">
                             <input type="number" class="form-control" id="jumlah" name="jumlah" min="1" value="1"
                                 placeholder="jumlah stock" maxlength="50" required="">
@@ -144,8 +145,6 @@
         </div>
     </div>
 </div>
-
-
 
 @endsection
 

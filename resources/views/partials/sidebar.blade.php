@@ -39,11 +39,11 @@
 				<li><a class="waves-effect waves-dark" href="{{ route('barang') }}"><i class="fa-solid fa-box-open"></i><span class="hide-menu">Barang</span></a>
 				<li> 
 					<a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-						<i class="fa-solid fa-handshake"></i><span class="hide-menu">peminjaman</span>
+						<i class="fa-solid fa-handshake"></i><span class="hide-menu">Peminjaman</span>
 					</a>
 					<ul aria-expanded="false" class="collapse">
-						<li><a href="{{ route('peminjaman') }}">data peminjaman</a></li>
-						<li><a href="{{ route('peminjaman.admin') }}">pinjam barang</a></li>
+						<li><a href="{{ route('peminjaman') }}">Data Peminjaman</a></li>
+						<li><a href="{{ route('peminjaman.admin') }}">Pinjam Barang</a></li>
 					</ul>
 				</li>
 				<li> 

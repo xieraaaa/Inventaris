@@ -25,7 +25,7 @@
 
 	@stack('styles')
 
-	{{-- <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet"> --}}
+	<link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet">
 
 	<!-- Morris CSS -->
 	{{-- <link href="{{ asset('../assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet"> --}}
