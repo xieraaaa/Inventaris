@@ -7,21 +7,18 @@ use Illuminate\Database\Eloquent\{
     Factories\HasFactory   
 };
 
-class Barang extends Model
+class barang extends Model
 {
     use HasFactory;
     
     protected $table = 'barang';
 
     protected $fillable = [
-        'kode_barang',
         'nama_barang',
         'id_kategori',
         'id_unit',
         'id_merek',
-        'jumlah',
-        'kondisi',
-        'keterangan'
+
         
     ];
    

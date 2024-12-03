@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::post('delete-barang', 'destroy');
         Route::post('detail-barang', 'detail')->name('barang.detail');
         Route::post('import-barang', 'import')->name('barang.import');
+        Route::post('add-unit', 'unit');
     });
 
     Route::controller(MerekController::class)->group(function() {

@@ -1,5 +1,9 @@
 @extends('layouts.admin')
+@push('styles')
+<link href="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet">
 
+
+@endpush
 @section('content')
     <div class="container-fluid">
         <div class="row page-titles">
@@ -66,13 +70,48 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            function importData() {
-                $('#import-modal').modal('show');
-            }
-        </script>
-    @endpush
+    <div class="modal fade" id="add-unit-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tambah Unit</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form id="add-unit-form" name="add-unit-form" class="form-horizontal">
+                        <input type="hidden"  name="id_barang" id="id_barang">
+                        <div class="form-group">
+                            <label for="kode_inventaris" class="form-label">Kode Inventaris</label>
+                            <input type="text" class="form-control" id="kode_inventaris" name="kode_inventaris" required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="lokasi" class="form-label">Lokasi</label>
+                            <input type="text" class="form-control" id="lokasi" name="lokasi" required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="tanggal_Inventaris" class="form-label">Tanggal Inventaris</label>
+                            <input type="text" class="form-control" placeholder="2017-06-04" name = "tanggal_inventaris" id="tanggal_inventaris">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="kondisi" class="form-label">Kondisi</label>
+                            <select class="form-control" id="kondisi" name="kondisi" required>
+                                <option value="">-- Pilih Kondisi --</option>
+                                <option value="tersedia">Tersedia</option>
+                                <option value="tidak_tersedia">tidak tersedia</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-4 text-end">
+                            <button type="submit" class="btn btn-success">Simpan</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
     <!--
         END
         Modal Import Data
@@ -89,13 +128,6 @@
                     <form action="javascript:void(0)" id="barangForm" name="barangForm" class="form-horizontal"
                         method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id">
-                        <div class="form-group">
-                            <label for="kode_barang" class="col-sm-8 mb-2 control-label">Kode Barang</label>
-                            <div class="col-sm-12">
-                                <input type="number" class="form-control" id="kode_barang" name="kode_barang"
-                                    placeholder="kode barang" maxlength="50" required="">
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
                             <div class="col-sm-12">
@@ -136,33 +168,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="jumlah" class="col-sm-8 mb-2 control-label">jumlah</label>
-                            <div class="col-sm-12">
-                                <input type="number" class="form-control" id="jumlah" name="jumlah"
-                                    placeholder="jumlah stock" maxlength="50" required="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="kondisi" class="col-sm-8 mb-2 control-label">Kondisi</label>
-                            <div class="col-sm-12">
-                                <select class="form-control" id="kondisi" name="kondisi" required>
-                                    <option value="">-- Select Kondisi --</option>
-                                    <option value="1">Baik</option>
-                                    <option value="0">Rusak</option>
-                                </select>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label for="keterangan" class="col-sm-8 mb-2 control-label">Keterangan</label>
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" id="keterangan" name="keterangan"
-                                    placeholder="keterangan" maxlength="50" required="">
-                            </div>
-                        </div>
-
                         <div class="col-sm-offset-2 col-sm-10">
                             <button type="submit" class="btn btn-primary" id="btn-save">Save Changes
                             </button>
@@ -170,59 +175,6 @@
                     </form>
                 </div>
                 <div class="modal-footer"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal detail barang -->
-    <div class="modal fade" id="detail-modal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Detail Data Barang</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="barcode">Barcode:</label>
-                        <div id="barcode"></div> <!-- Tempat untuk menampilkan gambar -->
-                    </div>
-                    <div class="form-group">
-                        <label for="kode_barang">Kode Barang:</label>
-                        <textarea class="form-control" id="detail_kode_barang" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_nama_barang">Nama Barang:</label>
-                        <textarea class="form-control" id="detail_nama_barang" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_kategori">Kategori:</label>
-                        <textarea class="form-control" id="detail_kategori" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_unit">Unit:</label>
-                        <textarea class="form-control" id="detail_unit" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_merek">Merek:</label>
-                        <textarea class="form-control" id="detail_merek" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_kondisi">Kondisi:</label>
-                        <textarea class="form-control" id="detail_kondisi" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_jumlah">Jumlah:</label>
-                        <textarea class="form-control" id="detail_jumlah" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="detail_keterangan">Keterangan:</label>
-                        <textarea class="form-control" id="detail_keterangan" readonly></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                </div>
             </div>
         </div>
     </div>
@@ -244,6 +196,13 @@
 @push('scripts')
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            function importData() {
+                $('#import-modal').modal('show');
+            }
+        </script>
+
 
     <script type="text/javascript">
         function format(data) {
@@ -330,6 +289,21 @@
                         title: 'Jumlah',
                         type : 'string'
                     },
+                    {
+    data: null,
+    title: 'Actions',
+    orderable: false,
+    searchable: false,
+    render: function(data) {
+        return `
+            <button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}"">
+                Tambah Unit
+            </button>
+        `;
+    }
+}
+
+
                 ],
                 order: [[1, 'asc']],
             });
@@ -405,6 +379,44 @@
             });
         }
 
+        $(document).ready(function() {
+    // Event untuk membuka modal Tambah Unit
+    $('#barang').on('click', '.add-unit-btn', function() {
+        const id = $(this).data('id');
+        const name = $(this).data('name');
+
+        $('#id_barang').val(id);
+        $('#add-unit-modal').modal('show');
+    });
+
+    // Event untuk submit form Tambah Unit
+    $('#add-unit-form').submit(function(e) {
+        e.preventDefault();
+        const formData = $(this).serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ url('add-unit') }}",
+            data: formData,
+            success: (res) => {
+                
+                $('#kode_inventaris').val(res.kode_inventaris);
+                $('#lokasi').val(res.lokasi);
+                $('#kondisi').val(res.kondisi);
+                $('#tanggal_inventaris').val(res.tanggal_inventaris);
+                
+                $('#add-unit-modal').modal('hide');
+                $('#barang').DataTable().ajax.reload(null, false);
+                Swal.fire("Success!", "Unit berhasil ditambahkan.", "success");
+            },
+            error: (error) => {
+                Swal.fire("Error!", "Terjadi kesalahan.", "error");
+            }
+        });
+    });
+});
+
+
         $('#barangForm').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
@@ -426,33 +438,205 @@
             });
         });
 
-        {{--
-            $(document).on('click', '#barang tbody tr', function(event) {
-                console.log('Clicked');
 
-                // Cek apakah elemen yang diklik adalah bagian dari kolom aksi (misalnya tombol)
-                if ($(event.target).closest('td').hasClass('action')) {
-                    return; // Jangan lakukan apa-apa jika klik terjadi di dalam kolom aksi
-                }
 
-                var data = $('#barang').DataTable().row(this).data();
-
-                if (data) {
-                    // Isi detail modal dengan data yang sesuai
-                    $('#barcode').html(data.barcode.replace('&gt;', '>').replace('&lt;', '<'));
-                    $('#detail_kode_barang').text(data.kode_barang);
-                    $('#detail_nama_barang').text(data.nama_barang);
-                    $('#detail_kategori').text(data.kategori);
-                    $('#detail_unit').text(data.unit);
-                    $('#detail_merek').text(data.merek);
-                    $('#detail_kondisi').text(data.kondisi === 1 ? 'Baik' : 'Rusak');
-                    $('#detail_jumlah').text(data.jumlah);
-                    $('#detail_keterangan').text(data.keterangan);
-
-                    // Tampilkan modal detail
-                    $('#detail-modal').modal('show');
-                }
-            });
-        --}}
     </script>
+    	<script src="{{ asset('../assets/node_modules/moment/moment.js') }}"></script>
+        <script src="{{ asset('../assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
+        <!-- Clock Plugin JavaScript -->
+        <script src="{{ asset('../assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+    
+        <script src="{{ asset('assets/node_modules/moment/moment.js') }}"></script>
+        <script src="{{ asset('assets/node_modules/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js') }}"></script>
+        <!-- Clock Plugin JavaScript -->
+        <script src="{{ asset('assets/node_modules/clockpicker/dist/jquery-clockpicker.min.js') }}"></script>
+        <!-- Color Picker Plugin JavaScript -->
+        <script src="{{ asset('assets/node_modules/jquery-asColor/dist/jquery-asColor.js') }}"></script>
+        <script src="{{ asset('assets/node_modules/jquery-asGradient/dist/jquery-asGradient.js') }}"></script>
+        <script src="{{ asset('assets/node_modules/jquery-asColorPicker-master/dist/jquery-asColorPicker.min.js') }}"></script>
+        <!-- Date Picker Plugin JavaScript -->
+        <script src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+        <!-- Date range Plugin JavaScript -->
+        <script src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
+        <script src="{{ asset('assets/node_modules/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    
+      <script>
+        $('#tanggal_inventaris').bootstrapMaterialDatePicker({ weekStart: 0, time: false });
+    $('#timepicker').bootstrapMaterialDatePicker({ format: 'HH:mm', time: true, date: false });
+    $('#date-format').bootstrapMaterialDatePicker({ format: 'dddd DD MMMM YYYY - HH:mm' });
+
+    $('#min-date').bootstrapMaterialDatePicker({ format: 'DD/MM/YYYY HH:mm', minDate: new Date() });
+    // Clock pickers
+    $('#single-input').clockpicker({
+        placement: 'bottom',
+        align: 'left',
+        autoclose: true,
+        'default': 'now'
+    });
+    $('.clockpicker').clockpicker({
+        donetext: 'Done',
+    }).find('input').change(function() {
+        console.log(this.value);
+    });
+    $('#check-minutes').click(function(e) {
+        // Have to stop propagation here
+        e.stopPropagation();
+        input.clockpicker('show').clockpicker('toggleView', 'minutes');
+    });
+    if (/mobile/i.test(navigator.userAgent)) {
+        $('input').prop('readOnly', true);
+    }
+    // Colorpicker
+    $(".colorpicker").asColorPicker();
+    $(".complex-colorpicker").asColorPicker({
+        mode: 'complex'
+    });
+    $(".gradient-colorpicker").asColorPicker({
+        mode: 'gradient'
+    });
+    // Date Picker
+    jQuery('.mydatepicker, #datepicker').datepicker();
+    jQuery('#datepicker-autoclose').datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    jQuery('#date-range').datepicker({
+        toggleActive: true
+    });
+    jQuery('#datepicker-inline').datepicker({
+        todayHighlight: true
+    });
+    // -------------------------------
+	// Start Date Range Picker
+	// -------------------------------
+
+    // Basic Date Range Picker
+    $('.daterange').daterangepicker();
+
+    // Date & Time
+    $('.datetime').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        locale: {
+            format: 'MM/DD/YYYY h:mm A'
+        }
+    });
+
+    //Calendars are not linked
+    $('.timeseconds').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: 'MM-DD-YYYY h:mm:ss'
+        }
+    });
+
+    // Single Date Range Picker
+    $('.singledate').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true
+    });
+
+    // Auto Apply Date Range
+    $('.autoapply').daterangepicker({
+        autoApply: true,
+    });
+
+    // Calendars are not linked
+    $('.linkedCalendars').daterangepicker({
+        linkedCalendars: false,
+    });
+
+    // Date Limit
+    $('.dateLimit').daterangepicker({
+        dateLimit: {
+            days: 7
+        },
+    });
+
+    // Show Dropdowns
+    $('.showdropdowns').daterangepicker({
+        showDropdowns: true,
+    });
+
+    // Show Week Numbers
+    $('.showweeknumbers').daterangepicker({
+        showWeekNumbers: true,
+    });
+
+     $('.dateranges').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    // Always Show Calendar on Ranges
+    $('.shawCalRanges').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        alwaysShowCalendars: true,
+    });
+
+    // Top of the form-control open alignment
+    $('.drops').daterangepicker({
+        drops: "up" // up/down
+    });
+
+    // Custom button options
+    $('.buttonClass').daterangepicker({
+        drops: "up",
+        buttonClasses: "btn",
+        applyClass: "btn-info",
+        cancelClass: "btn-danger"
+    });
+
+	jQuery('#date-range').datepicker({
+        toggleActive: true
+    });
+    jQuery('#datepicker-inline').datepicker({
+        todayHighlight: true
+    });
+
+    // Daterange picker
+    $('.input-daterange-datepicker').daterangepicker({
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-danger',
+        cancelClass: 'btn-inverse'
+    });
+    $('.input-daterange-timepicker').daterangepicker({
+        timePicker: true,
+        format: 'MM/DD/YYYY h:mm A',
+        timePickerIncrement: 30,
+        timePicker12Hour: true,
+        timePickerSeconds: false,
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-danger',
+        cancelClass: 'btn-inverse'
+    });
+    $('.input-limit-datepicker').daterangepicker({
+        format: 'MM/DD/YYYY',
+        minDate: '06/01/2015',
+        maxDate: '06/30/2015',
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-danger',
+        cancelClass: 'btn-inverse',
+        dateLimit: {
+            days: 6
+        }
+    });
+    </script>
+
 @endpush

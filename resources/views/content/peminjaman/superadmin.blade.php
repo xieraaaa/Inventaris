@@ -515,3 +515,8 @@
         changePage(1); // Start on page 1
     </script>
 @endpush
+
+{{-- Laravel Echo --}}
+@push('scripts')
+    @vite('resources/js/superadmin/echo.js')
+@endpush

@@ -20,8 +20,6 @@ return new class extends Migration
 			$table->unsignedBigInteger('id_unit');
 			$table->unsignedBigInteger('id_merek');
 
-			$table->string('keterangan', 100);
-
 			$table->timestamps();
 
 			$table->foreign('id_kategori')->references('id')->on('kategori')->onDelete('cascade');

@@ -13,9 +13,12 @@ class UnitBarang extends Model {
     protected $table = 'unit_barang';
 
     protected $fillable = [
+        'id_barang',
         'kode_inventaris',
         'lokasi',
         'kondisi',
         'tanggal_inventaris'
     ];
+
+
 }

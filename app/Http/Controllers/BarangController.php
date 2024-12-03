@@ -13,8 +13,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
 use App\Imports\ExcelData;
+use App\Models\UnitBarang;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class BarangController extends Controller
@@ -41,19 +41,19 @@ class BarangController extends Controller
      */
     public function getDatatables()
     {
-        $rootData   = [];
+        $rootData = [];
         $barangData = Barang::with(['unit', 'kategori', 'merek', 'unitBarang'])->get();
 
         foreach ($barangData as $datum) {
             $tmpDatum = [];
 
-            $tmpDatum['id']          = $datum['id'];
+            $tmpDatum['id'] = $datum['id'];
             $tmpDatum['nama_barang'] = $datum['nama_barang'];
-            $tmpDatum['unit']        = $datum->unit['unit'];
-            $tmpDatum['merek']       = $datum->merek['merek'];
-            $tmpDatum['kategori']    = $datum->kategori['kategori'];
-            $tmpDatum['unitBarang']  = $datum->unitBarang;
-            $tmpDatum['jumlah']      = count($tmpDatum['unitBarang']);
+            $tmpDatum['unit'] = $datum->unit['unit'];
+            $tmpDatum['merek'] = $datum->merek['merek'];
+            $tmpDatum['kategori'] = $datum->kategori['kategori'];
+            $tmpDatum['unitBarang'] = $datum->unitBarang;
+            $tmpDatum['jumlah'] = count($tmpDatum['unitBarang']);
 
             array_push($rootData, $tmpDatum);
         }
@@ -69,16 +69,18 @@ class BarangController extends Controller
     public function get()
     {
         $data = [];
-        $rawData = Barang::withCount(['unitBarang' => function(Builder $query) {
-            $query->where('kondisi', 'Tersedia');
-        }])->get();
+        $rawData = Barang::withCount([
+            'unitBarang' => function (Builder $query) {
+                $query->where('kondisi', 'Tersedia');
+            }
+        ])->get();
 
         foreach ($rawData as $datum) {
             $tmpDatum = [];
 
-            $tmpDatum['id']          = $datum['id'];
+            $tmpDatum['id'] = $datum['id'];
             $tmpDatum['nama_barang'] = $datum['nama_barang'];
-            $tmpDatum['jumlah']      = $datum['unit_barang_count'];
+            $tmpDatum['jumlah'] = $datum['unit_barang_count'];
 
             array_push($data, $tmpDatum);
         }
@@ -86,7 +88,8 @@ class BarangController extends Controller
         return $data;
     }
 
-    public function filtered_get(Request $request) {
+    public function filtered_get(Request $request)
+    {
         Log::info($request['query']);
 
         $data = Barang::where('nama_barang', 'like', $request['query'] . '%')->get();
@@ -107,14 +110,10 @@ class BarangController extends Controller
         $barangId = $request->id;
 
         $request->validate([
-            'kode_barang' => 'required',
             'nama_barang' => 'required',
             'id_kategori' => 'required',
             'id_unit' => 'required',
             'id_merek' => 'required',
-            'jumlah' => 'required',
-            'kondisi' => 'required',
-            'keterangan' => 'required',
 
         ]);
 
@@ -123,14 +122,11 @@ class BarangController extends Controller
                 'id' => $barangId
             ],
             [
-                'kode_barang' => $request->kode_barang,
                 'nama_barang' => $request->nama_barang,
                 'id_kategori' => $request->id_kategori,
                 'id_unit' => $request->id_unit,
                 'id_merek' => $request->id_merek,
-                'jumlah' => $request->jumlah,
-                'kondisi' => $request->kondisi,
-                'keterangan' => $request->keterangan,
+
             ]
         );
 
@@ -157,7 +153,7 @@ class BarangController extends Controller
     public function edit(Request $request)
     {
         $where = array('id' => $request->id);
-        $barang  = barang::where($where)->first();
+        $barang = barang::where($where)->first();
 
         return Response()->json($barang);
     }
@@ -201,9 +197,9 @@ class BarangController extends Controller
             'data_excel' => 'required|mimes:csv,xls,xlsx'
         ]);
 
-        $file      = $request->file('data_excel');
+        $file = $request->file('data_excel');
         $nama_file = $file->hashName();
-        $path      = $file->store('app/public/excel');
+        $path = $file->store('app/public/excel');
 
         $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
 
@@ -223,7 +219,34 @@ class BarangController extends Controller
             Storage::delete($path);
             return redirect()->route('barang')->with(['success' => 'Data Berhasil Diimport dan Barcode Dihasilkan!']);
         } else {
-        return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
+            return redirect()->route('barang')->with(['error' => 'Data Gagal Diimport!']);
+        }
+    }
+
+    public function unit(Request $request)
+    {
+        $request->validate([
+            'id_barang' => 'required',
+            'kode_inventaris' => 'required|unique',
+            'lokasi' => 'required',
+            'kondisi' => 'required',
+            'tanggal_inventaris' => 'required|date'
+        ]);
+
+
+
+        $unit = UnitBarang::create([
+            'id_barang' => $request->id_barang,
+            'kode_inventaris' => $request->kode_inventaris,
+            'lokasi' => $request->lokasi,
+            'kondisi' => $request->kondisi,
+            'tanggal_inventaris' => $request->tanggal_inventaris
+        ]);
+
+        if ($unit) {
+            return redirect()->route('barang')->with(['success' => 'Data Unit Berhasil Ditambahkan!']);
+        } else {
+            return redirect()->route('barang')->with(['error' => 'Data Unit Gagal Ditambahkan!']);
         }
     }
 }

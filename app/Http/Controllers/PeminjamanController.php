@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
-use App\Models\DetailPeminjaman;
-use App\Models\Peminjaman;
+use App\Models\{
+    Barang,
+    DetailPeminjaman,
+    Peminjaman
+};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Events\PeminjamanInvoked as PeminjamanInvokedEvent;
 
 class PeminjamanController extends Controller
 {
@@ -34,43 +37,39 @@ class PeminjamanController extends Controller
     {
         $data = json_decode($request->getContent(), true);
 
-        // Ensure the 'data' key exists and is an array
-        if (isset($data['data']) && is_array($data['data'])) {
-            DB::transaction(function () use ($data, $request) {
-                $peminjaman = Peminjaman::create([
-                    'id_user'     => Auth::user()->id,
-                    'tgl_pinjam'  => $data['tgl_pinjam'],
-                    'tgl_kembali' => $data['tgl_kembali'],
-                    'status'      => 0,
-                    'keterangan'  => $data['keterangan'],
-                ]);
-
-                $idPeminjaman = $peminjaman['id'];
-
-                foreach ($data['data'] as $datum) {
-                    $id = $datum['id'];
-                    $barang = Barang::firstWhere('id', $id);
-
-                    // Pastikan barang ada di database
-                    if ($barang) {
-                        DetailPeminjaman::create([
-                            'id_peminjaman' => $idPeminjaman,
-                            'id_barang' => $barang->id,
-                            'jumlah' => $datum['jumlah']
-                        ]);
-                    } else {
-                        // Handle the case where the barang is not found
-                        return response()->json(['error' => 'Barang with kode_barang ' . $id . ' not found'], 404);
-                    }
-                }
-            });
-
-            // Respond with a success message
-            return response()->json(['message' => 'Peminjaman data added successfully']);
-        } else {
-            // Handle invalid or missing 'data' key in the request
+        // Pastikan data ada
+        if (!isset($data['data']) || !is_array($data['data'])) {
             return response()->json(['error' => 'Invalid data format or missing data'], 400);
         }
+
+        DB::transaction(function() use($data) {
+            $peminjaman = Peminjaman::create([
+                'id_user' => Auth::user()['id'],
+                'tgl_pinjam' => $data['tgl_pinjam'],
+                'tgl_kembali' => $data['tgl_kembali'],
+                'status' => 0,
+                'keterangan' => $data['keterangan']
+            ]);
+
+            foreach ($data['data'] as $datum) {
+                $barang = Barang::firstWhere('id', $datum['id']);
+
+                if (is_null($barang)) {
+                    return response()->json(['error' => 'Barang with kode_barang ' . $datum['id'] . ' not found'], 404);
+                }
+
+                DetailPeminjaman::create([
+                    'id_peminjaman' => $peminjaman['id'],
+                    'id_barang' => $barang['id'],
+                    'jumlah' => $datum['jumlah']
+                ]);
+            }
+
+            broadcast(new PeminjamanInvokedEvent($peminjaman))->toOthers();
+        });
+
+        // Respon dengan notifikasi sukses
+        return response()->json(['message' => 'Peminjaman data added successfully']);
     }
 
     /**
@@ -84,19 +83,19 @@ class PeminjamanController extends Controller
     public function index()
     {
         $peminjaman = Peminjaman::with('detail')->get();
-        
+
         return view('content.peminjaman.index', compact('peminjaman'));
     }
 
     public function superadmin()
     {
         return view('content.peminjaman.superadmin');
-    } 
+    }
 
     public function admin()
     {
         return view('content.peminjaman.admin');
-    } 
+    }
 
     /**
      * Mengambil detail sebuah barang dari kode barang
@@ -178,7 +177,7 @@ class PeminjamanController extends Controller
             foreach ($details as $detail) {
                 $barang = $detail->barang;
                 $barang->jumlah = $barang->jumlah - $detail->jumlah;
-                $barang->save(); 
+                $barang->save();
             }
 
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
@@ -191,23 +190,23 @@ class PeminjamanController extends Controller
     {
         // Cari peminjaman berdasarkan ID
         $peminjaman = peminjaman::find($id);
-    
+
         if ($peminjaman) {
             // Hapus data peminjaman beserta detailnya
             DB::transaction(function () use ($peminjaman) {
                 // Hapus detail peminjaman
                 $peminjaman->detail()->delete();
-    
+
                 // Hapus peminjaman utama
                 $peminjaman->delete();
             });
-    
+
             return response()->json(['message' => 'Peminjaman has been deleted successfully']);
         } else {
             return response()->json(['error' => 'Peminjaman not found'], 404);
         }
     }
-    
+
     public function history()
     {
         $data = [];
@@ -224,7 +223,7 @@ class PeminjamanController extends Controller
             $buffer['status']      = $peminjaman['status'];
             $buffer['barang']      = $peminjaman->detail->map(function ($item) {
                 $item->barang->setVisible(['nama_barang']);
-                
+
                 $barang = $item->barang->toArray();
 
                 $barang['jumlah'] = $item->jumlah;
@@ -253,7 +252,7 @@ class PeminjamanController extends Controller
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
      * Diakses dari rute 'peminjaman/detail/{id}/'
-     */ 
+     */
     public function getDetails()
     {
         $data = [];
@@ -270,7 +269,7 @@ class PeminjamanController extends Controller
             $buffer['status']      = $peminjaman['status'];
             $buffer['barang']      = $peminjaman->detail->map(function ($item) {
                 $item->barang->setVisible(['nama_barang']);
-                
+
                 $barang = $item->barang->toArray();
 
                 $barang['jumlah'] = $item->jumlah;
@@ -304,7 +303,7 @@ class PeminjamanController extends Controller
             $buffer['status'] = $peminjaman['status'];
             $buffer['barang'] = $peminjaman->detail->map(function ($item) {
                 $item->barang->setVisible(['nama_barang']);
-                
+
                 $barang = $item->barang->toArray();
 
                 $barang['jumlah'] = $item->jumlah;
@@ -348,7 +347,7 @@ class PeminjamanController extends Controller
             foreach ($details as $detail) {
                 $barang = $detail->barang;
                 $barang->jumlah = $barang->jumlah + $detail->jumlah;
-                $barang->save(); 
+                $barang->save();
             }
 
             return response()->json(['message' => 'Status peminjaman telah diperbarui menjadi "dipinjam"!']);

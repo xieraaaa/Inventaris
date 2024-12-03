@@ -22,7 +22,6 @@ class BarangFactory extends Factory
             'id_kategori' => fake()->numberBetween(Kategori::first()['id'], $categoryMaxIndex),
             'id_unit'     => fake()->numberBetween(Unit::first()['id'], $unitMaxIndex),
             'id_merek'    => fake()->numberBetween(Merek::first()['id'], $merekMaxIndex),
-            'keterangan'  => fake()->sentence(5)
         ];
     }
 }
