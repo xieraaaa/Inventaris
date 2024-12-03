@@ -13,7 +13,10 @@
                             </tr>
                         </thead>
                         <tbody id="cart">
-                            <!-- Cart items will be rendered here -->
+                            {{-- Cart items will be rendered here --}}
+                            <tr>
+                                <td class="text-center" colspan="2">Keranjang kosong!<br />Silahkan menaruh barang di keranjang melalui interface yang berada di sebelah kanan Anda.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -27,7 +30,7 @@
                 </div>
                 <div class="col">
                     <button type="button" class="btn btn-primary btn-block" disabled id="checkoutButton" onClick="handleClickSubmit()">
-                        Check Out
+                        Pinjam
                     </button>
                 </div>
             </div>
@@ -36,45 +39,46 @@
             <div class="mb-2">
                 <input type="text" id="searchInput" class="form-control" placeholder="Cari produk" />
             </div>
+            {{--
             <div class="col">
                 <button type="button" class="btn btn-secondary btn-block" onClick="openQrModal()">
                     Scan barcode
                 </button>
             </div>
+            --}}
             <div id="list-product" class="order-product d-flex flex-wrap justify-content-between" style="row-gap: 8px; column-gap: 8px">
                 <!-- Product items will be rendered here -->
             </div>
             <nav class="mt-3">
-    @php
-        $paginationLength =30;
-    @endphp
-   <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
-    <li data-role="pagination-direction" data-direction="left" class="page-item" onclick="changePage(currentPage - paginationLength)">
-        <a class="page-link" href="#">&laquo;</a>
-    </li>
-    @for ($idx = 1; $idx <= $paginationLength; ++$idx)
-        <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item">
-            <a class="page-link" href="#">{{ $idx }}</a>
-        </li>
-    @endfor
-    <li data-role="pagination-direction" data-direction="right" class="page-item" onclick="changePage(currentPage + paginationLength)">
-        <a class="page-link" href="#">&raquo;</a>
-    </li>
-</ul>
-
-</nav>
-    <template id="product-item">
-    <div
-        class="product-card d-flex flex-column justify-content-between align-items-center p-3 rounded shadow-sm"
-        onClick="addToCart(this)">
-        <img src="" alt="Product Image" data-role="image" class="product-image rounded mb-2" />
-        <div class="product-info text-center">
-            <h6 class="product-name font-weight-bold mb-1 clamp-lines" data-role="name"></h6>
-            <p class="product-quantity text-muted mb-0">Jumlah: <span data-role="jumlah"></span></p>
+                    @php
+                        $paginationLength =30;
+                    @endphp
+                <ul id="pagination" class="pagination pagination-lg justify-content-center" data-length="{{ $paginationLength }}">
+                        <li data-role="pagination-direction" data-direction="left" class="page-item" onclick="changePage(currentPage - paginationLength)">
+                            <a class="page-link" href="#">&laquo;</a>
+                        </li>
+                        @for ($idx = 1; $idx <= $paginationLength; ++$idx)
+                            <li onclick="changePage({{ $idx }})" data-page="{{ $idx }}" data-role="pagination-number" class="page-item">
+                                <a class="page-link" href="#">{{ $idx }}</a>
+                            </li>
+                        @endfor
+                        <li data-role="pagination-direction" data-direction="right" class="page-item" onclick="changePage(currentPage + paginationLength)">
+                            <a class="page-link" href="#">&raquo;</a>
+                        </li>
+                    </ul>
+            </nav>
+            <template id="product-item">
+                <div
+                    class="product-card d-flex flex-column justify-content-between align-items-center p-3 rounded shadow-sm"
+                    onClick="addToCart(this)">
+                    <img src="" alt="Product Image" data-role="image" class="product-image rounded mb-2" />
+                    <div class="product-info text-center">
+                        <h6 class="product-name font-weight-bold mb-1 clamp-lines" data-role="name"></h6>
+                        <p class="product-quantity text-muted mb-0">Jumlah: <span data-role="jumlah"></span></p>
+                    </div>
+                </div>
+            </template>
         </div>
-    </div>
-</template>
-
 
     <!-- Modal for QR Code Scanner -->
     <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">
@@ -181,9 +185,9 @@
         const paginationRoot  = document.getElementById('pagination');
 
         /**
-        * Memunculkan popup menandakan bahwa user baru saja mencoba untuk meminjam
-        * produk dengan jumlah melebihi stok yang ada
-        */
+         * Memunculkan popup menandakan bahwa user baru saja mencoba untuk meminjam
+         * produk dengan jumlah melebihi stok yang ada
+         */
         function loadStockAlert() {
             Swal.fire({
                 icon: 'error',
@@ -239,9 +243,10 @@
             nextButton.style.display = currentPage < totalPages ? 'block' : 'none';
         }
 
-        // untuk menampilkan swal konfirmasi
+        // TODO Refaktor agar lebih mudah untuk dipahami dan dimodifikasi
+        // Untuk menampilkan dialog konfirmasi
         function confirmCartSubmission() {
-            let cartSummary = '<ul>'; // Start a list for better formatting
+            let cartSummary = '<ul style="list-style-type: none; padding: 0;">'; // Start a list for better formatting
             cart.forEach(item => {
                 cartSummary += `
                     <li><strong>Nama Barang:</strong> ${item.name} <br>
@@ -296,6 +301,16 @@
         // Render the cart items in the table
         function renderCart() {
             const cartTable = document.getElementById('cart');
+
+            if (cart.length === 0) {
+                cartTable.innerHTML =
+                `<tr>
+                    <td class="text-center" colspan="2">Keranjang kosong!<br />Silahkan menaruh barang di keranjang melalui interface yang berada di sebelah kanan Anda.</td>
+                </tr>`;
+
+                return;
+            }
+            
             cartTable.innerHTML = '';
 
             cart.forEach(item => {
@@ -491,11 +506,10 @@
 
                 filteredProducts.forEach(product => {
                     const html = productTemplate.cloneNode(true);
-                    html.dataset.id = product.kode_barang;
+                    html.dataset.id = product.id;
 
                     // Tambahkan data produk
-                    html.querySelector('[data-role="name"]').innerText = product.nama_barang;
-                    html.querySelector('[data-role="name"]').title = product.nama_barang;
+                    html.querySelector('[data-role="name"]').innerText   = product.nama_barang;
                     html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
 
                     // Tambahkan gambar produk
@@ -507,7 +521,7 @@
                 });
             }
         }
- 
+
         // Event listener for search input
         document.getElementById('searchInput').addEventListener('change', filterAndRenderProducts);
 
