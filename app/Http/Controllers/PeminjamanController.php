@@ -235,14 +235,13 @@ class PeminjamanController extends Controller
     }
 
     /**
-     * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
-     * Diakses dari rute 'peminjaman/detail/{id}/'
+     * Mengambil pengajuan peminjaman yang perlu diproses oleh superadmin
      */
     public function getDetails()
     {
         $data = [];
 
-        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', 'pending')->get();
+        $peminjamanData = Peminjaman::with(['detail', 'user'])->where('status', PeminjamanStatus::Pending)->get();
         foreach ($peminjamanData as $peminjaman) {
             $buffer = [];
 
