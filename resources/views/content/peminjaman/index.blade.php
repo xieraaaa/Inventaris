@@ -197,7 +197,7 @@
             peminjamanTable.rows().every(function () {
                 const row = this;
                 const data = row.data();
-                if (data.status === 'di pinjam') {
+                if (data.status === 4) {
                     $(row.node()).find('.btn-accept').hide();
                 }else {
                     $(row.node()).find('.btn-kembali').hide();

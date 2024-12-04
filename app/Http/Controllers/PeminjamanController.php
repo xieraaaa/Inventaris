@@ -274,6 +274,7 @@ class PeminjamanController extends Controller
 
         $peminjamanData = Peminjaman::with(['detail', 'user'])
             ->where('status', PeminjamanStatus::Approved)
+            ->orWhere('status', PeminjamanStatus::Borrowed)
             ->get();
 
         foreach ($peminjamanData as $peminjaman) {
@@ -328,7 +329,6 @@ class PeminjamanController extends Controller
 
             foreach ($details as $detail) {
                 $barang = $detail->barang;
-                $barang->jumlah = $barang->jumlah + $detail->jumlah;
                 $barang->save();
             }
 
