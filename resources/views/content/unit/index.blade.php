@@ -58,7 +58,7 @@
                         <label for="name" class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-12">
                             <input type="text" class="form-control" id="unit" name="unit"
-                                placeholder="unit Name" maxlength="50" required="">
+                                placeholder="Nama Unit" maxlength="50" required="">
                         </div>
                     </div>
 

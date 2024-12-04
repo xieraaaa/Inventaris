@@ -60,7 +60,7 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="merek" name="merek"
-                                    placeholder="merek Name" maxlength="50" required="">
+                                    placeholder="Nama Merek" maxlength="50" required="">
                             </div>
                         </div>
                         

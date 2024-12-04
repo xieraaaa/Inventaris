@@ -61,7 +61,7 @@
                             <label for="name" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="kategori" name="kategori"
-                                    placeholder="kategori Name" maxlength="50" required="">
+                                    placeholder="Nama Kategori" maxlength="50" required="">
                             </div>
                         </div>
                         
