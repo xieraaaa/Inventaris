@@ -125,62 +125,60 @@
 
 
         peminjamanTable.on('click', '.btn-accept', function () {
-    const id = $(this).data('id'); // Ambil ID peminjaman
+            const id = $(this).data('id'); // Ambil ID peminjaman
 
-    // Tampilkan SweetAlert untuk konfirmasi
-    Swal.fire({
-        title: 'Konfirmasi Peminjaman',
-        text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Setujui!',
-        cancelButtonText: 'Batal',
-    }).then((result) => {           
-        if (result.isConfirmed) {
-            // Jika admin mengonfirmasi, kirimkan data ke server
-            const newStatus = 'Approved'; // Status baru
+            // Tampilkan SweetAlert untuk konfirmasi
+            Swal.fire({
+                title: 'Konfirmasi Peminjaman',
+                text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Setujui!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {           
+                if (result.isConfirmed) {
+                    // TODO Ambil kode status dari tabel status di database
+                    // 2 = "Approved"
+                    const newStatus = 2;
+
+                    $.ajax({
+                        type: 'POST',
+                        url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
+                        data: {
+                            _token: '{{ csrf_token() }}', // Token CSRF
+                            status: newStatus // Status baru yang akan dikirim
+                        },
+                        success: (response) => {
+                            // Tampilkan pesan berhasil
+                            Swal.fire("Berhasil!", response.message, "success");
+                            peminjamanTable.ajax.reload(null, false); // Reload tabel
+                        },
+                        error: (xhr) => {
+                            // Tampilkan pesan gagal
+                            Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal menyetujui peminjaman.", "error");
+                        }
+                    });
+                }
+            });
+        });
+
+        peminjamanTable.on('click', '.btn-reject', function() {
+            const id = $(this).data('id'); // Ambil ID peminjaman
 
             $.ajax({
                 type: 'POST',
-                url: `/peminjaman/update-status/${id}`, // Endpoint Laravel
+                url: `/peminjaman/reject/${id}`, // Endpoint Laravel
                 data: {
-                    _token: '{{ csrf_token() }}', // Token CSRF
-                    status: newStatus // Status baru yang akan dikirim
-                },
+                    _token: '{{ csrf_token() }}' // Token CSRF
+                },  
                 success: (response) => {
-                    // Tampilkan pesan berhasil
-                    Swal.fire("Berhasil!", response.message, "success");
+                    Swal.fire("Success!", response.message, "success");
                     peminjamanTable.ajax.reload(null, false); // Reload tabel
                 },
                 error: (xhr) => {
-                    // Tampilkan pesan gagal
-                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal menyetujui peminjaman.", "error");
+                    Swal.fire("Error!", xhr.responseJSON.error || "Failed to delete peminjaman.", "error");
                 }
             });
-        }
-    });
-});
-
-peminjamanTable.on('click', '.btn-reject', function() {
-    const id = $(this).data('id'); // Ambil ID peminjaman
-
-    $.ajax({
-        type: 'POST',
-        url: `/peminjaman/reject/${id}`, // Endpoint Laravel
-        data: {
-            _token: '{{ csrf_token() }}' // Token CSRF
-        },  
-        success: (response) => {
-            Swal.fire("Success!", response.message, "success");
-            peminjamanTable.ajax.reload(null, false); // Reload tabel
-        },
-        error: (xhr) => {
-            Swal.fire("Error!", xhr.responseJSON.error || "Failed to delete peminjaman.", "error");
-        }
-    });
-});
-
+        });
     </script>
-
-
 @endpush

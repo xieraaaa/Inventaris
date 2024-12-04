@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\PeminjamanInvoked as PeminjamanInvokedEvent;
 
+enum PeminjamanStatus: int {
+    case Pending = 1;
+    case Approved = 2;
+    case Rejected = 3;
+    case Borrowed = 4;
+    case Returned = 5;
+}
+
 class PeminjamanController extends Controller
 {
     /**
@@ -47,7 +55,7 @@ class PeminjamanController extends Controller
                 'id_user' => Auth::user()['id'],
                 'tgl_pinjam' => $data['tgl_pinjam'],
                 'tgl_kembali' => $data['tgl_kembali'],
-                'status' => 0,
+                'status' => PeminjamanStatus::Pending,
                 'keterangan' => $data['keterangan']
             ]);
 
@@ -117,32 +125,6 @@ class PeminjamanController extends Controller
     }
 
     /**
-     * Store a new peminjaman entry
-     */
-    public function store(Request $request)
-    {
-        // Validate the request inputs
-        $request->validate([
-            'mdate' => 'required|date_format:Y-m-d',
-            'pdate' => 'required|date_format:Y-m-d|after_or_equal:mdate',
-            'jumlah' => 'required|min:1|numeric',
-        ]);
-
-        // Create the new peminjaman record
-        $peminjaman = Peminjaman::create([
-            'id_user' => $request->id_user,
-            'id_barang' => $request->id_barang,
-            'tgl_pinjam' => $request->mdate,
-            'tgl_kembali' => $request->pdate,
-            'keterangan' => $request->keterangan ?? '',
-            'status' => 'pending'
-        ]);
-
-        // Return the created peminjaman data
-        return response()->json($peminjaman);
-    }
-
-    /**
      * Edit an existing peminjaman entry
      */
     public function edit(Request $request)
@@ -168,15 +150,13 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::find($id);
 
         if ($peminjaman) {
-            // Update the status to 'di pinjam'
-            $peminjaman->status = 'Approved';
+            $peminjaman->status = PeminjamanStatus::Approved;
             $peminjaman->save();
 
             $details = $peminjaman->detail;
 
             foreach ($details as $detail) {
                 $barang = $detail->barang;
-                $barang->jumlah = $barang->jumlah - $detail->jumlah;
                 $barang->save();
             }
 
@@ -238,17 +218,18 @@ class PeminjamanController extends Controller
     }
 
     public function updateStatus(Request $request, $id)
-{
-    $validated = $request->validate([
-        'status' => 'required|string',
-    ]);
+    {
+        $validated = $request->validate([
+            'status' => 'required|number',
+        ]);
 
-    $peminjaman = Peminjaman::findOrFail($id); // Pastikan model Peminjaman sudah ada
-    $peminjaman->status = $validated['status'];
-    $peminjaman->save();
+        $peminjaman = Peminjaman::findOrFail($id); // Pastikan model Peminjaman sudah ada
+        $peminjaman->status = $validated['status'];
+        $peminjaman->save();
 
-    return response()->json(['message' => 'Status peminjaman berhasil diperbarui.']);
-}
+        return response()->json(['message' => 'Status peminjaman berhasil diperbarui.']);
+    }
+
     /**
      * Untuk mengambil data peminjaman berdasarkan ID yang diberikan.
      * Diakses dari rute 'peminjaman/detail/{id}/'
@@ -289,7 +270,7 @@ class PeminjamanController extends Controller
         $data = [];
 
         $peminjamanData = Peminjaman::with(['detail', 'user'])
-            ->where('status', 'Approved')
+            ->where('status', PeminjamanStatus::Approved)
             ->get();
 
         foreach ($peminjamanData as $peminjaman) {
@@ -323,8 +304,7 @@ class PeminjamanController extends Controller
         $peminjaman = peminjaman::find($id);
 
         if ($peminjaman && $peminjaman->status !== 'di pinjam') {
-            // Update the status to 'di pinjam'
-            $peminjaman->status = 4;
+            $peminjaman->status = PeminjamanStatus::Borrowed;
             $peminjaman->save();
 
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
@@ -338,8 +318,7 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::find($id);
 
         if ($peminjaman) {
-            // Update the status to 'di pinjam'
-            $peminjaman->status = 5;
+            $peminjaman->status = PeminjamanStatus::Returned;
             $peminjaman->save();
 
             $details = $peminjaman->detail;
