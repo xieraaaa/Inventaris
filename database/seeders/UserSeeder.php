@@ -52,8 +52,8 @@ class UserSeeder extends Seeder
         {
             $superadmin = User::create($superadminCredentials);
 
-            $admin->removeRole('user');
-            $admin->assignRole('superadmin');
+            $superadmin->removeRole('user');
+            $superadmin->assignRole('superadmin');
         }
     }
 }
