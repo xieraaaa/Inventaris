@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\barang;
-use App\Models\kategori;
-use App\Models\merek;
-use App\Models\Unit;
+use App\Models\{
+    Barang,
+    DetailPeminjaman,
+    Kategori,
+    Merek,
+    Unit
+};
 use Illuminate\Http\Request;
 use Milon\Barcode\DNS1D;
 
@@ -108,9 +111,16 @@ class BarangController extends Controller
         foreach ($rawData as $datum) {
             $tmpDatum = [];
 
+            $unitBarangCount = $datum['unit_barang_count'];
+            foreach (DetailPeminjaman::all() as $detailPeminjaman) {
+                if ($detailPeminjaman['id_barang'] === $datum['id']) {
+                    $unitBarangCount = $unitBarangCount - $detailPeminjaman['jumlah'];
+                }
+            }
+
             $tmpDatum['id'] = $datum['id'];
             $tmpDatum['nama_barang'] = $datum['nama_barang'];
-            $tmpDatum['jumlah'] = $datum['unit_barang_count'];
+            $tmpDatum['jumlah'] = $unitBarangCount;
 
             array_push($data, $tmpDatum);
         }
