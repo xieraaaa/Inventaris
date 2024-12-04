@@ -88,7 +88,7 @@ class BarangController extends Controller
         return $data;
     }
 
-    public function filtered_get(Request $request)
+    public function filtered_get(Request $request) 
     {
         Log::info($request['query']);
 
@@ -227,10 +227,10 @@ class BarangController extends Controller
     {
         $request->validate([
             'id_barang' => 'required',
-            'kode_inventaris' => 'required|unique',
+            'kode_inventaris' => 'required',
             'lokasi' => 'required',
             'kondisi' => 'required',
-            'tanggal_inventaris' => 'required|date'
+            
         ]);
 
 
@@ -240,7 +240,7 @@ class BarangController extends Controller
             'kode_inventaris' => $request->kode_inventaris,
             'lokasi' => $request->lokasi,
             'kondisi' => $request->kondisi,
-            'tanggal_inventaris' => $request->tanggal_inventaris
+            'tanggal_inventaris' => now() 
         ]);
 
         if ($unit) {

@@ -89,10 +89,7 @@
                             <label for="lokasi" class="form-label">Lokasi</label>
                             <input type="text" class="form-control" id="lokasi" name="lokasi" required>
                         </div>
-                        <div class="form-group mt-3">
-                            <label for="tanggal_Inventaris" class="form-label">Tanggal Inventaris</label>
-                            <input type="text" class="form-control" placeholder="2017-06-04" name = "tanggal_inventaris" id="tanggal_inventaris">
-                        </div>
+                        
                         <div class="form-group mt-3">
                             <label for="kondisi" class="form-label">Kondisi</label>
                             <select class="form-control" id="kondisi" name="kondisi" required>
