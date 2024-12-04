@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::get('barang', 'index')->name('barang');
         Route::get('get-barang', 'get');
         Route::get('get-barang-filtered', 'filtered_get');
-        Route::get('getDatatables', 'getDatatables');
+        Route::get('barang/getDatatables', 'getDatatables');
         Route::post('store-barang', 'store');
         Route::post('edit-barang', 'edit');
         Route::post('delete-barang', 'destroy');

@@ -19,47 +19,77 @@ use Illuminate\Support\Facades\Log;
 
 class BarangController extends Controller
 {
-    public function index(Request $request)
+        public function index(Request $request)
     {
         if ($request->ajax()) {
-            return $this->getDatatables();
+            return $this->getDatatables($request);  // Call the getDatatables method for AJAX requests
         }
 
-        $kategoris = kategori::all();
-        $units = Unit::all();
-        $mereks = Merek::all();
-        $barang = Barang::first();
-        $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';
+        // Fetch necessary data for the view
+        $kategoris = kategori::all();  // Fetch all categories
+        $units = Unit::all();          // Fetch all units
+        $mereks = Merek::all();        // Fetch all brands
+        $barang = Barang::first();     // Fetch the first barang (item)
+        $kondisiLabel = $barang ? ($barang->kondisi == 1 ? 'Baik' : 'Rusak') : 'N/A';  // Label for condition
 
+        // Return the view with the fetched data
         return view('content.barang.admin', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
     }
+
 
     /**
      * Mengambil data untuk AJAX Datatable
      *
      * @return Illuminate\Http\JsonResponse
      */
-    public function getDatatables()
+    public function getDatatables(Request $request)
     {
-        $rootData = [];
-        $barangData = Barang::with(['unit', 'kategori', 'merek', 'unitBarang'])->get();
-
-        foreach ($barangData as $datum) {
-            $tmpDatum = [];
-
-            $tmpDatum['id'] = $datum['id'];
-            $tmpDatum['nama_barang'] = $datum['nama_barang'];
-            $tmpDatum['unit'] = $datum->unit['unit'];
-            $tmpDatum['merek'] = $datum->merek['merek'];
-            $tmpDatum['kategori'] = $datum->kategori['kategori'];
-            $tmpDatum['unitBarang'] = $datum->unitBarang;
-            $tmpDatum['jumlah'] = count($tmpDatum['unitBarang']);
-
-            array_push($rootData, $tmpDatum);
+        // Query utama untuk mengambil data barang
+        $query = Barang::with(['unit', 'kategori', 'merek', 'unitBarang']);
+    
+        // Filter pencarian
+        if ($searchValue = $request->input('search.value')) {
+            $query->where('nama_barang', 'like', "%$searchValue%")
+                ->orWhereHas('unit', function ($q) use ($searchValue) {
+                    $q->where('unit', 'like', "%$searchValue%");
+                })
+                ->orWhereHas('kategori', function ($q) use ($searchValue) {
+                    $q->where('kategori', 'like', "%$searchValue%");
+                })
+                ->orWhereHas('merek', function ($q) use ($searchValue) {
+                    $q->where('merek', 'like', "%$searchValue%");
+                });
         }
-
-        return $rootData;
+    
+        // Total record tanpa filter
+        $totalRecords = Barang::count();
+        $filteredRecords = $query->count();
+    
+        // Pagination (start dan length)
+        $barangData = $query->skip($request->input('start'))->take($request->input('length'))->get();
+    
+        // Format data
+        $data = $barangData->map(function ($datum) {
+            return [
+                'id' => $datum->id,
+                'nama_barang' => $datum->nama_barang,
+                'unit' => $datum->unit->unit,
+                'merek' => $datum->merek->merek,
+                'kategori' => $datum->kategori->kategori,
+                'unitBarang' => $datum->unitBarang,
+                'jumlah' => count($datum->unitBarang),
+            ];
+        });
+    
+        // Response ke DataTables
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
+            'data' => $data,
+        ]);
     }
+    
 
     /**
      * Mengembalikan data barang melalui format JSON berikut:
@@ -225,28 +255,35 @@ class BarangController extends Controller
 
     public function unit(Request $request)
     {
+        // Validasi input
         $request->validate([
-            'id_barang' => 'required',
-            'kode_inventaris' => 'required',
-            'lokasi' => 'required',
-            'kondisi' => 'required',
-            
+            'id_barang' => 'required|exists:barang,id',
+            'kode_inventaris' => 'required|string|unique:unit_barang,kode_inventaris',
+            'lokasi' => 'required|string',
+            'kondisi' => 'required|in:tersedia,tidak tersedia',
         ]);
 
+        try {
+            // Proses penyimpanan data unit
+            $unit = UnitBarang::create([
+                'id_barang' => $request->id_barang,
+                'kode_inventaris' => $request->kode_inventaris,
+                'lokasi' => $request->lokasi,
+                'kondisi' => $request->kondisi,
+                'tanggal_inventaris' => now(),
+            ]);
 
-
-        $unit = UnitBarang::create([
-            'id_barang' => $request->id_barang,
-            'kode_inventaris' => $request->kode_inventaris,
-            'lokasi' => $request->lokasi,
-            'kondisi' => $request->kondisi,
-            'tanggal_inventaris' => now() 
-        ]);
-
-        if ($unit) {
-            return redirect()->route('barang')->with(['success' => 'Data Unit Berhasil Ditambahkan!']);
-        } else {
-            return redirect()->route('barang')->with(['error' => 'Data Unit Gagal Ditambahkan!']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Unit berhasil ditambahkan!',
+                'unit' => $unit,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
         }
     }
+
 }

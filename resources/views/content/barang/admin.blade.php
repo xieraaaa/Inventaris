@@ -234,76 +234,78 @@
         }
 
         $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    const peminjamanTable = $('#barang').DataTable({
+        processing: true,    // Show processing indicator while fetching data
+        serverSide: true,    // Enable server-side processing
+        ajax: {
+            url: "{{ url('barang/getDatatables') }}",  // URL for server-side data
+            type: 'GET',     // Request method
+            dataSrc: function(data) {
+                return data.data;  // DataTables expects this key for row data
+            }
+        },
+        columns: [
+            {
+                data          : null,
+                class         : 'dt-control',
+                defaultContent: '',
+                orderable     : false,
+                searchable    : false
+            },
+            {
+                data      : null,
+                title     : 'ID',
+                orderable : false,
+                searchable: false,
+                render    : function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1; // Page-adjusted index
                 }
-            });
-
-            const peminjamanTable = $('#barang').DataTable({
-                ajax: {
-                    url: "{{ url('barang') }}",
-                    dataSrc: function(data) {
-                        return data;
-                    }
-                },
-                columns: [
-                    {
-                        data          : null,
-                        class         : 'dt-control',
-                        defaultContent: '',
-                        orderable     : false,
-                        searchable    : false
-                    },
-                    {
-                        data      : null,
-                        title     : 'ID',
-                        orderable : false,
-                        searchable: false,
-                        type      : 'string',
-                        render    : function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1; // Urutan nomor berdasarkan halaman
-                        }
-                    },
-                    {
-                        data : 'nama_barang',
-                        title: 'Nama Barang',
-                    },
-                    {
-                        data : 'kategori',
-                        title: 'Kategori',
-                    },
-                    {
-                        data : 'unit',
-                        title: 'Unit',
-                    },
-                    {
-                        data : 'merek',
-                        title: 'Merek',
-                    },
-                    {
-                        data : 'jumlah',
-                        title: 'Jumlah',
-                        type : 'string'
-                    },
-                    {
-    data: null,
-    title: 'Actions',
-    orderable: false,
-    searchable: false,
-    render: function(data) {
-        return `
-            <button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}"">
-                Tambah Unit
-            </button>
-        `;
-    }
-}
+            },
+            {
+                data : 'nama_barang',
+                title: 'Nama Barang',
+            },
+            {
+                data : 'kategori',
+                title: 'Kategori',
+            },
+            {
+                data : 'unit',
+                title: 'Unit',
+            },
+            {
+                data : 'merek',
+                title: 'Merek',
+            },
+            {
+                data : 'jumlah',
+                title: 'Jumlah',
+            },
+            {
+                data: null,
+                title: 'Actions',
+                orderable: false,
+                searchable: false,
+                render: function(data) {
+                    return `<button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}">Tambah Unit</button>`;
+                }
+            }
+        ],
+        order: [[1, 'asc']],  // Default order by ID
+        pageLength: 10,  // Set the number of records per page
+        lengthMenu: [10, 25, 50, 100],  // Options for records per page
+        pagination: true,  // Ensure pagination is enabled
+        processing: true,  // Show loading indicator
+        deferRender: true,  // Optimizes performance for large datasets
+    });
 
 
-                ],
-                order: [[1, 'asc']],
-            });
 
             peminjamanTable.on('click', 'td.dt-control', ({ target }) => {
                 const rowElement = target.closest('tr');
