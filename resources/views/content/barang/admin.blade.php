@@ -294,7 +294,9 @@
                 searchable: false,
                 render: function(data) {
                     return `<button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}">Tambah Unit</button>
-                            <button class="btn btn-info btn-sm edit-btn" data-id="${data.id}">Edit</button>`;
+                            <button class="btn btn-info btn-sm edit-btn" data-id="${data.id}">Edit</button>
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="${data.id}">delete</button>`;
+                            
                 }
             }
         ],
@@ -353,6 +355,11 @@
                 }
             });
         }
+
+        $(document).on('click', '.delete-btn', function() {
+        const id = $(this).data('id');
+        deleteFunc(id);
+ });
 
         function deleteFunc(id) {
             Swal.fire({
