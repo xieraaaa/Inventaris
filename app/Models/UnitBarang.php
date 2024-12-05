@@ -19,6 +19,7 @@ class UnitBarang extends Model {
         'kondisi',
         'tanggal_inventaris'
     ];
+
     protected static function booted()
     {
         static::creating(function ($unit) {

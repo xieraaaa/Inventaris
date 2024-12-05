@@ -1,91 +1,99 @@
 @extends('layouts.admin')
 
 @push('styles')
-    {{-- select2 css --}}
+    {{-- CSS untuk Select2 --}}
     <link href="../assets/node_modules/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
 @endpush
 
 @section('content')
-<div class="container-fluid">
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            <h4 class="text-themecolor">Pemindahan Barang</h4>
-        </div>
-        <div class="col-md-7 align-self-center text-end">
-            <div class="d-flex justify-content-end align-items-center">
-                <ol class="breadcrumb justify-content-end">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active">Pemindahan Barang</li>
-                </ol>
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h4 class="text-themecolor">Pemindahan Barang</h4>
+            </div>
+            <div class="col-md-7 align-self-center text-end">
+                <div class="d-flex justify-content-end align-items-center">
+                    <ol class="breadcrumb justify-content-end">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Pemindahan Barang</li>
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="card p-5 rounded">
-        <form action="javascript:void(0)" id="form-pemindahan" name="form-pemindahan" class="form-horizontal"
-              method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="tanggal" class="form-label">Tanggal Pemindahan</label>
-                    <input type="date" class="form-control" id="tanggal" name="tanggal">
+        <div class="card p-5 rounded">
+            <form action="javascript:void(0)" id="form-pemindahan" name="form-pemindahan" class="form-horizontal"
+                method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="tanggal" class="form-label">Tanggal Pemindahan</label>
+                        <input type="date" class="form-control" id="tanggal" name="tanggal">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="asal" class="form-label">Asal Pemindahan</label>
+                        <input type="text" class="form-control" id="asal" name="asal">
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="asal" class="form-label">Asal Pemindahan</label>
-                    <input type="text" class="form-control" id="asal" name="asal">
-                </div>
-            </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="tujuan" class="form-label">Tujuan Pemindahan</label>
-                    <input type="text" class="form-control" id="tujuan" name="tujuan">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="tujuan" class="form-label">Tujuan Pemindahan</label>
+                        <input type="text" class="form-control" id="tujuan" name="tujuan">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="deskripsi" class="form-label">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsi" name="deskripsi"></textarea>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="deskripsi" class="form-label">Deskripsi</label>
-                    <textarea class="form-control" id="deskripsi" name="deskripsi"></textarea>
-                </div>
-            </div>
 
-            <hr>
+                <hr>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Dynamic Form Fields</h4>
-                            <div id="dynamic_form_fields">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="barang" class="form-label">Barang</label>
-                                        <select class="select2 form-control form-select" style="width: 100%; height:36px;" id="barang-select" name="barang[]">
-                                            <option>Select</option>
-                                            @foreach ($koleksiBarang as $barang)
-                                                <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="jumlah" class="form-label">Jumlah</label>
-                                        <input type="number" class="form-control" id="jumlah" name="jumlah[]">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Dynamic Form Fields</h4>
+                                <div id="dynamic_form_fields">
+                                    <div class="row">
+                                        {{-- Input Nama Barang --}}
+                                        <div class="col-md-4">
+                                            <label for="barang" class="form-label">Barang</label>
+                                            <select class="select2 form-control form-select" style="width: 100%; height:36px;" id="barang-select" name="barang[]">
+                                                <option value="-1">-- PILIH --</option>
+                                                @foreach ($koleksiBarang as $barang)
+                                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        {{-- Input Unit Barang (berdasarkan kode inventaris) --}}
+                                        <div class="col-md-4">
+                                            <label for="ki_unit_barang" class="form-label">Kode Inventaris</label>
+                                            <select class="select2 form-control form-select" style="width: 100%; height:36px;" id="unit-barang-select" name="unit-barang[]">
+                                                <option>-- PILIH --</option>
+                                            </select>
+                                        </div>
+
+                                        {{-- Input Jumlah --}}
+                                        <div class="col-md-4">
+                                            <label for="jumlah" class="form-label">Jumlah</label>
+                                            <input type="number" class="form-control" id="jumlah" name="jumlah[]" placeholder="1" />
+                                        </div>
                                     </div>
                                 </div>
+                                <button type="button" class="btn btn-primary mt-3" onclick="addDynamicFormFields()">Add</button>
                             </div>
-                            <button type="button" class="btn btn-primary mt-3" onclick="addDynamicFormFields()">Add</button>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="d-flex mt-3 justify-content-end">
-                <button type="reset" class="btn btn-secondary">Batal</button>
-                <button type="button" class="btn btn-primary" id="submit-btn">Selesai</button>
-            </div>
-        </form>
+                <div class="d-flex mt-3 justify-content-end">
+                    <button type="reset" class="btn btn-secondary">Batal</button>
+                    <button type="button" class="btn btn-primary" id="submit-btn">Selesai</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-
-
 @endsection
 
 @push('scripts')
@@ -93,7 +101,7 @@
 
     <script>
         (function () {
-            // For select 2
+            // Untuk select 2
             $(".select2").select2();
         })();
     </script>
@@ -164,23 +172,18 @@
                         'icon' : 'success'
                     });
 
-                    // Reset dynamic form fields
                     for (let idx = 1; idx <= count; ++idx) {
                         removeDynamicFormFields(idx);
                     }
-
-                    // Reset select2 field
-                    $('#barang-select').val('').trigger('change');
                     
-                    // Reset other input fields
                     $('#tanggal').val('');
                     $('#asal').val('');
                     $('#tujuan').val('');
                     $('#deskripsi').val('');
                     $('#jumlah').val('');
                     
-                    // Optionally, reset select field of the first row if it's dynamic
-                    $(".select2").val(null).trigger('change');
+                    // Reset form select2 ke opsi placeholder
+                    $(".select2").val(-1).trigger('change');
                     count = 0; // Reset counter for dynamic fields
                 },
                 error: function (xhr) {
@@ -195,5 +198,39 @@
 
         
 
+    </script>
+
+    {{-- Pengisian #unit-barang-select --}}
+    <script>
+        (() => {
+            const getUnits = (idBarang) => {
+                return new Promise(resolve => {
+                    $.ajax(`/get-unit-barang/${idBarang}/kode_inventaris`, {
+                        success: (data) => {
+                            resolve(data);
+                        }
+                    });
+                });
+            };
+
+            const populate = () => {
+                const idBarang = $('#barang-select > option:selected').val();
+
+                // -1 berarti yang dipilih masih placeholder (<option value="-1">-- PILIH --</option>)
+                if (parseInt(idBarang) === -1) {
+                    return;
+                }
+
+                getUnits(idBarang).then(data => {
+                    $('#unit-barang-select').html('<option value="-1">-- PILIH --</option>');
+                    
+                    data.forEach(datum => {
+                        $(`<option value="${datum}">${datum}</option>`).appendTo($('#unit-barang-select'));
+                    });
+                });
+            };
+            
+            $('#barang-select').on('change', populate);
+        })();
     </script>
 @endpush

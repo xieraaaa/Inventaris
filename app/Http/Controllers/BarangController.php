@@ -39,7 +39,6 @@ class BarangController extends Controller
         return view('content.barang.admin', compact('kategoris', 'units', 'mereks', 'kondisiLabel'));
     }
 
-
     /**
      * Mengambil data untuk AJAX Datatable
      *
@@ -92,7 +91,6 @@ class BarangController extends Controller
             'data' => $data,
         ]);
     }
-    
 
     /**
      * Mengembalikan data barang melalui format JSON berikut:
@@ -287,4 +285,45 @@ class BarangController extends Controller
         }
     }
 
+    public function get_unit_barang(int $id, string $fields)
+    {
+        $return_data = [];
+        $raw_data = UnitBarang::where('id_barang', $id)->get();
+        $valid_fields = array_merge(['id'], app(UnitBarang::class)->getFillable());
+        $fields_deserialized = explode(',', $fields);
+        $fields_deserialized_count = count($fields_deserialized);
+
+        if (!$fields_deserialized_count) {
+            return response(null, 400);
+        }
+
+        if ($fields_deserialized_count === 1) {
+            $field = $fields_deserialized[0];
+
+            if (!in_array($field, $valid_fields)) {
+                return response(null, 400);
+            }
+
+            $raw_data->setVisible([$field]);
+
+            $raw_data_count = count($raw_data);
+            for ($idx = 0; $idx < $raw_data_count; ++$idx) {
+                array_push($return_data, $raw_data[$idx][$field]);
+            }
+
+            return $return_data;
+        }
+
+        $raw_data->setVisible(['']);
+
+        for ($idx = 0; $idx < $fields_deserialized_count; ++$idx) {
+            if (!in_array($fields_deserialized[$idx], $valid_fields)) {
+                return response(null, 400);
+            }
+
+            $raw_data->makeVisible($fields_deserialized[$idx]);
+        }
+
+        return $raw_data;
+    }
 }

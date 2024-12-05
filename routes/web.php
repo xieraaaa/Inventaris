@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
         Route::post('detail-barang', 'detail')->name('barang.detail');
         Route::post('import-barang', 'import')->name('barang.import');
         Route::post('add-unit', 'unit');
+
+        Route::get('get-unit-barang/{id}/{fields}', 'get_unit_barang');
     });
 
     Route::controller(MerekController::class)->group(function() {
