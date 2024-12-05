@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
-
-
+use Illuminate\Support\Facades\{
+    Auth,
+    Log,
+    Redirect,
+    Storage
+};
 
 class ProfileController extends Controller
 {
@@ -28,31 +29,37 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-
-public function update(ProfileUpdateRequest $request): RedirectResponse
-{
-    $request->user()->fill($request->validated());
-
-    if ($request->user()->isDirty('email')) {
-        $request->user()->email_verified_at = null;
-    }
-
-    $request->user()->save();
-
-    $user = $request->user();
-
-    if ($request->hasFile('profile_photo')) {
-        if (!is_null($user->profile_photo)) {
-            Storage::disk('public')->delete('profile_pictures/' . $user->profile_photo);
-        }
+    public function update(ProfileUpdateRequest $request)
+    {
+        $newName = $request['name'];
         
-        $user->profile_photo = $request->file('profile_photo')->store('profile_pictures', 'public');
-        $user->profile_photo = basename($user->profile_photo);
-        $user->save();
-    }
+        if (!is_null(User::firstWhere('name', $newName))) {
+            // TODO Munculkan error jika nama yang baru sudah dipakai
+            return response('Username sudah ada!', 409);
+        }
 
-    return Redirect::route('profile.edit')->with('status', 'profile-updated');
-}
+        $request->user()['name'] = $newName;
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        $user = $request->user();
+
+        if ($request->hasFile('profile_photo')) {
+            if (!is_null($user->profile_photo)) {
+                Storage::disk('public')->delete('profile_pictures/' . $user->profile_photo);
+            }
+            
+            $profile_photo = $request->file('profile_photo')->store('profile_pictures', 'public');
+            $user->profile_photo = basename($profile_photo);
+            $user->save();
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
 
     /**
      * Delete the user's account.
