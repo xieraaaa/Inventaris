@@ -150,6 +150,7 @@ class BarangController extends Controller
         $barangId = $request->id;
 
         $request->validate([
+            
             'nama_barang' => 'required',
             'id_kategori' => 'required',
             'id_unit' => 'required',
@@ -162,6 +163,7 @@ class BarangController extends Controller
                 'id' => $barangId
             ],
             [
+                
                 'nama_barang' => $request->nama_barang,
                 'id_kategori' => $request->id_kategori,
                 'id_unit' => $request->id_unit,
@@ -169,17 +171,6 @@ class BarangController extends Controller
 
             ]
         );
-
-        $barcodeBase64 = (new DNS1D())->getBarcodePNG($barang->kode_barang, 'C39', 1.5, 50);
-
-        // Menyimpan base64 string sebagai file image
-        $barcodePath = 'barcodes/' . $barang->kode_barang . '.png';
-        Storage::disk('public')->put($barcodePath, base64_decode($barcodeBase64));
-
-        return response()->json([
-            'barang' => $barang,
-            'barcode_url' => asset('storage/' . $barcodePath)
-        ]);
 
         return Response()->json($barang);
     }

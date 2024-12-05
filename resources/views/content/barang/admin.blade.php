@@ -124,7 +124,7 @@
                 <div class="modal-body">
                     <form action="javascript:void(0)" id="barangForm" name="barangForm" class="form-horizontal"
                         method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="id" id="id">
+                        <input type="hidden" name="id" id="idModal">
                         <div class="form-group">
                             <label for="nama_barang" class="col-sm-8 mb-2 control-label">Nama Barang</label>
                             <div class="col-sm-12">
@@ -293,7 +293,8 @@
                 orderable: false,
                 searchable: false,
                 render: function(data) {
-                    return `<button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}">Tambah Unit</button>`;
+                    return `<button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}">Tambah Unit</button>
+                            <button class="btn btn-info btn-sm edit-btn" data-id="${data.id}">Edit</button>`;
                 }
             }
         ],
@@ -328,6 +329,10 @@
             $('#id').val('');
         }
 
+        $(document).on('click', '.edit-btn', function() {
+    const id = $(this).data('id');
+    editFunc(id);
+});
         function editFunc(id) {
             $.ajax({
                 type: "POST",
@@ -339,15 +344,12 @@
                 success: function(res) {
                     $('#barangModal').html("Edit barang");
                     $('#barang-modal').modal('show');
-                    $('#id').val(res.id);
-                    $('#kode_barang').val(res.kode_barang);
+                    $('#idModal').val(res.id);
                     $('#nama_barang').val(res.nama_barang);
                     $('#id_kategori').val(res.id_kategori);
                     $('#id_unit').val(res.id_unit);
                     $('#id_merek').val(res.id_merek);
                     $('#jumlah').val(res.jumlah);
-                    $('#kondisi').val(res.kondisi);
-                    $('#keterangan').val(res.keterangan);
                 }
             });
         }
@@ -416,26 +418,26 @@
 });
 
 
-        $('#barangForm').submit(function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                type: 'POST',
-                url: "{{ url('store-barang') }}",
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: (data) => {
-                    $("#barang-modal").modal('hide');
-                    $('#barang').DataTable().ajax.reload(null, false);
-                    Swal.fire("Success!", "barang has been saved successfully.", "success");
-                },
-                error: function(data) {
-                    Swal.fire("Error!", "Something went wrong.", "error");
-                }
-            });
-        });
+       $('#barangForm').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    $.ajax({
+        type: 'POST',
+        url: "{{ url('store-barang') }}", // Pastikan URL ini benar
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: (data) => {
+            $("#barang-modal").modal('hide'); // Tutup modal
+            $('#barang').DataTable().ajax.reload(null, false); // Refresh DataTable
+            Swal.fire("Success!", "Barang telah disimpan.", "success"); // Tampilkan pesan sukses
+        },
+        error: function(data) {
+            Swal.fire("Error!", "Terjadi kesalahan saat menyimpan data.", "error"); // Tampilkan pesan error
+        }
+    });
+});
 
 
 
