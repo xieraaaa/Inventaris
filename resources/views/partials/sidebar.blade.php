@@ -15,7 +15,6 @@
 					@endif <span class="hide-menu">Prof. {{ Str::limit(Auth::user()->name, 7, '') }}</span></a>
 					<ul aria-expanded="false" class="collapse">
 						<li><a href="{{route('profile.edit')}}"><i class="ti-user"></i>Profile</a></li>
-						<li><a href="javascript:void(0)"><i class="ti-email"></i>Inbox</a></li>
 						<form method="POST" action="{{ route('logout') }}">
 							@csrf
 							<a href="{{ route('logout') }}"
