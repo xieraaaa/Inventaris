@@ -293,9 +293,18 @@
                 orderable: false,
                 searchable: false,
                 render: function(data) {
-                    return `<button class="btn btn-primary btn-sm add-unit-btn" data-id="${data.id}">Tambah Unit</button>
-                            <button class="btn btn-info btn-sm edit-btn" data-id="${data.id}">Edit</button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${data.id}">delete</button>`;
+
+                   
+                    return `                    <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton` + data.id + `" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton` + data.id + `">
+                                <a class="dropdown-item add-unit-btn" data-id="${data.id}"><i class="fa-solid fa-plus"></i> Tambah Unit</a>
+                                <a class="dropdown-item edit-btn" data-id="${data.id}"><i class="fa-solid fa-pen-to-square"></i> edit</a>
+                                <a class="dropdown-item delete-btn" data-id="${data.id}"><i class="fa-solid fa-trash"></i> delete</a>
+                            </div>
+                        </div>`;
                             
                 }
             }
