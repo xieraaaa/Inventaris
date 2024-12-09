@@ -264,7 +264,10 @@ class BarangController extends Controller
 
         try {
             // Proses penyimpanan data unit
-            $unit = UnitBarang::create([
+            $unit = UnitBarang::updateOrCreate(
+                [
+                    'id' => $request->id
+                ],[
                 'id_barang' => $request->id_barang,
                 'kode_inventaris' => $request->kode_inventaris,
                 'lokasi' => $request->lokasi,
@@ -326,4 +329,35 @@ class BarangController extends Controller
 
         return $raw_data;
     }
+
+    public function editUnit(Request $request, $id)
+{
+    $where = array('id' => $request->id);
+    $unit = UnitBarang::where($where)->first();
+
+    return Response()->json($unit);
 }
+
+
+    
+    // Delete unit
+    public function destroyUnit(Request $request)
+    {
+        $unit_barang = UnitBarang::find($request->id);
+
+        if ($unit_barang) {
+            $unit_barang->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Unit barang deleted successfully',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unit not found',
+            ], 404);
+        }
+    }
+}
+

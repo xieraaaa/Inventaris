@@ -35,7 +35,10 @@ Route::middleware('auth')->group(function () {
         Route::post('detail-barang', 'detail')->name('barang.detail');
         Route::post('import-barang', 'import')->name('barang.import');
         Route::post('add-unit', 'unit');
+        Route::post('edit-unit-barang/{id}', 'editUnit');
+        Route::post('/delete-unit/{id}', 'destroyUnit');
 
+  
         Route::get('get-unit-barang/{id}/{fields}', 'get_unit_barang');
     });
 

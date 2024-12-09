@@ -80,6 +80,7 @@
                 <div class="modal-body">
 
                     <form id="add-unit-form" name="add-unit-form" class="form-horizontal">
+                    <input type="hidden"  name="id" id="id_barang_id">
                         <input type="hidden"  name="id_barang" id="id_barang">
                         <div class="form-group">
                             <label for="kode_inventaris" class="form-label">Kode Inventaris</label>
@@ -183,6 +184,7 @@
                 <th>Lokasi</th>
                 <th>Kondisi</th>
                 <th>Tanggal Inventaris</th>
+                <th>action</th>
             </thead>
             <tbody>
             </tbody>
@@ -223,10 +225,17 @@
                 const inventory_date = document.createElement('td');
                 inventory_date.innerText = unitBarang.tanggal_inventaris;
 
+                const action = document.createElement('td');
+                action.innerHTML = `
+                    <button type="button" class="btn btn-primary btn-sm edit-unit-btn" data-id="${unitBarang.id}" data-id_barang="${unitBarang.id_barang}" data-bs-toggle="modal" data-bs-target="#edit-unit-modal">Edit</button>
+                    <button type="button" class="btn btn-danger btn-sm delete-unit-btn" data-id="${unitBarang.id}" data-id_barang="${unitBarang.id_barang}">Hapus</button>
+                `;
+
                 row.appendChild(inventory_code);
                 row.appendChild(location);
                 row.appendChild(condition);
                 row.appendChild(inventory_date);
+                row.appendChild(action);
 
                 body.appendChild(row);
             }
@@ -455,6 +464,65 @@
     });
 });
 
+
+$(document).on('click', '.edit-unit-btn', function() {
+    const id = $(this).data('id');
+    const id_barang = $(this).data('id_barang');
+    $('#id_barang').val(id_barang);
+    $('#id_barang_id').val(id);
+    editunitFunc(id);
+});
+        function editunitFunc(id) {
+            $.ajax({
+                type: "POST",
+                url: `/edit-unit-barang/${id}`,
+               
+                
+                success: function(res) {
+                    $('#unitModal').html("Edit unit");
+                    $('#add-unit-modal').modal('show');
+                    $('#idModal').val(res.id);
+                    $('#kode_inventaris').val(res.kode_inventaris);
+                    $('#lokasi').val(res.lokasi);
+                    $('#kondisi').val(res.kondisi);
+                    $('#tanggal_inventaris').val(res.tanggal_inventaris);
+                }
+            });
+        }
+
+
+$(document).on('click', '.delete-unit-btn', function () {
+    const id = $(this).data('id');
+
+    Swal.fire({
+        title: "Apakah Anda yakin?",
+        text: "Data ini akan dihapus secara permanen!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Ya, hapus!",
+        cancelButtonText: "Batal",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST', // Gunakan metode POST
+                url: `/delete-unit/${id}`,
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire("Berhasil!", res.message, "success");
+                        location.reload(); 
+                    } else {
+                        Swal.fire("Error!", res.message, "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Terjadi kesalahan saat menghapus data.", "error");
+                }
+            });
+        }
+    });
+});
 
 
     </script>
