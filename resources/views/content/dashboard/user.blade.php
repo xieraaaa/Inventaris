@@ -489,5 +489,5 @@
 
         updatePagination();
         changePage(1); // Start on page 1
-    </script>
+    </script> 
 @endpush
