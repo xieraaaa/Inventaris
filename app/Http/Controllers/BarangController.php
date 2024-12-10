@@ -256,10 +256,11 @@ class BarangController extends Controller
     {
         // Validasi input
         $request->validate([
+            'id' => 'required|numeric',
             'id_barang' => 'required|exists:barang,id',
-            'kode_inventaris' => 'required|string|unique:unit_barang,kode_inventaris',
+            'kode_inventaris' => 'required|string',
             'lokasi' => 'required|string',
-            'kondisi' => 'required|in:Tersedia,Tidak tersedia',
+            'kondisi' => 'required',
         ]);
 
         try {
