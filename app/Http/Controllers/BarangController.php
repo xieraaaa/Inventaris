@@ -104,7 +104,7 @@ class BarangController extends Controller
             'unitBarang' => function (Builder $query) {
                 $query->where('kondisi', 'Tersedia');
             }
-        ])->get();
+        ])->paginate(20);
 
         foreach ($rawData as $datum) {
             $tmpDatum = [];
