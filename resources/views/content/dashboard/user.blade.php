@@ -436,12 +436,13 @@
                     },
 
                     success: data => {
+                        console.log(data);
                         console.log('Successfully fetched filtered data regarding products!');
                         
                         $('#list-product').empty();
-                        data.forEach(product => {
+                        Array.from(data).forEach(product => {
                             const html = productTemplate.cloneNode(true);
-                            html.dataset.id = product.kode_barang;
+                            html.dataset.id = product.id;
 
                             // Tambahkan data produk
                             html.querySelector('[data-role="name"]').title       = product.nama_barang;
@@ -489,5 +490,5 @@
 
         updatePagination();
         changePage(1); // Start on page 1
-    </script> 
+    </script>
 @endpush
