@@ -167,7 +167,6 @@
 @endpush
 
 @push('scripts')
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script defer src="{{ asset('assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script defer src="{{ asset('assets/node_modules/timepicker/bootstrap-timepicker.min.js') }}"></script>
@@ -206,42 +205,57 @@
         }
 
         function loadPageData(pageNumber) {
-            // Perform AJAX request to load the data for the current page
-            $.ajax({
-                dataType: 'json',
-                url: '{{ url('get-barang') }}',
-                data: { 'page': pageNumber },
-                success: function(data) {
-                    allProducts = data;
-                    filterAndRenderProducts(); // Render the products for the selected page
-                }
-            });
-        }
+        $.ajax({
+            dataType: 'json',
+            url: '{{ url('get-barang') }}',
+            data: {
+                page: pageNumber, // Kirim nomor halaman ke backend
+            },
+            success: function(data) {
+                allProducts = data; // Simpan data barang
+                renderProducts(); // Render produk pada halaman
+            }
+        });
+    }
 
-        function updatePagination() {
-            const paginationRoot = document.getElementById('pagination');
-            const paginationItems = paginationRoot.querySelectorAll('[data-role="pagination-number"]');
-            const prevButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="left"]');
-            const nextButton = paginationRoot.querySelector('[data-role="pagination-direction"][data-direction="right"]');
+    function renderProducts() {
+        const listProductContainer = document.getElementById('list-product');
+        listProductContainer.innerHTML = ''; // Bersihkan produk saat ini
 
-            // Calculate the first and last page number in the current set
-            const startPage = Math.floor((currentPage - 1) / paginationLength) * paginationLength + 1;
-            const endPage = Math.min(startPage + paginationLength - 1, totalPages);
+        allProducts.forEach(product => {
+            const html = productTemplate.cloneNode(true);
+            html.dataset.id = product.id;
 
-            // Update active pages
-            paginationItems.forEach(item => {
-                const pageNumber = parseInt(item.dataset.page);
-                item.style.display = (pageNumber >= startPage && pageNumber <= endPage) ? 'block' : 'none'; // Show only pages in the current set
-                item.classList.remove('active');
-                if (pageNumber === currentPage) {
-                    item.classList.add('active');
-                }
-            });
+            // Tambahkan data produk
+            html.querySelector('[data-role="name"]').innerText = product.nama_barang;
+            html.querySelector('[data-role="jumlah"]').innerText = product.jumlah;
 
-            // Update previous/next button visibility
-            prevButton.style.display = currentPage > 1 ? 'block' : 'none';
-            nextButton.style.display = currentPage < totalPages ? 'block' : 'none';
-        }
+            // Tambahkan gambar produk
+            const imageElement = html.querySelector('[data-role="image"]');
+            imageElement.src = product.image_url || "{{ asset('assets/images/imac.png') }}"; 
+            imageElement.alt = product.nama_barang;
+
+            listProductContainer.appendChild(html);
+        });
+    }
+
+
+    function updatePagination() {
+    const paginationRoot = document.getElementById('pagination');
+    const startPage = Math.max(currentPage - Math.floor(paginationLength / 2), 1);
+    const endPage = Math.min(startPage + paginationLength - 1, totalPages);
+
+    paginationRoot.innerHTML = ''; // Bersihkan pagination lama
+
+    for (let page = startPage; page <= endPage; page++) {
+        const isActive = page === currentPage;
+        paginationRoot.innerHTML += `
+            <li class="page-item ${isActive ? 'active' : ''}" onclick="changePage(${page})">
+                <a class="page-link" href="#">${page}</a>
+            </li>`;
+    }
+}
+
 
         // TODO Refaktor agar lebih mudah untuk dipahami dan dimodifikasi
         // Untuk menampilkan dialog konfirmasi
@@ -409,59 +423,7 @@
             confirmCartSubmission();
         }
 
-        // Open QR modal for barcode scanning
-        function openQrModal() {
-            $('#qrModal').modal('show');
-            if (!html5QrcodeScanner) {
-                html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 250, height: 250 } }, false);
-            }
-            html5QrcodeScanner.render(onScanSuccess);
-        }
-
-        let html5QrcodeScanner = null;
-
-        // QR Scanner success callback with error handling
-        function onScanSuccess(decodedText, decodedResult) {
-            fetch(`http://127.0.0.1:8000/items/${decodedText}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status} ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const itemName   = data.name;
-                    const itemId     = data.id;
-                    const itemJumlah = data.jumlah;
-
-                    document.getElementById('decoded-text').innerText = itemName;
-
-                    const existingProduct = cart.find(item => item.id === itemId);
-                    if (existingProduct) {
-                        if (existingProduct.jumlah + 1 <= itemJumlah) {
-                            existingProduct.jumlah++;
-                        } else {
-                            alert('Stock limit reached');
-                        }
-                    } else {
-                        cart.push({ id: itemId, name: itemName, jumlah: 1 });
-                    }
-
-                    renderCart();
-                })
-                .catch(error => {
-                    alert('Error fetching item details: ' + error.message);
-                });
-        }
-
-        // Clear QR scanner when modal is closed
-        $('#qrModal').on('hidden.bs.modal', function () {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear();
-                html5QrcodeScanner = null;
-            }
-        });
-
+       
         // Filter and render products based on search query
         function filterAndRenderProducts() {
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
