@@ -115,6 +115,9 @@ class BarangController extends Controller
                     $unitBarangCount = $unitBarangCount - $detailPeminjaman['jumlah'];
                 }
             }
+            if ($unitBarangCount <= 0) {
+                continue;
+            }
 
             $tmpDatum['id'] = $datum['id'];
             $tmpDatum['nama_barang'] = $datum['nama_barang'];
@@ -129,12 +132,19 @@ class BarangController extends Controller
     public function filtered_get(Request $request) 
     {
         Log::info($request['query']);
-
-        $data = Barang::where('nama_barang', 'like', $request['query'] . '%')->get();
-
+        $raw_data = [];
+        $data = Barang::with('unitBarang')->where('nama_barang', 'like', $request['query'] . '%')->get();
+        foreach ($data as $datum) {
+            $tmpDatum = [
+                'id' => $datum['id'],
+                'nama_barang' => $datum['nama_barang'],
+                'jumlah' => count($datum['unitBarang'])
+            ];
+            array_push($raw_data, $tmpDatum);
+        }
         Log::info($data);
 
-        return $data;
+        return $raw_data;
     }
 
     /**
