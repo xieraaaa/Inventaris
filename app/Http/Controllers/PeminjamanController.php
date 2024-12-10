@@ -250,7 +250,7 @@ class PeminjamanController extends Controller
             $buffer['tgl_pinjam']  = $peminjaman['tgl_pinjam'];
             $buffer['tgl_kembali'] = $peminjaman['tgl_kembali'];
             $buffer['keterangan']  = $peminjaman['keterangan'];
-            $buffer['status']      = $peminjaman['status'];
+            $buffer['status']      =  'Pending';
             $buffer['barang']      = $peminjaman->detail->map(function ($item) {
                 $item->barang->setVisible(['nama_barang']);
 

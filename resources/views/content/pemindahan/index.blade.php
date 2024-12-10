@@ -77,7 +77,7 @@
                                         {{-- Input Jumlah --}}
                                         <div class="col-md-4">
                                             <label for="jumlah" class="form-label">Jumlah</label>
-                                            <input type="number" class="form-control" id="jumlah" name="jumlah[]" placeholder="1" />
+                                            <input type="number" class="form-control" id="jumlah" name="jumlah[]" placeholder="jumlah" />
                                         </div>
                                     </div>
                                 </div>

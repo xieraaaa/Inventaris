@@ -95,8 +95,8 @@
                             <label for="kondisi" class="form-label">Kondisi</label>
                             <select class="form-control" id="kondisi" name="kondisi" required>
                                 <option value="">-- Pilih Kondisi --</option>
-                                <option value="tersedia">Tersedia</option>
-                                <option value="tidak_tersedia">tidak tersedia</option>
+                                <option value="Tersedia">Tersedia</option>
+                                <option value="Tidak Tersedia">tidak tersedia</option>
                             </select>
                         </div>
                         <div class="form-group mt-4 text-end">
@@ -429,7 +429,6 @@
                 $('#kode_inventaris').val(res.kode_inventaris);
                 $('#lokasi').val(res.lokasi);
                 $('#kondisi').val(res.kondisi);
-                $('#tanggal_inventaris').val(res.tanggal_inventaris);
                 
                 $('#add-unit-modal').modal('hide');
                 $('#barang').DataTable().ajax.reload(null, false);

@@ -238,9 +238,9 @@ class BarangController extends Controller
             $generator = new DNS1D();
 
             foreach ($barangs as $barang) {
-                if ($barang->kode_barang) {
-                    $barcodeBase64 = $generator->getBarcodePNG($barang->kode_barang, 'C39', 1.5, 50);
-                    $barcodePath = 'barcodes/' . $barang->kode_barang . '.png';
+                if ($barang->kode_inventaris) {
+                    $barcodeBase64 = $generator->getBarcodePNG($barang->kode_inventaris, 'C39', 1.5, 50);
+                    $barcodePath = 'barcodes/' . $barang->kode_inventaris . '.png';
                     Storage::put($barcodePath, base64_decode($barcodeBase64));
                 }
             }
@@ -259,7 +259,7 @@ class BarangController extends Controller
             'id_barang' => 'required|exists:barang,id',
             'kode_inventaris' => 'required|string|unique:unit_barang,kode_inventaris',
             'lokasi' => 'required|string',
-            'kondisi' => 'required|in:tersedia,tidak tersedia',
+            'kondisi' => 'required|in:Tersedia,Tidak tersedia',
         ]);
 
         try {

@@ -17,17 +17,12 @@ class ExcelDataController extends Controller
             'file' => 'required|mimes:csv,xls,xlsx'
         ]);
     
-        $file = $request->file('file');
-    
-        // Membuat nama file unik
+        $file = $request->file('data_excel');
         $nama_file = $file->hashName();
-    
-        // Menyimpan sementara file ke storage
-        $path = $file->storeAs('public/excel/', $nama_file);
-    
-        // Import data dari file excel
+        $path = $file->store('app/public/excel');
+
         $import = Excel::import(new ExcelData, storage_path('app/public/excel/' . $nama_file));
-    
+
         // Menghapus file dari server setelah import
         Storage::delete($path);
     
