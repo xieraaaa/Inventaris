@@ -140,6 +140,9 @@ class BarangController extends Controller
                 'nama_barang' => $datum['nama_barang'],
                 'jumlah' => count($datum['unitBarang'])
             ];
+            if ($tmpDatum['jumlah'] <= 0) {
+                continue;
+            }
             array_push($raw_data, $tmpDatum);
         }
         Log::info($data);
