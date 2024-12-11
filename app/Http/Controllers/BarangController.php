@@ -7,6 +7,7 @@ use App\Models\{
     DetailPeminjaman,
     Kategori,
     Merek,
+    Peminjaman,
     Unit
 };
 use Illuminate\Http\Request;
@@ -98,57 +99,81 @@ class BarangController extends Controller
      * @return Illuminate\Http\JsonResponse
      */
     public function get()
-    {
-        $data = [];
-        $rawData = Barang::withCount([
-            'unitBarang' => function (Builder $query) {
-                $query->where('kondisi', 'Tersedia');
-            }
-        ])->paginate(20);
+{
+    $data = [];
+    $rawData = Barang::withCount([
+        'unitBarang' => function (Builder $query) {
+            $query->where('kondisi', 'Tersedia');
+        }
+    ])->paginate(20);
 
-        foreach ($rawData as $datum) {
-            $tmpDatum = [];
+    foreach ($rawData as $datum) {
+        $tmpDatum = [];
+        $unitBarangCount = $datum['unit_barang_count'];
 
-            $unitBarangCount = $datum['unit_barang_count'];
-            foreach (DetailPeminjaman::all() as $detailPeminjaman) {
-                if ($detailPeminjaman['id_barang'] === $datum['id']) {
-                    $unitBarangCount = $unitBarangCount - $detailPeminjaman['jumlah'];
-                }
-            }
-            if ($unitBarangCount <= 0) {
-                continue;
-            }
+        // Hitung jumlah barang yang sedang dipinjam (status 'Borrowed')
+        $jumlahDipinjam = DetailPeminjaman::whereHas('peminjaman', function ($query) {
+            $query->where('status', 4); // Hanya menghitung barang dengan status Borrowed
+        })->where('id_barang', $datum['id'])->sum('jumlah');
 
-            $tmpDatum['id'] = $datum['id'];
-            $tmpDatum['nama_barang'] = $datum['nama_barang'];
-            $tmpDatum['jumlah'] = $unitBarangCount;
+        // Kurangi jumlah barang yang dipinjam dari stok tersedia
+        $unitBarangCount -= $jumlahDipinjam;
 
-            array_push($data, $tmpDatum);
+        if ($unitBarangCount <= 0) {
+            continue;
         }
 
-        return $data;
+        $tmpDatum['id'] = $datum['id'];
+        $tmpDatum['nama_barang'] = $datum['nama_barang'];
+        $tmpDatum['jumlah'] = $unitBarangCount;
+
+        array_push($data, $tmpDatum);
     }
 
-    public function filtered_get(Request $request) 
-    {
-        Log::info($request['query']);
-        $raw_data = [];
-        $data = Barang::with('unitBarang')->where('nama_barang', 'like', $request['query'] . '%')->get();
-        foreach ($data as $datum) {
-            $tmpDatum = [
-                'id' => $datum['id'],
-                'nama_barang' => $datum['nama_barang'],
-                'jumlah' => count($datum['unitBarang'])
-            ];
-            if ($tmpDatum['jumlah'] <= 0) {
-                continue;
+    return $data;
+}
+
+public function filtered_get(Request $request)
+{
+    Log::info($request['query']);
+    $raw_data = [];
+    $data = Barang::with('unitBarang')->where('nama_barang', 'like', $request['query'] . '%')->get();
+
+    foreach ($data as $datum) {
+        $jumlah = count($datum['unitBarang']);
+
+        // Hitung jumlah barang yang sedang dipinjam (status Borrowed)
+        $peminjaman = Peminjaman::with('detail')->where('status', 4)->get();
+        $jumlahKurang = (function() use ($peminjaman, $datum) {
+            $tmp = 0;
+            foreach ($peminjaman as $p) {
+                $tmp += DetailPeminjaman::where('id_peminjaman', $p['id'])
+                    ->where('id_barang', $datum['id'])
+                    ->sum('jumlah');
             }
-            array_push($raw_data, $tmpDatum);
-        }
-        Log::info($data);
+            return $tmp;
+        })();
 
-        return $raw_data;
+        // Kurangi jumlah barang yang dipinjam dari stok tersedia
+        $jumlah -= $jumlahKurang;
+
+        if ($jumlah <= 0) {
+            continue;
+        }
+
+        $tmpDatum = [
+            'id' => $datum['id'],
+            'nama_barang' => $datum['nama_barang'],
+            'jumlah' => $jumlah,
+        ];
+
+        array_push($raw_data, $tmpDatum);
     }
+
+    Log::info($data);
+    return $raw_data;
+}
+
 
     /**
      * Store a newly created resource in storage.
