@@ -149,36 +149,6 @@
     });
 }
 
-const populate = (count) => {
-    const idBarang = $(`#barang${count}`).val();
-
-    if (parseInt(idBarang) === -1) {
-        return;
-    }
-
-    getUnits(idBarang).then(data => {
-        const unitSelect = $(`#unit-barang-select${count}`);
-        unitSelect.html('<option value="-1">-- PILIH --</option>'); // Reset unit-barang select
-
-        data.forEach(datum => {
-            unitSelect.append(`<option value="${datum}">${datum}</option>`);
-        });
-
-        // Reinitialize select2 for the unit select
-        unitSelect.trigger('change');
-    });
-};
-
-const getUnits = (idBarang) => {
-    return new Promise(resolve => {
-        $.ajax(`/get-unit-barang/${idBarang}/kode_inventaris`, {
-            success: (data) => {
-                resolve(data);
-            }
-        });
-    });
-};
-
 
         function removeDynamicFormFields(row) {
             $('#row' + row).remove();
@@ -267,6 +237,10 @@ const getUnits = (idBarang) => {
                 }
 
                 getUnits(idBarang).then(data => {
+                    if (data.length === 0) {
+                        $('#unit-barang-select').html('<option value="-1">-- kosong --</option>');
+                        return;
+                    }
                     $('#unit-barang-select').html('<option value="-1">-- PILIH --</option>');
                     
                     data.forEach(datum => {
