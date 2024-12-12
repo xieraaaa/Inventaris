@@ -66,6 +66,14 @@
 
 				<li><a class="waves-effect waves-dark" href="{{route('peminjaman.superadmin')}}"><i class="fa-solid fa-handshake"></i><span class="hide-menu">Peminjaman</span></a>
 				</li>
+				<li>
+					<a
+						class="waves-effect waves-dark"
+						href="{{ url('laporan') }}"
+					>
+						<i class="fa-solid fa-print"></i><span class="hide-menu">Laporan</span>
+					</a>
+				</li>
 
 				@endif
 		</nav>

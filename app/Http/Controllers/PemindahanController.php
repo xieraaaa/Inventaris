@@ -35,6 +35,10 @@ class PemindahanController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'unit-barang.*' => 'gte:0'
+        ]);
+        
         $pemindahan = Pemindahan::create([
             'tanggal'   => $request->tanggal,
             'asal'      => $request->asal,
@@ -43,13 +47,12 @@ class PemindahanController extends Controller
         ]);
 
         $barangArray = $request->barang;
-        $jumlahArray = $request->jumlah;
         $len = count($request->barang);
         for ($idx = 0; $idx < $len; ++$idx) {
             DetailPemindahan::create([
                 'id_pemindahan' => $pemindahan->id,
                 'id_barang'     => $barangArray[$idx],
-                'jumlah'        => $jumlahArray[$idx]
+                'jumlah' => 1
             ]);
         }
     } 
