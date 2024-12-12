@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Pemindahan;
 use App\Models\Peminjaman;
+use App\Exports\PeminjamanExport;
+use App\Exports\PemindahanExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
 {
@@ -75,5 +78,15 @@ class LaporanController extends Controller
         return view('content.laporan.data.pemindahan', [
             'data' => $this->getPemindahanData()
         ]);
+    }
+
+    public function exportPeminjamanToExcel()
+    {
+        return Excel::download(new PeminjamanExport, 'laporan_peminjaman.xlsx');
+    }
+
+public function exportPemindahanToExcel()
+    {
+        return Excel::download(new PemindahanExport, 'laporan_pemindahan.xlsx');
     }
 }
