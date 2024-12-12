@@ -108,47 +108,72 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        var count = 0;
+         function populate(count) {
+        const idBarang = $(`#barang${count} > option:selected`).val();
 
-        function addDynamicFormFields() {
-    count++;
-    var html = `
-        <div id="row${count}" class="row mt-2">
-            <div class="col-sm-3">
-                <label for="barang${count}" class="form-label">Barang</label>
-                <select class="select2 form-select" id="barang${count}" name="barang[]">
-                    <option value="">-- Select Barang --</option>
-                    @foreach ($koleksiBarang as $barang)
-                        <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-sm-3">
-                <label for="unit-barang${count}" class="form-label">Kode Inventaris</label>
-                <select class="select2 form-select" id="unit-barang-select${count}" name="unit-barang[]">
-                    <option value="-1">-- PILIH --</option>
-                </select>
-            </div>
-            <div class="col-sm-3">
-                <label for="jumlah${count}" class="form-label">Jumlah</label>
-                <input type="number" class="form-control" id="jumlah${count}" name="jumlah[]" placeholder="Jumlah">
-            </div>
-            <div class="col-sm-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger" onclick="removeDynamicFormFields(${count});">Remove</button>
-            </div>
-        </div>
-    `;
-    $('#dynamic_form_fields').append(html);
+        // -1 berarti yang dipilih masih placeholder
+        if (parseInt(idBarang) === -1) {
+            return;
+        }
 
-    // Reinitialize select2 for the new select elements
-    $(".select2").select2();
+        $.ajax(`/get-unit-barang/${idBarang}/kode_inventaris`, {
+            success: function(data) {
+                const $unitSelect = $(`#unit-barang-select${count}`);
+                
+                if (data.length === 0) {
+                    $unitSelect.html('<option value="-1">-- kosong --</option>');
+                    return;
+                }
+                
+                $unitSelect.html('<option value="-1">-- PILIH --</option>');
+                
+                data.forEach(datum => {
+                    $(`<option value="${datum}">${datum}</option>`).appendTo($unitSelect);
+                });
+            }
+        });
+    }
 
-    // Attach change event for barang select in dynamic fields
-    $(`#barang${count}`).on('change', function () {
-        populate(count);
-    });
-}
+    var count = 0;
 
+    function addDynamicFormFields() {
+        count++;
+        var html = `
+            <div id="row${count}" class="row mt-2">
+                <div class="col-sm-3">
+                    <label for="barang${count}" class="form-label">Barang</label>
+                    <select class="select2 form-select" id="barang${count}" name="barang[]">
+                        <option value="-1">-- Select Barang --</option>
+                        @foreach ($koleksiBarang as $barang)
+                            <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label for="unit-barang${count}" class="form-label">Kode Inventaris</label>
+                    <select class="select2 form-select" id="unit-barang-select${count}" name="unit-barang[]">
+                        <option value="-1">-- PILIH --</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label for="jumlah${count}" class="form-label">Jumlah</label>
+                    <input type="number" class="form-control" id="jumlah${count}" name="jumlah[]" placeholder="Jumlah">
+                </div>
+                <div class="col-sm-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger" onclick="removeDynamicFormFields(${count});">Remove</button>
+                </div>
+            </div>
+        `;
+        $('#dynamic_form_fields').append(html);
+
+        // Reinitialize select2 for the new select elements
+        $(".select2").select2();
+
+        // Attach change event for barang select in dynamic fields
+        $(`#barang${count}`).on('change', function () {
+            populate(count);
+        });
+    }
 
         function removeDynamicFormFields(row) {
             $('#row' + row).remove();
