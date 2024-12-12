@@ -75,10 +75,7 @@
                                         </div>
 
                                         {{-- Input Jumlah --}}
-                                        <div class="col-sm-3">
-                                            <label for="jumlah" class="form-label">Jumlah</label>
-                                            <input type="number" class="form-control" id="jumlah" name="jumlah[]" placeholder="jumlah" />
-                                        </div>
+                                        
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-primary mt-3" onclick="addDynamicFormFields()">Add</button>
@@ -128,10 +125,6 @@
                 <select class="select2 form-select" id="unit-barang-select${count}" name="unit-barang[]">
                     <option value="-1">-- PILIH --</option>
                 </select>
-            </div>
-            <div class="col-sm-3">
-                <label for="jumlah${count}" class="form-label">Jumlah</label>
-                <input type="number" class="form-control" id="jumlah${count}" name="jumlah[]" placeholder="Jumlah">
             </div>
             <div class="col-sm-2 d-flex align-items-end">
                 <button type="button" class="btn btn-danger" onclick="removeDynamicFormFields(${count});">Remove</button>

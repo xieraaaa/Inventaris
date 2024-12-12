@@ -409,9 +409,9 @@
     // Event untuk membuka modal Tambah Unit
     $('#barang').on('click', '.add-unit-btn', function() {
         const id = $(this).data('id');
-        const name = $(this).data('name');
+    $('#id_barang').val(id);
 
-        $('#id_barang').val(id);
+
         $('#add-unit-modal').modal('show');
     });
 
@@ -426,6 +426,7 @@
             data: formData,
             success: (res) => {
                 
+                $('#id_barang').val(res.id_barang);
                 $('#kode_inventaris').val(res.kode_inventaris);
                 $('#lokasi').val(res.lokasi);
                 $('#kondisi').val(res.kondisi);

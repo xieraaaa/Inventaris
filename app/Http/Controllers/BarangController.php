@@ -294,7 +294,6 @@ public function filtered_get(Request $request)
     {
         // Validasi input
         $request->validate([
-            'id' => 'required|numeric',
             'id_barang' => 'required|exists:barang,id',
             'kode_inventaris' => 'required|string',
             'lokasi' => 'required|string',

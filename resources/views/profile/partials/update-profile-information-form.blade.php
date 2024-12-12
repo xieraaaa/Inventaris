@@ -18,7 +18,7 @@
 
             <div class="mb-3">
                 <x-input-label for="name" :value="__('Name')" class="form-label" />
-                <x-text-input id="name" name="name" type="text" class="form-control" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+                <x-text-input id="name" name="name" type="text" class="form-control" :value="old('name', $user->name)" required autofocus autocomplete="name" disabled/>
                 <x-input-error class="invalid-feedback" :messages="$errors->get('name')" />
             </div>
 

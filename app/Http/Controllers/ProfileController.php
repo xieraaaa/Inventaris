@@ -31,15 +31,6 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request)
     {
-        $newName = $request['name'];
-        
-        if (!is_null(User::firstWhere('name', $newName))) {
-            // TODO Munculkan error jika nama yang baru sudah dipakai
-            return response('Username sudah ada!', 409);
-        }
-
-        $request->user()['name'] = $newName;
-
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
