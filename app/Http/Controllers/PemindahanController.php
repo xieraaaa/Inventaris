@@ -66,7 +66,7 @@ class PemindahanController extends Controller
             $buffer = [];
 
             $buffer['id']        = $Pemindahan['id'];
-            $buffer['tanggal']   = $Pemindahan['tanggal'];
+            $buffer['tanggal']   = $Pemindahan['al'];
             $buffer['asal']      = $Pemindahan['asal'];
             $buffer['tujuan']    = $Pemindahan['tujuan'];
             $buffer['deskripsi'] = $Pemindahan['deskripsi'];
