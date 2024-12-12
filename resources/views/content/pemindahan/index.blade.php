@@ -256,7 +256,7 @@
 
                 getUnits(idBarang).then(data => {
                     if (data.length === 0) {
-                        $('#unit-barang-select').html('<option value="-1">-- kosong --</option>');
+                        $('#unit-barang-select').html('<option value="-1">-- KOSONG --</option>');
                         return;
                     }
                     $('#unit-barang-select').html('<option value="-1">-- PILIH --</option>');

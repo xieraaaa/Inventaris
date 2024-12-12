@@ -13,6 +13,7 @@ use App\Http\Controllers\ {
     ProfileController,
     SocialLoginController,
     UnitController,
+    LaporanController
 };
 
 Route::get('/', function () {
@@ -137,6 +138,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('pemindahan/delete/{id}','destroy');
 
 
+    });
+
+    Route::controller(LaporanController::class)->group(function() {
+        Route::get('laporan', 'index')->name('laporan');
+        Route::get('laporan/peminjaman', 'getPeminjamanView')->name('laporan.peminjaman');
+        Route::get('laporan/pemindahan', 'getPemindahanView')->name('laporan.pemindahan');
     });
 });
 
