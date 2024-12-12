@@ -105,7 +105,33 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        var count = 0;
+         function populate(count) {
+        const idBarang = $(`#barang${count} > option:selected`).val();
+
+        // -1 berarti yang dipilih masih placeholder
+        if (parseInt(idBarang) === -1) {
+            return;
+        }
+
+        $.ajax(`/get-unit-barang/${idBarang}/kode_inventaris`, {
+            success: function(data) {
+                const $unitSelect = $(`#unit-barang-select${count}`);
+                
+                if (data.length === 0) {
+                    $unitSelect.html('<option value="-1">-- kosong --</option>');
+                    return;
+                }
+                
+                $unitSelect.html('<option value="-1">-- PILIH --</option>');
+                
+                data.forEach(datum => {
+                    $(`<option value="${datum}">${datum}</option>`).appendTo($unitSelect);
+                });
+            }
+        });
+    }
+
+    var count = 0;
 
         function addDynamicFormFields() {
     count++;
@@ -133,15 +159,14 @@
     `;
     $('#dynamic_form_fields').append(html);
 
-    // Reinitialize select2 for the new select elements
-    $(".select2").select2();
+        // Reinitialize select2 for the new select elements
+        $(".select2").select2();
 
-    // Attach change event for barang select in dynamic fields
-    $(`#barang${count}`).on('change', function () {
-        populate(count);
-    });
-}
-
+        // Attach change event for barang select in dynamic fields
+        $(`#barang${count}`).on('change', function () {
+            populate(count);
+        });
+    }
 
         function removeDynamicFormFields(row) {
             $('#row' + row).remove();
