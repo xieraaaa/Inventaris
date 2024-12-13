@@ -7,6 +7,8 @@ use App\Models\Peminjaman;
 use App\Exports\PeminjamanExport;
 use App\Exports\PemindahanExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class LaporanController extends Controller
 {
@@ -85,8 +87,24 @@ class LaporanController extends Controller
         return Excel::download(new PeminjamanExport, 'laporan_peminjaman.xlsx');
     }
 
-public function exportPemindahanToExcel()
+    public function exportPemindahanToExcel()
     {
         return Excel::download(new PemindahanExport, 'laporan_pemindahan.xlsx');
+    }
+
+    public function exportPeminjamanPDF()
+    {
+        $data = $this->getPeminjamanData();
+        
+        $pdf = FacadePdf::loadView('content.laporan.data.peminjaman', compact('data'));
+        return $pdf->download('laporan_peminjaman.pdf');
+    }
+
+    public function exportPemindahanPDF()
+    {
+        $data = $this->getPemindahanData();
+
+        $pdf = FacadePdf::loadView('content.laporan.data.pemindahan', compact('data'));
+        return $pdf->download('laporan_pemindahan.pdf');
     }
 }

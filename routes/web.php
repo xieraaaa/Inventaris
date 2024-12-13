@@ -146,7 +146,8 @@ Route::middleware('auth')->group(function () {
         Route::get('laporan/pemindahan', 'getPemindahanView')->name('laporan.pemindahan');
         Route::get('/laporan/peminjaman/export', 'exportPeminjamanToExcel')->name('laporan.peminjaman.export');
         Route::get('/laporan/pemindahan/export', 'exportPemindahanToExcel')->name('laporan.pemindahan.export');
-
+        Route::get('/laporan/peminjaman/pdf', 'exportPeminjamanPDF')->name('laporan.peminjaman.pdf');
+        Route::get('/laporan/pemindahan/pdf', 'exportPemindahanPDF')->name('laporan.pemindahan.pdf');
     });
 });
 
