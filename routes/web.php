@@ -26,7 +26,7 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 
 Route::middleware('auth')->group(function () {
     Route::controller(BarangController::class)->group(function() {
-        Route::get('barang', 'index')->name('dashboard')->middleware('role:admin');
+        Route::get('barang', 'index')->middleware('role:admin');
         Route::get('get-barang', 'get');
         Route::get('get-barang-filtered', 'filtered_get');
         Route::get('barang/getDatatables', 'getDatatables');

@@ -14,8 +14,8 @@
                     <div class="mb-3">
                         <a id="create-peminjaman" class="btn btn-primary">Buat Laporan Peminjaman</a>
                         <a id="create-pemindahan" class="btn btn-primary">Buat Laporan Pemindahan</a>
-                        <a href="{{ route('laporan.peminjaman.export') }}" class="btn btn-success">Export Peminjaman to Excel</a>
-                        <a href="{{ route('laporan.pemindahan.export') }}" class="btn btn-success">Export Pemindahan to Excel</a>
+                        <a href="{{ route('laporan.peminjaman.export') }}" class="btn btn-success">Export Peminjaman ke Excel</a>
+                        <a href="{{ route('laporan.pemindahan.export') }}" class="btn btn-success">Export Pemindahan ke Excel</a>
 
                     </div>
                 </div>
