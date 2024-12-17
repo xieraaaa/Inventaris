@@ -3,16 +3,20 @@ var room = 1;
 console.log('Loaded');
 
 function education_fields() {
+    if (updateModalLength === updateModalMaxLength) {
+        return;
+    }
+    
     room++;
     var objTo = document.getElementById('education_fields')
     var divtest = document.createElement("div");
     divtest.setAttribute("class", "form-group removeclass" + room);
     var rdiv = 'removeclass' + room;
     divtest.innerHTML =
-        `<div class="row">
+        `<div class="row education_fields" id="education_fields_${updateModalLength}">
             <div class="col-sm-3 nopadding">
                 <div class="form-group">
-                    <select id="updateModal__selectBarang" class="form-control" name="barang">
+                    <select class="updateModal__selectBarang form-control" name="barang">
                         <option>-- Nama Barang --</option>
                         {{-- Diisi secara dinamis --}}
                     </select>
@@ -20,12 +24,15 @@ function education_fields() {
             </div>
             <div class="col-sm-3 nopadding">
                 <div class="form-group">
-                    <input type="number" class="form-control" id="Major" name="number[]" value="" placeholder="Jumlah" />
+                    <input id="unavailable-amount" type="number" class="form-control" name="number[]" value="1" placeholder="Jumlah" />
                 </div>
             </div>
             <div class="col-sm-3 nopadding">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Keterangan" />
+                    <select  class="form-control" style="cursor: pointer;" placeholder="Keterangan">
+                        <option value="">--- KETERANGAN ---</option>
+                        <option value="kosong">Barang tidak tersedia</option>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-3 nopadding">
@@ -40,8 +47,12 @@ function education_fields() {
         </div>`
 
     objTo.appendChild(divtest)
+    populateUpdateModal(updateModalLength)
+
+    updateModalLength += 1
 }
 
 function remove_education_fields(rid) {
-    $('.removeclass' + rid).remove();
+    $('#education_fields_' + rid).remove();
+    updateModalLength -= 1;
 }

@@ -68,7 +68,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/peminjaman/reject/{id}', 'rejectPeminjaman');
         });
     
-        // TODO Review untuk dirapikan
         Route::prefix('/peminjaman')->group(function() {
             Route::name('peminjaman')->group(function() {
                 Route::get('/fetch', 'fetch')->name('.fetch');
@@ -122,7 +121,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ProfileController::class)->group(function() {
-        Route::get('profile', 'edit')   ->name('profile.edit');
+        Route::get('profile', 'edit')   ->name('profile.edit'); 
         Route::post('profile', 'update') ->name('profile.update');
         Route::delete('profile', 'destroy')->name('profile.destroy');
     });

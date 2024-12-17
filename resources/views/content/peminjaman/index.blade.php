@@ -42,31 +42,35 @@
                 </div>
                 <form id="updateForm">
                     <div class="modal-body">
-                        <div id="education_fields"></div>
-                        <div class="row">
-                            <div class="col-sm-3 nopadding">
-                                <div class="form-group">
-                                    <select id="updateModal__selectBarang" class="form-control" name="barang">
-                                        <option>-- Nama Barang --</option>
-                                        {{-- Diisi secara dinamis --}}
-                                    </select>
+                        <div id="education_fields">
+                            <div class="row education_fields" id="education_fields_0">
+                                <div class="col-sm-3 nopadding">
+                                    <div class="form-group">
+                                        <select class="updateModal__selectBarang form-control" name="barang[]">
+                                            <option>-- Nama Barang --</option>
+                                            {{-- Diisi secara dinamis --}}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-3 nopadding">
-                                <div class="form-group">
-                                    <input type="number" class="form-control" id="Major" name="number[]" value="" placeholder="Jumlah" />
+                                <div class="col-sm-3 nopadding">
+                                    <div class="form-group">
+                                        <input id="unavailable-amount" type="number" class="form-control" name="number[0]" value="1" placeholder="Jumlah" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-3 nopadding">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Keterangan" />
+                                <div class="col-sm-3 nopadding">
+                                    <div class="form-group">
+                                        <select  class="form-control" style="cursor: pointer;" placeholder="Keterangan">
+                                            <option value="">--- KETERANGAN ---</option>
+                                            <option value="kosong">Barang tidak tersedia</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-3 nopadding">
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-success text-white" type="button" onclick="education_fields();"><i class="fa fa-plus"></i></button>
+                                <div class="col-sm-3 nopadding">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-success text-white" type="button" onclick="education_fields();"><i class="fa fa-plus"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -74,7 +78,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit">Submit</button>
+                        <button class="btn btn-primary" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
@@ -83,21 +87,49 @@
 @endsection
 
 @push('scripts')
+    {{-- Skrip untuk menambahkan elemen --}}
     <script type="text/javascript" src="dff.js"></script>
     <script type="text/javascript" src="assets/node_modules/multiselect/js/jquery.multi-select.js"></script>
 
     {{-- Skrip untuk mengisi data modal --}}
     <script>
-        function populateUpdateModal(data) {
+        let updateModalLength = 1;
+        let updateModalMaxLength = 0;
+        let updateModalBarangSelectData = [];
+        let updateModalBarangSelectDataUsed = [];
+
+        function populateUpdateModal(number) {
             {{-- Reset list barang --}}
-            $('#updateModal__selectBarang').html('<option>-- Nama Barang --</option>');
-            
-            for (const name of data) {
+            $(`#education_fields_${number} .updateModal__selectBarang`).html('<option>-- Nama Barang --</option>');
+
+            for (const name of updateModalBarangSelectData) {
+                if (updateModalBarangSelectDataUsed.includes(name)) {
+                    continue;
+                }
+
                 const htmlString = `<option>${ name }</option>`;
 
-                $(htmlString).appendTo('#updateModal__selectBarang');
+                $(htmlString).appendTo(`#education_fields_${number} .updateModal__selectBarang`);
             }
         }
+
+        $('.updateModal__selectBarang').on('change', (evt) => {
+            const currentTarget = evt.currentTarget;
+            const previousValue = currentTarget.dataset.previousValue;
+            const currentValue = currentTarget.value;
+
+            if (previousValue === currentValue) {
+                return;
+            }
+            else if (typeof(previousValue) === 'undefined') {
+                updateModalBarangSelectDataUsed.push(currentValue);
+                currentTarget.dataset.previousValue = currentValue;
+            }
+            else {
+                const indexOfValue = updateModalBarangSelectDataUsed.indexOf(previousValue);
+                updateModalBarangSelectDataUsed.splice(indexOfValue, 1, currentValue);
+            }
+        });
     </script>
 
     <script>
@@ -165,11 +197,12 @@
                             <button class="btn btn-success btn-accept" data-id="${row.id}">
                                 <i class="fas fa-check"></i> Accept
                             </button>
-                            <button class="btn btn-danger btn-update" data-id="${row.id}">
-                                <i class="fas fa-trash-can"></i> Perbarui
+                            <button class="btn btn-warning btn-update" data-id="${row.id}">
+                                <i class="fas fa-check"></i> perbarui
                             </button>
+
                             <button class="btn btn-success btn-kembali" data-id="${row.id}">
-                                <i class="fas fa-check"></i> kembali
+                                <i class="fas fa-check"></i> Kembali
                             </button>
                         `
                     }
@@ -217,26 +250,26 @@
             showCancelButton: true,
             confirmButtonText: 'Ya, Pinjamkan!',
             cancelButtonText: 'Batal',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Lanjutkan proses jika pengguna menyetujui
-                $.ajax({
-                    type: 'POST',
-                    url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
-                    data: {
-                        _token: '{{ csrf_token() }}', // Token CSRF
-                        status: newStatus // Status baru yang akan dikirim
-                    },
-                    success: (response) => {
-                        Swal.fire("Berhasil!", response.message, "success");
-                        peminjamanTable.ajax.reload(null, false); // Reload tabel
-                    },
-                    error: (xhr) => {
-                        Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
-                    }
-                });
-            }
-        });
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Lanjutkan proses jika pengguna menyetujui
+                    $.ajax({
+                        type: 'POST',
+                        url: `/peminjaman/admin-status/${id}`, // Endpoint Laravel
+                        data: {
+                            _token: '{{ csrf_token() }}', // Token CSRF
+                            status: newStatus // Status baru yang akan dikirim
+                        },
+                        success: (response) => {
+                            Swal.fire("Berhasil!", response.message, "success");
+                            peminjamanTable.ajax.reload(null, false); // Reload tabel
+                        },
+                        error: (xhr) => {
+                            Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengubah status.", "error");
+                        }
+                    });
+                }
+            });
         });
 
         peminjamanTable.on('click', '.btn-kembali', function() {
@@ -289,7 +322,9 @@
                 },
 
                 success: data => {
-                    populateUpdateModal(data.map(Object.values))
+                    updateModalMaxLength = data.length;
+                    updateModalBarangSelectData = data.map(item => item.nama_barang.trim());
+                    populateUpdateModal(0);
                 }
             });
 
@@ -298,26 +333,38 @@
 
         // Form submission
         $('#updateForm').on('submit', function(e) {
-        e.preventDefault(); // Prevent default form submission
-        const id = $('#updateId').val();
-        const status = $('#updateStatus').val();
+            e.preventDefault(); // Prevent default form submission
+            const id = $('#updateId').val();
+            const status = $('#updateStatus').val();
 
-        $.ajax({
-            type: 'POST',
-            url: `/peminjaman/update-status/${id}`, // Endpoint Laravel untuk update
-            data: {
-                _token: '{{ csrf_token() }}', // Token CSRF
-                status: status
-            },
-            success: (response) => {
-                Swal.fire("Berhasil!", response.message, "success");
-                $('#updateModal').modal('hide'); // Tutup modal
-                peminjamanTable.ajax.reload(null, false); // Reload tabel
-            },
-            error: (xhr) => {
-                Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengupdate data.", "error");
-            }
+            $.ajax({
+                type: 'POST',
+                url: `/peminjaman/update-status/${id}`, // Endpoint Laravel untuk update
+                data: {
+                    _token: '{{ csrf_token() }}', // Token CSRF
+                    status: status
+                },
+                success: (response) => {
+                    Swal.fire("Berhasil!", response.message, "success");
+                    $('#updateModal').modal('hide'); // Tutup modal
+                    peminjamanTable.ajax.reload(null, false); // Reload tabel
+                },
+                error: (xhr) => {
+                    Swal.fire("Gagal!", xhr.responseJSON.error || "Gagal mengupdate data.", "error");
+                }
+            });
         });
+
+        $('#updateModal').on('hide.bs.modal', () => {
+            console.log('loc#358');
+            
+            for (let index = 1; index < updateModalLength; ++index) {
+                remove_education_fields(index);
+            }
+
+            updateModalBarangSelectDataUsed = [];
+
+            console.assert(updateModalLength === 1);
         });
     </script>
 @endpush

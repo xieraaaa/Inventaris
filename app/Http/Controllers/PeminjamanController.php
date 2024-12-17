@@ -145,7 +145,7 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function acceptPeminjaman(Request $request, $id)
+    public function acceptPeminjaman($id)
     {
         $peminjaman = Peminjaman::find($id);
 
