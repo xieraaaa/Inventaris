@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\PeminjamanInvoked as PeminjamanInvokedEvent;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 enum PeminjamanStatus: int {
     case Pending = 1;
@@ -192,8 +193,12 @@ class PeminjamanController extends Controller
         $data = [];
 
         $peminjamanData = Peminjaman::with(['detail', 'user'])
-            ->where('status', PeminjamanStatus::Borrowed)
-            ->orWhere('id_user', Auth::user()->id)
+        ->where('id_user', Auth::user()->id)
+        ->where(function ($query) {
+            $query->where('status', PeminjamanStatus::Borrowed)
+                ->orWhere('status', PeminjamanStatus::Returned)
+                ->orWhere('status', PeminjamanStatus::Approved);
+        })
             ->get();
 
         foreach ($peminjamanData as $peminjaman) {
