@@ -8,6 +8,12 @@ use Illuminate\Database\Seeder;
 class KategoriSeeder extends Seeder {
     public function run()
     {
-        Kategori::factory()->count(10)->create();
+        $amount = 10 - count(Kategori::all());
+
+        if (!$amount) {
+            return;
+        }
+        
+        Kategori::factory()->count($amount)->create();
     }
 }

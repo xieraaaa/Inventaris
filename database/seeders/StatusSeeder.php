@@ -17,6 +17,10 @@ class StatusSeeder extends Seeder {
     public function run()
     {
         foreach ($this->statuses as $status) {
+            if (!is_null(Status::firstWhere(['status' => $status]))) {
+                continue;
+            }
+            
             Status::create([
                 'status' => $status
             ]);

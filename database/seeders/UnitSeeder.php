@@ -8,6 +8,12 @@ use Illuminate\Database\Seeder;
 class UnitSeeder extends Seeder {
     public function run()
     {
-        Unit::factory()->count(10)->create();
+        $amount = 10 - count(Unit::all());
+
+        if (!$amount) {
+            return;
+        }
+        
+        Unit::factory()->count($amount)->create();
     }
 }

@@ -8,6 +8,12 @@ use Illuminate\Database\Seeder;
 class MerekSeeder extends Seeder {
     public function run()
     {
-        Merek::factory()->count(10)->create();
+        $amount = 10 - count(Merek::all());
+
+        if (!$amount) {
+            return;
+        }
+        
+        Merek::factory()->count($amount)->create();
     }
 }

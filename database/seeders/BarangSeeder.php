@@ -7,15 +7,32 @@ use App\Models\UnitBarang;
 use Illuminate\Database\Seeder;
 
 class BarangSeeder extends Seeder {
+    private $totalAmountBarang = 50;
+    private $totalAmountUnitL = 25;
+    private $totalAmountUnitH = 25;
+    
     public function run()
     {
-        $length = 50;
-        for ($count = 0; $count < $length; ++$count) {
-            Barang::factory()
-                ->has(
-                    UnitBarang::factory()
-                        ->count(fake()->numberBetween(10, 100)), 'unitBarang')
-                ->create();
+        $barangCount = count(Barang::all());
+
+        $totalAmountBarang = $this->totalAmountBarang - $barangCount;
+
+        if (!$totalAmountBarang) {
+            return;
         }
+        
+        // Menggunakan loop daripada Factory::count karena setiap barang
+        // memiliki unit dengan jumlah yang tidak tentu
+        $count = 0;
+        do {
+            $unitBarangFactory = UnitBarang::factory()
+                ->count(
+                    fake()->numberBetween($this->totalAmountUnitL, $this->totalAmountUnitH)
+                );
+
+            Barang::factory()
+                ->has($unitBarangFactory, 'unitBarang')
+                ->create();
+        } while (++$count < $totalAmountBarang);
     }
 }
