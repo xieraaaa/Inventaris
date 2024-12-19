@@ -1,11 +1,8 @@
 <?php
 
-use App\Models\{
-    User,
-    Peminjaman
-};
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('peminjaman.{data}', function(User $user, Peminjaman $data) {
-    return $data['id_user'] == $user['id'];
+Broadcast::channel('admin', function(User $user) {
+    return "No way!";
 });

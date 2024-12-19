@@ -11,8 +11,7 @@ class DetailPemindahan extends Model
     protected $fillable = [
         'id_pemindahan',
         'id_barang',
-        'jumlah'
-
+        'jumlah',
     ];
 
     public function pemindahan()

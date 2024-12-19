@@ -35,8 +35,6 @@
 
 	<!-- Dashboard 1 Page CSS -->
 	<link href="{{asset('dist/css/pages/dashboard1.css')}}" rel="stylesheet">
-
-	@vite(['resources/js/app.js'])
 </head>
 
 <!-- TODO Rapikan kode -->
@@ -111,6 +109,7 @@
 	<!-- Datatables -->
 	<script src="https://cdn.datatables.net/2.1.3/js/dataTables.min.js"></script>
 
+	@vite('resources/js/app.js')
 	@stack('scripts')
 </body>
 

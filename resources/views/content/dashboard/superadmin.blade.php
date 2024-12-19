@@ -40,7 +40,7 @@
         function createChild(data) {
             return `<span><b>${data.nama_barang}</b>: ${data.jumlah}</span>`;
         }
-    
+
         function format(data) {
             let str = '';
 
@@ -50,7 +50,7 @@
 
             return str;
         }
-    
+
         const peminjamanTable = $('#peminjaman-table').DataTable({
             ajax: {
                 url: 'peminjaman/detail',
@@ -135,7 +135,7 @@
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Setujui!',
                 cancelButtonText: 'Batal',
-            }).then((result) => {           
+            }).then((result) => {
                 if (result.isConfirmed) {
                     // TODO Ambil kode status dari tabel status di database
                     // 2 = "Approved"
@@ -170,7 +170,7 @@
                 url: `/peminjaman/reject/${id}`, // Endpoint Laravel
                 data: {
                     _token: '{{ csrf_token() }}' // Token CSRF
-                },  
+                },
                 success: (response) => {
                     Swal.fire("Success!", response.message, "success");
                     peminjamanTable.ajax.reload(null, false); // Reload tabel

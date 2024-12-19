@@ -133,6 +133,8 @@
     </script>
 
     <script>
+        console.log('Loaded index.blade.php script');
+        
         function createChild(data) {
             return `<span><b>${data.nama_barang}</b>: ${data.jumlah}</span>`;
         }
@@ -365,6 +367,18 @@
             updateModalBarangSelectDataUsed = [];
 
             console.assert(updateModalLength === 1);
+        });
+        
+        // Sinkronisasi
+        $(window).on('load', () => {
+            Echo.private('admin')
+                .listen('NewApprovedPeminjaman', () => {
+                    peminjamanTable.ajax.reload(null, false);
+                })
+                .error((err) => {
+                    console.log(`Error:`);
+                    console.log(err);
+                });
         });
     </script>
 @endpush

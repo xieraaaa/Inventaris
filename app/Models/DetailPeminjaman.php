@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class DetailPeminjaman extends Model {
-    protected $table      = 'detail-peminjaman';
+    protected $table      = 'detail_peminjaman';
     public    $timestamps = false;
     protected $fillable   = [
         'id_peminjaman',

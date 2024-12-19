@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-use App\Events\PeminjamanInvoked as PeminjamanInvokedEvent;
+use App\Events\NewApprovedPeminjaman;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 enum PeminjamanStatus: int {
@@ -73,8 +73,6 @@ class PeminjamanController extends Controller
                     'jumlah' => $datum['jumlah']
                 ]);
             }
-
-            broadcast(new PeminjamanInvokedEvent($peminjaman))->toOthers();
         });
 
         // Respon dengan notifikasi sukses
@@ -156,10 +154,7 @@ class PeminjamanController extends Controller
 
             $details = $peminjaman->detail;
 
-            foreach ($details as $detail) {
-                $barang = $detail->barang;
-                $barang->save();
-            }
+            broadcast(new NewApprovedPeminjaman($peminjaman))->toOthers();
 
             return response()->json(['message' => 'Peminjaman status updated to di pinjam']);
         } else {
