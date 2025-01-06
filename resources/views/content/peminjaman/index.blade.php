@@ -200,7 +200,7 @@
                                 <i class="fas fa-check"></i> Accept
                             </button>
                             <button class="btn btn-warning btn-update" data-id="${row.id}">
-                                <i class="fas fa-check"></i> perbarui
+                                <i class="fas fa-check"></i> Perbarui
                             </button>
 
                             <button class="btn btn-success btn-kembali" data-id="${row.id}">
