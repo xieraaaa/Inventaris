@@ -132,7 +132,7 @@
                 columns: [{
                     data: null,
                     name: 'id',
-                    title: 'id',
+                    title: 'ID',
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row, meta) {
